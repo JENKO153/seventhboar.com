@@ -1,3 +1,156 @@
+const content = window.seventhBoarContent || { projects: [], posts: [] };
+
+if (
+  /^https?:$/.test(window.location.protocol) &&
+  /\/index\.html$/.test(window.location.pathname)
+) {
+  const cleanPath = window.location.pathname.replace(/index\.html$/, "");
+  const normalizedPath = cleanPath || "/";
+  const nextUrl = `${normalizedPath}${window.location.search}${window.location.hash}`;
+  window.history.replaceState(null, "", nextUrl);
+}
+
+const formatDate = (value) => {
+  if (!value) return "";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("en-AU", {
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  }).format(date);
+};
+
+const projectCardMarkup = (project) => `
+  <article class="card project-card reveal" data-category="${project.categories.join(" ")}">
+    <div class="project-visual">
+      <div class="visual-stack">
+        <div class="visual-pane">
+          <div>
+            <strong>${project.title}</strong>
+            <span>${project.summary}</span>
+          </div>
+          <span class="visual-token">${project.type}</span>
+        </div>
+      </div>
+    </div>
+    <div class="meta">
+      <span class="chip">${project.badge}</span>
+      ${project.tags.map((tag) => `<span class="chip ink">${tag}</span>`).join("")}
+    </div>
+    <h3>${project.title}</h3>
+    <p>${project.summary}</p>
+    <footer><a class="text-link" href="${project.href}">View project</a></footer>
+  </article>
+`;
+
+const projectDirectoryMarkup = (project) => `
+  <article class="directory-row reveal" data-category="${project.categories.join(" ")}">
+    <div>
+      <h3>${project.title}</h3>
+      <div class="directory-meta">
+        <span class="chip">${project.type}</span>
+        ${project.tags.map((tag) => `<span class="chip ink">${tag}</span>`).join("")}
+      </div>
+    </div>
+    <div class="directory-copy">
+      <p>${project.summary}</p>
+    </div>
+    <div class="directory-cta">
+      <a class="text-link" href="${project.href}">View details</a>
+    </div>
+  </article>
+`;
+
+const postCardMarkup = (post) => `
+  <article class="card article-card reveal">
+    <div class="meta">
+      <span class="chip">Journal</span>
+      <span class="chip ink">${post.category}</span>
+    </div>
+    <h3>${post.title}</h3>
+    <p>${post.summary}</p>
+    <footer>
+      <a class="text-link" href="${post.href}">Read post</a>
+    </footer>
+  </article>
+`;
+
+const postDirectoryMarkup = (post) => `
+  <article class="directory-row reveal">
+    <div>
+      <h3>${post.title}</h3>
+      <div class="directory-meta">
+        <span class="chip">Journal</span>
+        <span class="chip ink">${post.category}</span>
+      </div>
+    </div>
+    <div class="directory-copy">
+      <p>${post.summary}</p>
+      <p class="microcopy">Published ${formatDate(post.date)}</p>
+    </div>
+    <div class="directory-cta">
+      <a class="text-link" href="${post.href}">Read post</a>
+    </div>
+  </article>
+`;
+
+const renderContent = () => {
+  const featuredProjects = content.projects.filter((project) => project.featured);
+  const archiveProjects = content.projects.filter((project) => !project.featured);
+  const latestProjects = content.projects.filter((project) => project.latest).slice(0, 3);
+  const latestPosts = [...content.posts];
+  const featuredPost = latestPosts[0];
+
+  const homeProjects = document.querySelector("[data-home-projects]");
+  if (homeProjects) {
+    homeProjects.innerHTML = latestProjects.map(projectCardMarkup).join("");
+  }
+
+  const homePosts = document.querySelector("[data-home-posts]");
+  if (homePosts) {
+    homePosts.innerHTML = latestPosts.slice(0, 2).map(postCardMarkup).join("");
+  }
+
+  const featuredProjectsTarget = document.querySelector("[data-featured-projects]");
+  if (featuredProjectsTarget) {
+    featuredProjectsTarget.innerHTML = featuredProjects.map(projectCardMarkup).join("");
+  }
+
+  const projectDirectoryTarget = document.querySelector("[data-project-directory]");
+  if (projectDirectoryTarget) {
+    projectDirectoryTarget.innerHTML = archiveProjects.map(projectDirectoryMarkup).join("");
+  }
+
+  const featuredPostTarget = document.querySelector("[data-featured-post]");
+  if (featuredPostTarget && featuredPost) {
+    featuredPostTarget.innerHTML = `
+      <div class="meta">
+        <span class="chip">Featured Article</span>
+        <span class="chip ink">${featuredPost.category}</span>
+      </div>
+      <h2 class="section-title">${featuredPost.title}</h2>
+      <p class="section-copy">${featuredPost.summary}</p>
+      <p class="microcopy">Published ${formatDate(featuredPost.date)}</p>
+      <div class="hero-actions">
+        <a class="button" href="${featuredPost.href}">Read featured article</a>
+      </div>
+    `;
+  }
+
+  const postArchiveTarget = document.querySelector("[data-post-archive]");
+  if (postArchiveTarget) {
+    postArchiveTarget.innerHTML = latestPosts.map(postDirectoryMarkup).join("");
+  }
+};
+
+renderContent();
+
 const navToggle = document.querySelector("[data-nav-toggle]");
 const navPanel = document.querySelector("[data-nav-panel]");
 
@@ -14,9 +167,6 @@ if (activeGroup) {
   document.querySelectorAll("[data-page]").forEach((link) => {
     if (link.dataset.page === activeGroup) {
       link.classList.add("is-current");
-      if (link.classList.contains("nav-cta") && activeGroup !== "contact") {
-        link.classList.remove("is-current");
-      }
     }
   });
 }
@@ -81,19 +231,21 @@ if (contactForm) {
     const formData = new FormData(contactForm);
     const name = formData.get("name") || "";
     const email = formData.get("email") || "";
-    const projectType = formData.get("projectType") || "";
-    const timeframe = formData.get("timeframe") || "";
-    const subject = formData.get("subject") || "New project inquiry";
+    const company = formData.get("company") || "";
+    const reason = formData.get("reason") || "";
+    const subject = formData.get("subject") || "Website contact";
     const message = formData.get("message") || "";
 
     const body = [
       `Name: ${name}`,
       `Email: ${email}`,
-      `Project type: ${projectType}`,
-      `Timeframe: ${timeframe}`,
+      company ? `Company: ${company}` : "",
+      reason ? `Reason: ${reason}` : "",
       "",
       message
-    ].join("\n");
+    ]
+      .filter(Boolean)
+      .join("\n");
 
     const mailto = `mailto:hello@seventhboar.com?subject=${encodeURIComponent(
       subject

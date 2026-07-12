@@ -26,8 +26,28 @@ const formatDate = (value) => {
   }).format(date);
 };
 
+const sortByDateDesc = (items) =>
+  [...items].sort((left, right) => {
+    const leftDate = Date.parse(left.date || "");
+    const rightDate = Date.parse(right.date || "");
+
+    if (Number.isNaN(leftDate) && Number.isNaN(rightDate)) {
+      return 0;
+    }
+
+    if (Number.isNaN(leftDate)) {
+      return 1;
+    }
+
+    if (Number.isNaN(rightDate)) {
+      return -1;
+    }
+
+    return rightDate - leftDate;
+  });
+
 const projectCardMarkup = (project) => `
-  <article class="card project-card reveal" data-category="${project.categories.join(" ")}">
+  <article class="card project-card reveal" data-category="${(project.categories || []).join(" ")}">
     <div class="project-visual">
       <div class="visual-stack">
         <div class="visual-pane">
@@ -41,7 +61,7 @@ const projectCardMarkup = (project) => `
     </div>
     <div class="meta">
       <span class="chip">${project.badge}</span>
-      ${project.tags.map((tag) => `<span class="chip ink">${tag}</span>`).join("")}
+      ${(project.tags || []).map((tag) => `<span class="chip ink">${tag}</span>`).join("")}
     </div>
     <h3>${project.title}</h3>
     <p>${project.summary}</p>
@@ -50,16 +70,17 @@ const projectCardMarkup = (project) => `
 `;
 
 const projectDirectoryMarkup = (project) => `
-  <article class="directory-row reveal" data-category="${project.categories.join(" ")}">
+  <article class="directory-row reveal" data-category="${(project.categories || []).join(" ")}">
     <div>
       <h3>${project.title}</h3>
       <div class="directory-meta">
         <span class="chip">${project.type}</span>
-        ${project.tags.map((tag) => `<span class="chip ink">${tag}</span>`).join("")}
+        ${(project.tags || []).map((tag) => `<span class="chip ink">${tag}</span>`).join("")}
       </div>
     </div>
     <div class="directory-copy">
       <p>${project.summary}</p>
+      ${project.date ? `<p class="microcopy">Published ${formatDate(project.date)}</p>` : ""}
     </div>
     <div class="directory-cta">
       <a class="text-link" href="${project.href}">View details</a>
@@ -101,11 +122,13 @@ const postDirectoryMarkup = (post) => `
 `;
 
 const renderContent = () => {
-  const featuredProjects = content.projects.filter((project) => project.featured);
-  const archiveProjects = content.projects.filter((project) => !project.featured);
-  const latestProjects = content.projects.filter((project) => project.latest).slice(0, 3);
-  const latestPosts = [...content.posts];
-  const featuredPost = latestPosts[0];
+  const orderedProjects = sortByDateDesc(content.projects);
+  const orderedPosts = sortByDateDesc(content.posts);
+  const featuredProjects = orderedProjects.filter((project) => project.featured);
+  const archiveProjects = orderedProjects.filter((project) => !project.featured);
+  const latestProjects = orderedProjects.slice(0, 3);
+  const latestPosts = orderedPosts;
+  const featuredPost = orderedPosts.find((post) => post.featured) || orderedPosts[0];
 
   const homeProjects = document.querySelector("[data-home-projects]");
   if (homeProjects) {

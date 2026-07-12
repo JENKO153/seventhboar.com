@@ -8,6 +8,10 @@
       name="description"
       content="Short description of the blog post."
     />
+    <meta name="seventhboar:content-type" content="post" />
+    <meta name="seventhboar:category" content="Category" />
+    <meta name="seventhboar:date" content="YYYY-MM-DD" />
+    <meta name="seventhboar:featured" content="false" />
     <link rel="icon" type="image/png" href="../assets/images/seventh-boar-mark.png" />
     <link rel="stylesheet" href="../assets/css/styles.css" />
   </head>
@@ -98,9 +102,10 @@
         <div class="shell">
           <div class="panel quiet-panel reveal">
             <p class="template-note">
-              After duplicating this file for a new post, remember to add that new post to
-              <strong>assets/js/content.js</strong> so it appears automatically on the home page
-              and journal archive.
+              After duplicating this file for a new post, set the metadata in the page head and
+              then run <strong>scripts/generate-content.mjs</strong> for local previews. When you
+              push to GitHub, the site will also refresh the home page and journal archive
+              automatically.
             </p>
           </div>
         </div>

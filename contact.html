@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact | Seventh Boar Development</title>
+    <meta
+      name="description"
+      content="Start a project conversation with Seventh Boar Development."
+    />
+    <link rel="icon" type="image/png" href="assets/images/seventh-boar-logo.png" />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body class="site-frame" data-nav="contact">
+    <header class="site-header">
+      <div class="shell nav-shell">
+        <a class="brand" href="index.html" aria-label="Seventh Boar Development home">
+          <img src="assets/images/seventh-boar-logo.png" alt="" />
+          <span>
+            <strong>Seventh Boar</strong>
+            <em>Development</em>
+          </span>
+        </a>
+        <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-menu" aria-label="Open navigation">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7" />
+          </svg>
+        </button>
+        <nav class="site-nav" id="site-menu" data-nav-panel>
+          <a href="index.html" data-page="home">Home</a>
+          <a href="work.html" data-page="work">Work</a>
+          <a href="services.html" data-page="services">Services</a>
+          <a href="journal.html" data-page="journal">Journal</a>
+          <a href="about.html" data-page="about">About</a>
+          <a href="contact.html" data-page="contact">Contact</a>
+          <a class="nav-cta" href="contact.html" data-page="contact">Start a Project</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-hero">
+        <div class="shell split-panel">
+          <div class="hero-copy reveal">
+            <div class="eyebrow">Contact</div>
+            <h1>Let’s talk about the thing you want to build.</h1>
+            <p class="page-lead">
+              The contact page is designed to lower friction without feeling casual. It keeps the
+              brand sharp while giving potential clients a clear way to reach out with context.
+            </p>
+            <div class="metric-grid">
+              <div class="metric">
+                <span class="metric-value">Response style</span>
+                <strong>Direct</strong>
+                <span>Clear next steps and realistic scope conversations.</span>
+              </div>
+              <div class="metric">
+                <span class="metric-value">Project types</span>
+                <strong>Games &amp; apps</strong>
+                <span>From prototypes to production-focused polish work.</span>
+              </div>
+              <div class="metric">
+                <span class="metric-value">Setup</span>
+                <strong>Remote-first</strong>
+                <span>Flexible collaboration across time zones.</span>
+              </div>
+            </div>
+          </div>
+          <aside class="panel reveal">
+            <div class="eyebrow">Prefer Email?</div>
+            <h2 class="mini-title">hello@seventhboar.com</h2>
+            <p>
+              The form below creates a pre-filled email draft so this static site still offers a
+              smooth inquiry flow without needing backend infrastructure.
+            </p>
+            <div class="hero-actions">
+              <a class="button-ghost" href="mailto:hello@seventhboar.com">Email directly</a>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="shell contact-grid">
+          <div class="form-shell reveal">
+            <form class="form-grid" data-contact-form>
+              <div class="field">
+                <label for="name">Name</label>
+                <input id="name" name="name" type="text" required />
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" required />
+              </div>
+              <div class="field">
+                <label for="projectType">Project Type</label>
+                <select id="projectType" name="projectType">
+                  <option>Game development</option>
+                  <option>App development</option>
+                  <option>Prototype and R&amp;D</option>
+                  <option>Polish and refinement</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="timeframe">Timeframe</label>
+                <select id="timeframe" name="timeframe">
+                  <option>As soon as possible</option>
+                  <option>Within 1 month</option>
+                  <option>Within 3 months</option>
+                  <option>Exploring options</option>
+                </select>
+              </div>
+              <div class="field-full">
+                <label for="subject">Subject</label>
+                <input id="subject" name="subject" type="text" value="Project inquiry for Seventh Boar Development" />
+              </div>
+              <div class="field-full">
+                <label for="message">Project Details</label>
+                <textarea id="message" name="message" placeholder="Tell us what you're building, what stage it's in, and where you'd like support."></textarea>
+              </div>
+              <div class="field-full">
+                <button class="button" type="submit">Open Email Draft</button>
+              </div>
+            </form>
+            <p class="form-note">
+              You can swap the contact email later if you want the form to route somewhere else.
+            </p>
+          </div>
+
+          <div class="detail-grid">
+            <article class="card contact-card reveal">
+              <h3>Best for</h3>
+              <p>Projects that already have a clear goal but need stronger execution, sharper presentation, or more reliable production momentum.</p>
+            </article>
+            <article class="card contact-card reveal">
+              <h3>Typical asks</h3>
+              <p>Gameplay iteration, app UX improvements, case-study-ready launches, and turning rough ideas into something clients can trust.</p>
+            </article>
+            <article class="card contact-card reveal">
+              <h3>Working style</h3>
+              <p>Thoughtful, practical, collaborative, and focused on making progress without losing what makes the project interesting.</p>
+            </article>
+            <article class="card contact-card reveal">
+              <h3>Availability</h3>
+              <p>Use this card for current booking notes, waitlist info, or ideal project sizes once you want to publish them.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-panel">
+        <div class="footer-grid">
+          <div>
+            <div class="brand">
+              <img src="assets/images/seventh-boar-logo.png" alt="" />
+              <span>
+                <strong>Seventh Boar</strong>
+                <em>Development</em>
+              </span>
+            </div>
+            <p>Inquiry-ready contact flow with no backend required.</p>
+          </div>
+          <div>
+            <h3>Pages</h3>
+            <ul>
+              <li><a href="work.html">Work</a></li>
+              <li><a href="services.html">Services</a></li>
+              <li><a href="journal.html">Journal</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Direct</h3>
+            <ul>
+              <li><a href="mailto:hello@seventhboar.com">hello@seventhboar.com</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Details</h3>
+            <ul>
+              <li><a href="privacy.html">Privacy</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bar">
+          <span>&copy; <span data-year></span> Seventh Boar Development</span>
+          <span>Static form flow using a pre-filled email draft.</span>
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/js/site.js"></script>
+  </body>
+</html>

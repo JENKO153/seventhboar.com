@@ -40,20 +40,15 @@
 
     <main>
       <section class="page-hero">
-        <div class="shell hero-grid">
+        <div class="shell split-panel">
           <div class="hero-copy reveal">
             <div class="eyebrow">Portfolio</div>
-            <h1>Work that reads like case studies, not thumbnails.</h1>
+            <h1>Work that feels considered before a case study is even opened.</h1>
             <p class="page-lead">
-              This page needs to feel generous and editorial, not cramped or over-filtered. The
-              project blurbs are still filler, but they are written densely enough to test the real
-              structure: featured projects, expandable archives, and room for thoughtful context.
+              This page is still using placeholder projects and sample descriptions, but it is now
+              built around a cleaner idea: a small set of featured stories at the top, then a more
+              restrained project directory underneath.
             </p>
-            <div class="hero-badges">
-              <span class="hero-badge">Featured releases</span>
-              <span class="hero-badge">Prototype labs</span>
-              <span class="hero-badge">Product case studies</span>
-            </div>
             <div class="filter-row">
               <button class="filter-pill is-active" type="button" data-filter-button="all">All work</button>
               <button class="filter-pill" type="button" data-filter-button="game">Games</button>
@@ -61,24 +56,20 @@
               <button class="filter-pill" type="button" data-filter-button="prototype">Prototypes</button>
             </div>
           </div>
-          <aside class="hero-panel reveal">
-            <div class="hero-panel-label">Portfolio Direction</div>
-            <div class="story-frame">
-              <div class="visual-stack">
-                <div class="visual-pane">
-                  <div>
-                    <strong>Sharp positioning</strong>
-                    <span>Enough detail for clients, enough craft for peers.</span>
-                  </div>
-                  <span class="visual-token">Work</span>
-                </div>
-                <div class="visual-pane">
-                  <div>
-                    <strong>Flexible structure</strong>
-                    <span>Add projects, categories, and writing without redesigning the page.</span>
-                  </div>
-                  <span class="visual-token">Scale</span>
-                </div>
+          <aside class="panel quiet-panel reveal">
+            <div class="eyebrow">Portfolio Intent</div>
+            <div class="story-list">
+              <div class="story-item">
+                <strong>Featured work first</strong>
+                <p>Lead with a few stronger stories instead of making every project fight for equal attention.</p>
+              </div>
+              <div class="story-item">
+                <strong>More editorial, less noisy</strong>
+                <p>Enough visual structure to feel premium without relying on heavy dashboard-style layouts.</p>
+              </div>
+              <div class="story-item">
+                <strong>Real projects later</strong>
+                <p>The placeholders can be replaced directly with your actual catalogue once the hierarchy feels locked in.</p>
               </div>
             </div>
           </aside>
@@ -86,217 +77,167 @@
       </section>
 
       <section class="section">
-        <div class="shell signal-grid">
-          <article class="signal-card reveal">
-            <strong>Main format</strong>
-            <span>Large case-study cards with room for challenge, process, and outcome.</span>
-          </article>
-          <article class="signal-card reveal">
-            <strong>Secondary format</strong>
-            <span>Smaller archive items for prototypes, tools, and in-progress explorations.</span>
-          </article>
-          <article class="signal-card reveal">
-            <strong>Filtering</strong>
-            <span>Simple category controls that stay understandable even as the portfolio grows.</span>
-          </article>
-          <article class="signal-card reveal">
-            <strong>Theme test</strong>
-            <span>Filler content is used here to judge visual rhythm before the real project copy arrives.</span>
-          </article>
+        <div class="shell">
+          <div class="overview-strip reveal">
+            <div class="overview-item">
+              <span class="overview-label">Primary format</span>
+              <strong>Case-study led</strong>
+              <p>Featured pieces carry context, challenge, and outcome instead of stopping at a thumbnail and title.</p>
+            </div>
+            <div class="overview-item">
+              <span class="overview-label">Secondary format</span>
+              <strong>Quiet project directory</strong>
+              <p>Smaller entries sit in a cleaner list so the archive can grow without overwhelming the page.</p>
+            </div>
+            <div class="overview-item">
+              <span class="overview-label">Current use</span>
+              <strong>Testing the frame</strong>
+              <p>Placeholder copy is helping judge rhythm, filtering, and content density before the real portfolio lands.</p>
+            </div>
+          </div>
         </div>
       </section>
 
       <section class="section">
-        <div class="shell editorial-shell">
-          <article class="panel reveal">
-            <div class="eyebrow">Case Study Anatomy</div>
-            <h2 class="section-title">Each project should tell a full story.</h2>
+        <div class="shell">
+          <div class="section-header reveal">
+            <div>
+              <div class="eyebrow">Featured</div>
+              <h2 class="section-title">Three sample stories carrying the tone of the portfolio.</h2>
+            </div>
             <p class="section-copy">
-              The best layout for this site is one where portfolio cards promise more than visuals.
-              They should imply there is real thinking waiting underneath: what changed, what got
-              refined, and why the final version feels better than the first idea.
+              The visual language stays restrained, while the descriptions do the work of making
+              each project feel specific and worth opening.
             </p>
-            <ul class="feature-list">
-              <li>Context that explains what the project was trying to do.</li>
-              <li>Process notes that show the decisions, not just the deliverables.</li>
-              <li>Outcome framing that helps the work feel useful, not ornamental.</li>
-            </ul>
-          </article>
-          <article class="panel ink-panel reveal">
-            <div class="eyebrow">Portfolio Dial</div>
-            <div class="story-list">
-              <div class="story-item">
-                <strong>Games</strong>
-                <p>Atmosphere, systems, balance, readability, and experiential polish.</p>
+          </div>
+          <div class="work-grid">
+            <article class="card project-card reveal" data-category="game">
+              <div class="project-visual">
+                <div class="visual-stack">
+                  <div class="visual-pane">
+                    <div>
+                      <strong>Ashes of the Hollow</strong>
+                      <span>Atmosphere, systemic tension, and authored pacing.</span>
+                    </div>
+                    <span class="visual-token">Game</span>
+                  </div>
+                </div>
               </div>
-              <div class="story-item">
-                <strong>Apps</strong>
-                <p>Onboarding clarity, daily usability, trust, and product maturity.</p>
+              <div class="meta">
+                <span class="chip">Featured</span>
+                <span class="chip ink">Game Systems</span>
               </div>
-              <div class="story-item">
-                <strong>Labs</strong>
-                <p>Prototype work and experiments that still deserve a professional presentation layer.</p>
+              <h3>Ashes of the Hollow</h3>
+              <p>A narrative-forward filler case study used to test a more premium, more spacious presentation for game work.</p>
+              <footer><a class="text-link" href="projects/ashes-of-the-hollow.html">Open case study</a></footer>
+            </article>
+
+            <article class="card project-card reveal" data-category="app">
+              <div class="project-visual">
+                <div class="visual-stack">
+                  <div class="visual-pane">
+                    <div>
+                      <strong>Not Another Monday</strong>
+                      <span>Grounded UX, supportive product framing, and calmer user flow.</span>
+                    </div>
+                    <span class="visual-token">App</span>
+                  </div>
+                </div>
               </div>
-            </div>
-          </article>
+              <div class="meta">
+                <span class="chip">Mobile</span>
+                <span class="chip ink">Product Design</span>
+              </div>
+              <h3>Not Another Monday</h3>
+              <p>An app-focused placeholder showing how softer, more human product work can still feel sharp and structured.</p>
+              <footer><a class="text-link" href="projects/not-another-monday.html">Open case study</a></footer>
+            </article>
+
+            <article class="card project-card reveal" data-category="prototype game">
+              <div class="project-visual">
+                <div class="visual-stack">
+                  <div class="visual-pane">
+                    <div>
+                      <strong>HexShift</strong>
+                      <span>Fast iteration around a clean strategic core.</span>
+                    </div>
+                    <span class="visual-token">R&amp;D</span>
+                  </div>
+                </div>
+              </div>
+              <div class="meta">
+                <span class="chip">Prototype</span>
+                <span class="chip ink">Iteration</span>
+              </div>
+              <h3>HexShift</h3>
+              <p>A prototype page testing how experiments can look deliberate and premium instead of temporary or unfinished.</p>
+              <footer><a class="text-link" href="projects/hexshift.html">Open case study</a></footer>
+            </article>
+          </div>
         </div>
       </section>
 
       <section class="section">
-        <div class="shell work-grid">
-          <article class="card project-card reveal" data-category="game">
-            <div class="project-visual">
-              <div class="visual-stack">
-                <div class="visual-pane">
-                  <div>
-                    <strong>Ashes of the Hollow</strong>
-                    <span>Atmosphere, systemic tension, and authored pacing.</span>
+        <div class="shell">
+          <article class="panel quiet-panel reveal">
+            <div class="section-header">
+              <div>
+                <div class="eyebrow">Directory</div>
+                <h2 class="section-title">Additional projects can live in a cleaner archive format.</h2>
+              </div>
+              <p class="section-copy">
+                This keeps the page scalable. Featured projects get more space, while future work,
+                experiments, and coming-soon entries can sit in a simpler row-based layout.
+              </p>
+            </div>
+            <div class="directory-list">
+              <article class="directory-row" data-category="app">
+                <div>
+                  <h3>My Care Circle</h3>
+                  <div class="directory-meta">
+                    <span class="chip">Pipeline</span>
+                    <span class="chip ink">Healthcare UX</span>
                   </div>
-                  <span class="visual-token">Game</span>
                 </div>
-              </div>
-            </div>
-            <div class="meta">
-              <span class="chip">Featured</span>
-              <span class="chip ink">Game Systems</span>
-            </div>
-            <h3>Ashes of the Hollow</h3>
-            <p>A narrative-forward filler case study used to test how game work can feel weighty, specific, and worth reading.</p>
-            <footer><a class="text-link" href="projects/ashes-of-the-hollow.html">Open case study</a></footer>
-          </article>
+                <div class="directory-copy">
+                  <p>A future app case study placeholder testing how “coming soon” work can appear without making the page feel incomplete.</p>
+                </div>
+                <div class="directory-cta">
+                  <a class="text-link" href="contact.html">Request this story</a>
+                </div>
+              </article>
 
-          <article class="card project-card reveal" data-category="app">
-            <div class="project-visual">
-              <div class="visual-stack">
-                <div class="visual-pane">
-                  <div>
-                    <strong>Not Another Monday</strong>
-                    <span>Grounded UX, calm framing, and strong user guidance.</span>
+              <article class="directory-row" data-category="game prototype">
+                <div>
+                  <h3>Deadlock</h3>
+                  <div class="directory-meta">
+                    <span class="chip">Roadmap</span>
+                    <span class="chip ink">Design Engineering</span>
                   </div>
-                  <span class="visual-token">App</span>
                 </div>
-              </div>
-            </div>
-            <div class="meta">
-              <span class="chip">Mobile</span>
-              <span class="chip ink">Product Design</span>
-            </div>
-            <h3>Not Another Monday</h3>
-            <p>An app-focused page proving the portfolio can handle softer, human-centered product work without losing sharpness.</p>
-            <footer><a class="text-link" href="projects/not-another-monday.html">Open case study</a></footer>
-          </article>
+                <div class="directory-copy">
+                  <p>A scaffold for denser technical storytelling later, useful for testing how engineering-heavy work should read on the site.</p>
+                </div>
+                <div class="directory-cta">
+                  <a class="text-link" href="contact.html">Add this next</a>
+                </div>
+              </article>
 
-          <article class="card project-card reveal" data-category="prototype game prototype">
-            <div class="project-visual">
-              <div class="visual-stack">
-                <div class="visual-pane">
-                  <div>
-                    <strong>HexShift</strong>
-                    <span>Fast iteration around a clean strategic core.</span>
+              <article class="directory-row" data-category="prototype">
+                <div>
+                  <h3>Trade Wars</h3>
+                  <div class="directory-meta">
+                    <span class="chip">Lab</span>
+                    <span class="chip ink">Rapid Experiment</span>
                   </div>
-                  <span class="visual-token">R&amp;D</span>
                 </div>
-              </div>
-            </div>
-            <div class="meta">
-              <span class="chip">Prototype</span>
-              <span class="chip ink">Iteration</span>
-            </div>
-            <h3>HexShift</h3>
-            <p>A prototype page that tests how experimentation can still look polished and deliberate on the site.</p>
-            <footer><a class="text-link" href="projects/hexshift.html">Open case study</a></footer>
-          </article>
-
-          <article class="card project-card reveal" data-category="app">
-            <div class="project-visual">
-              <div class="visual-stack">
-                <div class="visual-pane">
-                  <div>
-                    <strong>My Care Circle</strong>
-                    <span>Support-focused direction with thoughtful UX scaffolding.</span>
-                  </div>
-                  <span class="visual-token">App</span>
+                <div class="directory-copy">
+                  <p>A placeholder R&amp;D entry that proves the archive can carry smaller experiments without breaking the premium tone.</p>
                 </div>
-              </div>
-            </div>
-            <div class="meta">
-              <span class="chip">Pipeline</span>
-              <span class="chip ink">Healthcare UX</span>
-            </div>
-            <h3>My Care Circle</h3>
-            <p>A future expansion point that lets us test how “coming soon” work should appear without looking unfinished.</p>
-            <footer><a class="text-link" href="contact.html">Request this case study</a></footer>
-          </article>
-
-          <article class="card project-card reveal" data-category="game prototype">
-            <div class="project-visual">
-              <div class="visual-stack">
-                <div class="visual-pane">
-                  <div>
-                    <strong>Deadlock</strong>
-                    <span>Systems-heavy development with room for technical storytelling.</span>
-                  </div>
-                  <span class="visual-token">Game</span>
+                <div class="directory-cta">
+                  <a class="text-link" href="contact.html">Shape the archive</a>
                 </div>
-              </div>
-            </div>
-            <div class="meta">
-              <span class="chip">Roadmap</span>
-              <span class="chip ink">Design Engineering</span>
-            </div>
-            <h3>Deadlock</h3>
-            <p>A scaffold for deeper technical writeups, letting the portfolio hold denser engineering-facing stories later.</p>
-            <footer><a class="text-link" href="contact.html">Add this project next</a></footer>
-          </article>
-
-          <article class="card project-card reveal" data-category="prototype">
-            <div class="project-visual">
-              <div class="visual-stack">
-                <div class="visual-pane">
-                  <div>
-                    <strong>Trade Wars</strong>
-                    <span>Rapid experiments with sharp framing and expandable documentation.</span>
-                  </div>
-                  <span class="visual-token">Lab</span>
-                </div>
-              </div>
-            </div>
-            <div class="meta">
-              <span class="chip">Experiment</span>
-              <span class="chip ink">Systems Lab</span>
-            </div>
-            <h3>Trade Wars</h3>
-            <p>Useful for proving the site can support lightweight R&amp;D entries alongside larger flagship projects.</p>
-            <footer><a class="text-link" href="journal.html">Support with dev writing</a></footer>
-          </article>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="shell archive-grid">
-          <article class="panel reveal">
-            <div class="eyebrow">Formats In The Pipeline</div>
-            <ul class="feature-list">
-              <li>Mini case studies for tools, prototypes, and support work.</li>
-              <li>Before-and-after pages focused on polish, UX, or production restructuring.</li>
-              <li>Linked journal entries that deepen the context around larger projects.</li>
-            </ul>
-          </article>
-          <article class="panel reveal">
-            <div class="eyebrow">What This Layout Is Proving</div>
-            <div class="story-list">
-              <div class="story-item">
-                <strong>Scalability</strong>
-                <p>The portfolio can grow without turning into a wall of identical cards.</p>
-              </div>
-              <div class="story-item">
-                <strong>Range</strong>
-                <p>Games, apps, prototypes, and internal tools can coexist under one visual system.</p>
-              </div>
-              <div class="story-item">
-                <strong>Depth</strong>
-                <p>There is enough copy space to support actual storytelling once the filler is replaced.</p>
-              </div>
+              </article>
             </div>
           </article>
         </div>
@@ -307,18 +248,17 @@
           <div class="panel ink-panel reveal">
             <div class="section-header">
               <div>
-                <div class="eyebrow">Next Layer</div>
-                <h2 class="section-title">Once the work layout feels right, the real project stories can drop straight in.</h2>
+                <div class="eyebrow">Next Step</div>
+                <h2 class="section-title">Once this hierarchy feels right, the real portfolio can replace the filler directly.</h2>
               </div>
               <p class="section-copy">
-                The portfolio is now being judged on hierarchy, density, and tone instead of
-                placeholder emptiness. That gives us a much better read on whether the structure is
-                worth keeping as the site grows.
+                The heavy lifting is now in the structure rather than the placeholder copy, which
+                means future project pages can be added without redesigning the work section again.
               </p>
             </div>
             <div class="hero-actions">
-              <a class="button" href="contact.html">Refine the Theme</a>
-              <a class="button-ghost" href="journal.html">Shape the Journal</a>
+              <a class="button" href="contact.html">Refine the next projects</a>
+              <a class="button-ghost" href="services.html">Review the service pages</a>
             </div>
           </div>
         </div>
@@ -336,7 +276,7 @@
                 <em>Development</em>
               </span>
             </div>
-            <p>Case-study presentation for games, apps, and digital product work.</p>
+            <p>Portfolio pages built to feel calm, credible, and expandable.</p>
           </div>
           <div>
             <h3>Explore</h3>
@@ -347,24 +287,22 @@
             </ul>
           </div>
           <div>
-            <h3>Company</h3>
+            <h3>Connect</h3>
             <ul>
-              <li><a href="about.html">About</a></li>
               <li><a href="contact.html">Contact</a></li>
-              <li><a href="privacy.html">Privacy</a></li>
+              <li><a href="mailto:hello@seventhboar.com">hello@seventhboar.com</a></li>
             </ul>
           </div>
           <div>
-            <h3>Inquiry</h3>
+            <h3>Details</h3>
             <ul>
-              <li><a href="mailto:hello@seventhboar.com">hello@seventhboar.com</a></li>
-              <li><span class="muted">Remote studio availability</span></li>
+              <li><a href="privacy.html">Privacy</a></li>
             </ul>
           </div>
         </div>
         <div class="footer-bar">
           <span>&copy; <span data-year></span> Seventh Boar Development</span>
-          <span>Filter-ready portfolio grid for ongoing growth.</span>
+          <span>Featured stories plus a cleaner project directory.</span>
         </div>
       </div>
     </footer>

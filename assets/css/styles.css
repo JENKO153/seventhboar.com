@@ -757,6 +757,16 @@ main {
   margin-top: auto;
 }
 
+.featured-post-panel {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+}
+
+.featured-post-panel .meta {
+  margin-bottom: 0.25rem;
+}
+
 .overview-strip {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

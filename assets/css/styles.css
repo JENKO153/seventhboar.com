@@ -640,12 +640,19 @@ main {
 }
 
 .feature-list li,
-.checklist li,
-.meta-list li {
+.checklist li {
   display: flex;
   gap: 0.8rem;
   align-items: start;
   padding-top: 0.75rem;
+}
+
+.meta-list li {
+  display: grid;
+  grid-template-columns: 0.7rem minmax(7rem, 0.42fr) minmax(0, 1fr);
+  gap: 0.8rem;
+  align-items: start;
+  padding-top: 0.9rem;
 }
 
 .feature-list li::before,
@@ -1247,9 +1254,14 @@ main {
   letter-spacing: 0.05em;
 }
 
+.article-body h2:not(:first-child),
+.case-block h2:not(:first-child) {
+  margin-top: 2.45rem;
+}
+
 .article-body h3,
 .case-block h3 {
-  margin: 1.4rem 0 0.65rem;
+  margin: 1.9rem 0 0.75rem;
   font-family: var(--heading-font);
   font-size: 1.18rem;
   text-transform: uppercase;
@@ -1258,13 +1270,14 @@ main {
 
 .article-body p,
 .case-block p {
-  margin: 0 0 1rem;
+  margin: 0 0 1.25rem;
   color: var(--ink-soft);
   line-height: 1.78;
 }
 
 .article-body ul,
 .article-body ol {
+  margin-bottom: 1.45rem;
   padding-left: 1.2rem;
   color: var(--ink-soft);
   list-style: initial;
@@ -1306,6 +1319,14 @@ main {
   font-size: 1rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.meta-list strong {
+  padding-top: 0.02rem;
+}
+
+.meta-list span {
+  margin-top: 0;
 }
 
 .contact-grid {
@@ -1901,6 +1922,15 @@ textarea {
 
   .app-icon-frame--hero {
     width: min(100%, 11rem);
+  }
+
+  .meta-list li {
+    grid-template-columns: 0.7rem minmax(0, 1fr);
+    row-gap: 0.2rem;
+  }
+
+  .meta-list span {
+    grid-column: 2;
   }
 
   .footer-bar {

@@ -26,7 +26,11 @@ window.seventhBoarContent = {
       "summary": "A commissioned habit, health, and self-progress app for Chooky Chasing Life, designed to make daily consistency feel calm, achievable, and rewarding.",
       "badge": "Commissioned",
       "featured": true,
-      "date": "2026-07-13"
+      "date": "2026-07-13",
+      "icon": "assets/images/not-another-monday-icon.png",
+      "clientLogo": "assets/images/chooky-chasing-life.png",
+      "bannerLine": "Consistent action. Better you.",
+      "theme": "sage"
     }
   ],
   "posts": [

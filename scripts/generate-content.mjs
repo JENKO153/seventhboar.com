@@ -25,6 +25,15 @@ const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 const toPosixPath = (value) => value.split(path.sep).join("/");
 
+const resolveSitePath = (filePath, assetPath) => {
+  if (!assetPath) {
+    return "";
+  }
+
+  const resolvedPath = path.resolve(path.dirname(filePath), assetPath);
+  return toPosixPath(path.relative(siteRoot, resolvedPath));
+};
+
 const sortByDateDesc = (items) =>
   [...items].sort((left, right) => {
     const leftDate = Date.parse(left.date || "");
@@ -119,7 +128,11 @@ const buildProject = async (filePath) => {
       "Project summary coming soon.",
     badge: findMeta(html, "seventhboar:badge") || "Project",
     featured: parseBoolean(findMeta(html, "seventhboar:featured")),
-    date: findMeta(html, "seventhboar:date")
+    date: findMeta(html, "seventhboar:date"),
+    icon: resolveSitePath(filePath, findMeta(html, "seventhboar:icon")),
+    clientLogo: resolveSitePath(filePath, findMeta(html, "seventhboar:client-logo")),
+    bannerLine: findMeta(html, "seventhboar:banner-line"),
+    theme: findMeta(html, "seventhboar:theme") || "default"
   };
 };
 

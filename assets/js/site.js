@@ -46,8 +46,35 @@ const sortByDateDesc = (items) =>
     return rightDate - leftDate;
   });
 
-const projectCardMarkup = (project) => `
-  <article class="card project-card reveal" data-category="${(project.categories || []).join(" ")}">
+const escapeAttribute = (value = "") =>
+  String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+const projectVisualMarkup = (project) => {
+  if (project.icon) {
+    return `
+      <div class="project-visual project-visual--brand">
+        <div
+          class="project-banner project-banner--${project.theme || "default"}"
+          data-banner-title="${escapeAttribute(project.title)}"
+        >
+          <div class="project-banner__copy">
+            <span class="project-banner__eyebrow">${project.type}</span>
+            <strong>${project.title}</strong>
+            <span>${project.bannerLine || project.summary}</span>
+          </div>
+          <div class="app-icon-frame app-icon-frame--card">
+            <img src="${project.icon}" alt="${escapeAttribute(project.title)} app icon" />
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  return `
     <div class="project-visual">
       <div class="visual-stack">
         <div class="visual-pane">
@@ -59,6 +86,12 @@ const projectCardMarkup = (project) => `
         </div>
       </div>
     </div>
+  `;
+};
+
+const projectCardMarkup = (project) => `
+  <article class="card project-card reveal" data-category="${(project.categories || []).join(" ")}">
+    ${projectVisualMarkup(project)}
     <div class="meta">
       <span class="chip">${project.badge}</span>
       ${(project.tags || []).map((tag) => `<span class="chip ink">${tag}</span>`).join("")}

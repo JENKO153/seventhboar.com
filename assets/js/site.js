@@ -132,7 +132,9 @@ const renderContent = () => {
 
   const homeProjects = document.querySelector("[data-home-projects]");
   if (homeProjects) {
-    homeProjects.innerHTML = latestProjects.map(projectCardMarkup).join("");
+    homeProjects.innerHTML = latestProjects.length
+      ? latestProjects.map(projectCardMarkup).join("")
+      : `<p class="section-copy">Project pages will appear here as they are published.</p>`;
   }
 
   const homePosts = document.querySelector("[data-home-posts]");
@@ -142,12 +144,16 @@ const renderContent = () => {
 
   const featuredProjectsTarget = document.querySelector("[data-featured-projects]");
   if (featuredProjectsTarget) {
-    featuredProjectsTarget.innerHTML = featuredProjects.map(projectCardMarkup).join("");
+    featuredProjectsTarget.innerHTML = featuredProjects.length
+      ? featuredProjects.map(projectCardMarkup).join("")
+      : `<p class="section-copy">No featured project pages are live yet.</p>`;
   }
 
   const projectDirectoryTarget = document.querySelector("[data-project-directory]");
   if (projectDirectoryTarget) {
-    projectDirectoryTarget.innerHTML = archiveProjects.map(projectDirectoryMarkup).join("");
+    projectDirectoryTarget.innerHTML = archiveProjects.length
+      ? archiveProjects.map(projectDirectoryMarkup).join("")
+      : `<p class="section-copy">More project pages will be added here as the portfolio grows.</p>`;
   }
 
   const featuredPostTarget = document.querySelector("[data-featured-post]");

@@ -270,7 +270,7 @@ if (contactForm) {
       .filter(Boolean)
       .join("\n");
 
-    const mailto = `mailto:hello@seventhboar.com?subject=${encodeURIComponent(
+    const mailto = `mailto:Admin@seventhboar.com?subject=${encodeURIComponent(
       subject
     )}&body=${encodeURIComponent(body)}`;
 

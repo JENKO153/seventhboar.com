@@ -58,7 +58,7 @@ const projectVisualMarkup = (project) => {
     return `
       <div class="project-visual project-visual--brand">
         <div
-          class="project-banner project-banner--${project.theme || "default"}"
+          class="project-banner project-banner--card project-banner--${project.theme || "default"}"
           data-banner-title="${escapeAttribute(project.title)}"
         >
           <div class="project-banner__copy">

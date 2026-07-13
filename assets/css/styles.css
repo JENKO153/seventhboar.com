@@ -1119,8 +1119,11 @@ main {
 }
 
 .testimonial-meta span {
-  color: var(--maroon);
   font-weight: 800;
+}
+
+.testimonial-meta .rating-stars {
+  color: #c7962d;
 }
 
 .coming-soon-panel {

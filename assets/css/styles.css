@@ -43,6 +43,7 @@ img {
 a {
   color: inherit;
   text-decoration: none;
+  transition: color 160ms ease, opacity 160ms ease, background 160ms ease, border-color 160ms ease;
 }
 
 button,
@@ -92,6 +93,10 @@ button {
   min-width: 0;
 }
 
+a.brand:hover {
+  opacity: 0.7;
+}
+
 .brand img {
   width: 2.6rem;
   height: 2.6rem;
@@ -127,6 +132,12 @@ button {
   height: 2.6rem;
   border: 1px solid var(--line);
   color: var(--ink);
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.nav-toggle:hover {
+  background: var(--bg-soft);
+  border-color: var(--line-strong);
 }
 
 .nav-toggle svg {
@@ -142,19 +153,36 @@ button {
 }
 
 .site-nav a {
+  position: relative;
   padding: 0.5rem 0.75rem;
   color: var(--ink-soft);
   font-size: 0.94rem;
-  border-bottom: 2px solid transparent;
+}
+
+.site-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.28rem;
+  height: 2px;
+  background: var(--maroon);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 220ms ease;
 }
 
 .site-nav a:hover {
   color: var(--ink);
 }
 
+.site-nav a:hover::after,
+.site-nav a.is-current::after {
+  transform: scaleX(1);
+}
+
 .site-nav a.is-current {
   color: var(--ink);
-  border-bottom-color: var(--maroon);
 }
 
 main {
@@ -235,7 +263,8 @@ h3 {
   font-family: var(--ui-font);
   font-size: 0.98rem;
   font-weight: 600;
-  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease,
+    transform 200ms ease, box-shadow 200ms ease;
 }
 
 .button {
@@ -245,6 +274,8 @@ h3 {
 
 .button:hover {
   background: var(--maroon);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(20, 25, 30, 0.16);
 }
 
 .button-ghost {
@@ -254,6 +285,14 @@ h3 {
 
 .button-ghost:hover {
   border-color: var(--ink);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(20, 25, 30, 0.08);
+}
+
+.button:active,
+.button-ghost:active {
+  transform: translateY(0);
+  box-shadow: none;
 }
 
 .chip,
@@ -266,6 +305,8 @@ h3 {
   color: var(--ink-soft);
   font-family: var(--ui-font);
   font-size: 0.83rem;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease,
+    transform 180ms ease;
 }
 
 .chip.ink {
@@ -284,6 +325,7 @@ h3 {
   border-color: var(--ink);
   background: var(--ink);
   color: #fff;
+  transform: translateY(-1px);
 }
 
 .filter-row {
@@ -298,10 +340,21 @@ h3 {
   font-family: var(--ui-font);
   font-weight: 600;
   font-size: 0.95rem;
+  transition: color 160ms ease;
+}
+
+.text-link::after {
+  content: "\2192";
+  display: inline-block;
+  transition: transform 200ms ease;
 }
 
 .text-link:hover {
   color: var(--maroon-deep);
+}
+
+.text-link:hover::after {
+  transform: translateX(3px);
 }
 
 /* Hero */
@@ -321,8 +374,7 @@ h3 {
 .hero-panel,
 .panel,
 .card,
-.form-shell,
-.footer-panel {
+.form-shell {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
@@ -500,6 +552,14 @@ h3 {
   display: flex;
   flex-direction: column;
   gap: 0.95rem;
+  transition: border-color 220ms ease, transform 220ms ease, box-shadow 220ms ease;
+}
+
+.project-card:hover,
+.article-card:hover {
+  border-color: var(--maroon);
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px rgba(20, 25, 30, 0.08);
 }
 
 .project-card footer,
@@ -580,11 +640,16 @@ h3 {
   padding: 1.15rem 1rem;
   margin: 0 -1rem;
   border-top: 1px solid var(--line);
-  transition: background 160ms ease;
+  transition: background 200ms ease, padding-left 200ms ease;
 }
 
 .directory-row:hover {
   background: var(--bg-soft);
+  padding-left: 1.35rem;
+}
+
+.directory-row .text-link {
+  transition: color 160ms ease, transform 200ms ease;
 }
 
 .directory-row:first-child {
@@ -1060,6 +1125,7 @@ textarea {
   border-radius: var(--radius-sm);
   background: var(--surface);
   color: var(--ink);
+  transition: border-color 160ms ease, outline-color 160ms ease;
 }
 
 input:focus,
@@ -1202,8 +1268,16 @@ textarea {
 
   .site-nav a {
     padding: 0.65rem 0.75rem;
-    border-bottom: 0;
     border-left: 2px solid transparent;
+    transition: border-color 160ms ease, background 160ms ease;
+  }
+
+  .site-nav a::after {
+    display: none;
+  }
+
+  .site-nav a:hover {
+    background: var(--bg-soft);
   }
 
   .site-nav a.is-current {

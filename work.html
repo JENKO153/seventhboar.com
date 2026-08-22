@@ -47,12 +47,6 @@
               A focused look at the apps, games, and digital products built or developed through
               Seventh Boar Development.
             </p>
-            <div class="filter-row">
-              <button class="filter-pill is-active" type="button" data-filter-button="all">All work</button>
-              <button class="filter-pill" type="button" data-filter-button="game">Games</button>
-              <button class="filter-pill" type="button" data-filter-button="app">Apps</button>
-              <button class="filter-pill" type="button" data-filter-button="prototype">Prototypes</button>
-            </div>
           </div>
           <aside class="panel ink-panel reveal">
             <div class="eyebrow">Focus</div>
@@ -88,9 +82,9 @@
               <p>Original concepts built around feel, replay value, and memorable player moments.</p>
             </div>
             <div class="overview-item">
-              <span class="overview-label">Web</span>
-              <strong>Company presence</strong>
-              <p>Digital spaces that present brands, projects, and products with restraint and confidence.</p>
+              <span class="overview-label">Prototypes</span>
+              <strong>Early experiments</strong>
+              <p>Work-in-progress builds and ideas being tested before a full release.</p>
             </div>
           </div>
         </div>
@@ -100,31 +94,22 @@
         <div class="shell">
           <div class="section-header reveal">
             <div>
-              <div class="eyebrow">Featured Projects</div>
-              <h2 class="section-title">Current highlights from the portfolio.</h2>
+              <div class="eyebrow">Portfolio</div>
+              <h2 class="section-title">Apps, games, and digital products.</h2>
             </div>
             <p class="section-copy">
               Selected work with more context, stronger visuals, and a clearer look at the thinking behind each build.
             </p>
           </div>
-          <div class="work-grid" data-featured-projects></div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="shell">
-          <article class="panel quiet-panel reveal">
-            <div class="section-header">
-              <div>
-                <div class="eyebrow">More Work</div>
-                <h2 class="section-title">More work.</h2>
-              </div>
-              <p class="section-copy">
-                Current projects, completed builds, and future releases from Seventh Boar Development.
-              </p>
-            </div>
-            <div class="directory-list" data-project-directory></div>
-          </article>
+          <div class="filter-row" id="filterTags">
+            <button class="filter-pill is-active" type="button" data-category="all">All work</button>
+            <button class="filter-pill" type="button" data-category="game">Games</button>
+            <button class="filter-pill" type="button" data-category="app">Apps</button>
+            <button class="filter-pill" type="button" data-category="prototype">Prototypes</button>
+          </div>
+          <div class="work-grid" id="projectsGrid" style="margin-top: 1.5rem">
+            <p class="section-copy">Loading projects...</p>
+          </div>
         </div>
       </section>
     </main>
@@ -173,7 +158,10 @@
       </div>
     </footer>
 
-    <script src="assets/js/content.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/cms.js"></script>
+    <script src="assets/js/reveal.js"></script>
+    <script src="assets/js/work-list.js"></script>
     <script src="assets/js/site.js"></script>
   </body>
 </html>

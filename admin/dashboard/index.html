@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Studio Dashboard | Seventh Boar Development</title>
+    <link rel="icon" type="image/png" href="../../assets/images/seventh-boar-mark.png" />
+    <link rel="stylesheet" href="../../assets/css/styles.css" />
+  </head>
+  <body class="site-frame">
+    <header class="site-header">
+      <div class="shell nav-shell">
+        <a class="brand" href="/" aria-label="Seventh Boar Development home">
+          <img src="../../assets/images/seventh-boar-mark.png" alt="" />
+          <span>
+            <strong>Seventh Boar</strong>
+            <em>Development</em>
+          </span>
+        </a>
+        <nav class="site-nav">
+          <a href="/">View Site</a>
+          <button class="button-ghost" id="logoutBtn" type="button">Log Out</button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="section" style="padding-bottom: 0">
+        <div class="shell">
+          <div class="welcome-banner">Welcome back — let's get something published.</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="shell">
+          <div class="type-toggle" role="tablist" aria-label="Content type">
+            <button type="button" class="type-toggle-option is-active" data-type="journal">Journal Post</button>
+            <button type="button" class="type-toggle-option" data-type="project">Project</button>
+          </div>
+
+          <div class="dashboard">
+            <div class="dashboard-panel">
+              <div class="dashboard-header">
+                <h2 class="mini-title" id="formTitle">Write a Journal Post</h2>
+              </div>
+
+              <div class="form-success" id="formSuccess"></div>
+              <div class="form-success" id="draftRestored" style="background: var(--bg-soft); color: var(--ink)">
+                Draft restored from your last session.
+                <button type="button" id="discardDraftBtn" class="icon-btn" style="text-decoration: underline">Discard it</button>
+              </div>
+
+              <!-- ---------- Journal form ---------- -->
+              <form id="journalForm">
+                <div class="form-group">
+                  <label for="jTitle">Title</label>
+                  <input type="text" id="jTitle" required placeholder="e.g. Building Not Another Monday" />
+                </div>
+                <div class="form-group">
+                  <label for="jCategory">Category</label>
+                  <input type="text" id="jCategory" required placeholder="e.g. Studio Journal, Commissioned Work" />
+                </div>
+                <div class="form-group">
+                  <label for="jImage">Cover Image</label>
+                  <input type="file" id="jImage" accept="image/*" />
+                  <img id="jImagePreview" class="image-preview" alt="" />
+                </div>
+                <div class="form-group">
+                  <label for="jExcerpt">Short Excerpt</label>
+                  <input type="text" id="jExcerpt" required maxlength="200" placeholder="One or two sentences shown on post cards" />
+                </div>
+                <div class="form-group">
+                  <label>Post Content</label>
+                  <p class="form-hint">Build the post block by block — titles and subtitles break up the story, paragraphs come in three sizes.</p>
+                  <div id="journalBlocks"></div>
+                  <button type="button" id="jAddBlockBtn" class="button-ghost">+ Add Block</button>
+                </div>
+                <div class="form-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="jScheduleToggle" />
+                    Schedule this for later
+                  </label>
+                  <div class="schedule-panel" id="jSchedulePanel">
+                    <label for="jPublishAt">Publish Date &amp; Time</label>
+                    <input type="datetime-local" id="jPublishAt" />
+                  </div>
+                </div>
+                <button type="submit" class="button" id="jSubmitBtn" style="width: 100%">Publish Post</button>
+              </form>
+
+              <!-- ---------- Project form ---------- -->
+              <form id="projectForm" style="display: none">
+                <div class="form-group">
+                  <label for="pTitle">Title</label>
+                  <input type="text" id="pTitle" required placeholder="e.g. Not Another Monday" />
+                </div>
+                <div class="form-group">
+                  <label>Type</label>
+                  <div class="field-row">
+                    <label class="checkbox-label"><input type="checkbox" value="game" class="pCategory" /> Game</label>
+                    <label class="checkbox-label"><input type="checkbox" value="app" class="pCategory" /> App</label>
+                    <label class="checkbox-label"><input type="checkbox" value="prototype" class="pCategory" /> Prototype</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="pPlatforms">Tags</label>
+                  <input type="text" id="pPlatforms" placeholder="iOS + Android, Wellness UX, Cross-Platform" />
+                  <p class="form-hint">Comma-separated — shown as small tags on the project.</p>
+                </div>
+                <div class="form-group">
+                  <label for="pClient">Client (optional)</label>
+                  <input type="text" id="pClient" placeholder="Leave blank for an owned/internal project" />
+                </div>
+                <div class="form-group">
+                  <label for="pTagline">Tagline</label>
+                  <input type="text" id="pTagline" required maxlength="120" placeholder="e.g. Consistent action. Better you." />
+                </div>
+                <div class="form-group">
+                  <label for="pBanner">Cover / Banner Photo</label>
+                  <input type="file" id="pBanner" accept="image/*" />
+                  <img id="pBannerPreview" class="image-preview" alt="" />
+                </div>
+                <div class="form-group">
+                  <label for="pIcon">Icon (optional)</label>
+                  <input type="file" id="pIcon" accept="image/*" />
+                  <img id="pIconPreview" class="image-preview" alt="" style="max-height: 6rem; max-width: 6rem" />
+                </div>
+                <div class="form-group">
+                  <label>The Brief</label>
+                  <p class="form-hint">A photo and a short write-up of what it is — build it block by block same as a post.</p>
+                  <div id="projectBlocks"></div>
+                  <button type="button" id="pAddBlockBtn" class="button-ghost">+ Add Block</button>
+                </div>
+                <div class="form-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="pFeatured" />
+                    Feature on homepage &amp; Work page
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="pScheduleToggle" />
+                    Schedule this for later
+                  </label>
+                  <div class="schedule-panel" id="pSchedulePanel">
+                    <label for="pPublishAt">Publish Date &amp; Time</label>
+                    <input type="datetime-local" id="pPublishAt" />
+                  </div>
+                </div>
+                <button type="submit" class="button" id="pSubmitBtn" style="width: 100%">Publish Project</button>
+              </form>
+            </div>
+
+            <div class="dashboard-panel preview-panel">
+              <div class="dashboard-header">
+                <h2 class="mini-title"><span class="live-dot"></span>Live Preview</h2>
+              </div>
+              <div class="preview-frame">
+                <div class="preview-chrome">
+                  <span class="preview-dot"></span><span class="preview-dot"></span><span class="preview-dot"></span>
+                  <span class="preview-url" id="previewUrl">seventhboar.com/journal/post.html</span>
+                </div>
+                <div class="preview-scroll">
+                  <div class="preview-content" id="previewContent"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="shell">
+          <div class="dashboard-panel">
+            <div class="dashboard-header">
+              <h2 class="mini-title">Published Journal Posts</h2>
+            </div>
+            <div id="journalList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="shell">
+          <div class="dashboard-panel">
+            <div class="dashboard-header">
+              <h2 class="mini-title">Published Projects</h2>
+            </div>
+            <div id="projectList"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="modal-overlay" id="confirmModal" style="display: none">
+      <div class="modal-card">
+        <h3>Confirm It's You</h3>
+        <p class="lead" id="confirmMessage">Enter your password to continue.</p>
+        <div class="form-error" id="confirmError">Incorrect password. Try again.</div>
+        <div class="form-group">
+          <label for="confirmPassword">Password</label>
+          <input type="password" id="confirmPassword" autocomplete="current-password" />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="button-ghost" id="confirmCancelBtn">Cancel</button>
+          <button type="button" class="button" id="confirmSubmitBtn">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../assets/js/cms.js"></script>
+    <script src="../../assets/js/admin-dashboard.js"></script>
+  </body>
+</html>

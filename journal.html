@@ -44,23 +44,24 @@
             <div class="eyebrow">Journal</div>
             <h1>Blog posts, development notes, and company writing.</h1>
             <p class="page-lead">
-              Build notes, lessons, and reflections from inside Seventh Boar Development.
+              Build notes, lessons, and reflections from inside Seventh Boar Development — for
+              anyone following the studio's work.
             </p>
           </div>
           <aside class="panel ink-panel reveal">
-            <div class="eyebrow">Current Focus</div>
+            <div class="eyebrow">What's Here</div>
             <div class="story-list">
               <div class="story-item">
-                <strong>Not Another Monday</strong>
-                <p>The first commissioned app project for Seventh Boar Development.</p>
+                <strong>Behind the builds</strong>
+                <p>What actually went into shipping a feature, an app, or a release.</p>
               </div>
               <div class="story-item">
-                <strong>Product polish</strong>
-                <p>Calm interfaces, practical features, responsive layouts, and cross-platform release work.</p>
+                <strong>Lessons learned</strong>
+                <p>The decisions, mistakes, and trade-offs that shaped the work.</p>
               </div>
               <div class="story-item">
-                <strong>Studio growth</strong>
-                <p>Lessons from turning independent ideas and commissioned builds into finished products.</p>
+                <strong>Studio updates</strong>
+                <p>What Seventh Boar Development is building next.</p>
               </div>
             </div>
           </aside>
@@ -69,63 +70,20 @@
 
       <section class="section">
         <div class="shell">
-          <div class="overview-strip reveal">
-            <div class="overview-item">
-              <span class="overview-label">First commission</span>
-              <strong>Not Another Monday</strong>
-              <p>A habit, health, and self-progress app built for Chooky Chasing Life.</p>
-            </div>
-            <div class="overview-item">
-              <span class="overview-label">Cross-platform</span>
-              <strong>iOS and Android</strong>
-              <p>Flutter development with onboarding, sign-in, sync, streaks, journaling, and progress tracking.</p>
-            </div>
-            <div class="overview-item">
-              <span class="overview-label">Product standard</span>
-              <strong>Calm and premium</strong>
-              <p>Simple daily actions, generous spacing, clear progress, and a supportive visual tone.</p>
-            </div>
+          <div class="filter-row" id="filterTags">
+            <button class="filter-pill is-active" type="button" data-category="all">All posts</button>
+          </div>
+          <div style="margin-top: 1rem">
+            <input type="search" id="searchInput" placeholder="Search posts..." style="max-width: 22rem" />
           </div>
         </div>
       </section>
 
       <section class="section">
-        <div class="shell detail-grid">
-          <article class="panel featured-post-panel reveal" data-featured-post></article>
-          <article class="panel quiet-panel reveal">
-            <div class="eyebrow">Inside The Work</div>
-            <ul class="utility-list">
-              <li>
-                <strong>Client</strong>
-                <p>Chooky Chasing Life supplied the brand direction and commissioned the app build.</p>
-              </li>
-              <li>
-                <strong>Product</strong>
-                <p>Habit tracking, water intake, fasting, steps, body progress, journaling, and reflection in one app.</p>
-              </li>
-              <li>
-                <strong>Lesson</strong>
-                <p>True simplicity took more design restraint, testing, and technical discipline than adding more features.</p>
-              </li>
-            </ul>
-          </article>
-        </div>
-      </section>
-
-      <section class="section">
         <div class="shell">
-          <article class="panel quiet-panel reveal">
-            <div class="section-header">
-              <div>
-                <div class="eyebrow">All Posts</div>
-                <h2 class="section-title">Recent posts from the journal.</h2>
-              </div>
-              <p class="section-copy">
-                Notes, updates, and essays from Seventh Boar Development.
-              </p>
-            </div>
-            <div class="directory-list" data-post-archive></div>
-          </article>
+          <div class="article-grid" id="postsGrid">
+            <p class="section-copy">Loading posts...</p>
+          </div>
         </div>
       </section>
     </main>
@@ -142,13 +100,6 @@
               </span>
             </div>
             <p>Development posts, updates, and studio writing from Seventh Boar Development.</p>
-          </div>
-          <div>
-            <h3>Read</h3>
-            <ul>
-              <li><a href="journal/building-not-another-monday.html">Latest article</a></li>
-              <li><a href="projects/not-another-monday.html">Not Another Monday</a></li>
-            </ul>
           </div>
           <div>
             <h3>Explore</h3>
@@ -180,7 +131,10 @@
       </div>
     </footer>
 
-    <script src="assets/js/content.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/cms.js"></script>
+    <script src="assets/js/reveal.js"></script>
+    <script src="assets/js/journal-list.js"></script>
     <script src="assets/js/site.js"></script>
   </body>
 </html>

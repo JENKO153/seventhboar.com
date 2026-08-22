@@ -1,0 +1,119 @@
+/* Single journal post page: reads ?id= from the URL and renders the post. */
+(function () {
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : str;
+    return div.innerHTML;
+  }
+
+  function formatDate(dateStr) {
+    return new Date(dateStr).toLocaleDateString('en-AU', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  function normalizeBlock(block) {
+    if (typeof block === 'string') return { style: 'paragraph', text: block };
+    return { style: block.style || 'paragraph', text: block.text || '' };
+  }
+
+  function renderBlock(block) {
+    const text = escapeHtml(block.text);
+    switch (block.style) {
+      case 'title': return `<h2>${text}</h2>`;
+      case 'subtitle': return `<h3>${text}</h3>`;
+      case 'paragraph-lg': return `<p style="font-size:1.15rem;">${text}</p>`;
+      case 'paragraph-sm': return `<p style="font-size:0.92rem;color:var(--ink-soft);">${text}</p>`;
+      default: return `<p>${text}</p>`;
+    }
+  }
+
+  function estimateReadingMinutes(blocks) {
+    const wordCount = blocks.reduce((total, b) => total + b.text.split(/\s+/).filter(Boolean).length, 0);
+    return Math.max(1, Math.round(wordCount / 200));
+  }
+
+  function renderNotFound() {
+    document.getElementById('postContainer').innerHTML = `
+      <section class="page-hero">
+        <div class="shell">
+          <div class="hero-copy">
+            <div class="eyebrow">Journal</div>
+            <h1>Post not found.</h1>
+            <p class="page-lead">This post may have been removed, unpublished, or the link is incorrect.</p>
+            <div class="hero-actions"><a class="button" href="/journal.html">Back to the Journal</a></div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderPost(post) {
+    document.getElementById('pageTitle').textContent = `${post.title} | Seventh Boar Development`;
+
+    const blocks = (post.content || []).map(normalizeBlock).filter((b) => b.text.trim() !== '');
+    const bodyHtml = blocks.map(renderBlock).join('');
+    const readingMinutes = estimateReadingMinutes(blocks);
+
+    document.getElementById('postContainer').innerHTML = `
+      <section class="article-hero">
+        <div class="shell">
+          <div class="hero-copy reveal">
+            <div class="eyebrow">${escapeHtml(post.category)}</div>
+            <h1>${escapeHtml(post.title)}</h1>
+            <p class="article-lead">${formatDate(post.date)} &middot; by ${escapeHtml(post.author)} &middot; ${readingMinutes} min read</p>
+          </div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="shell">
+          <img src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" style="width:100%;max-height:26rem;object-fit:cover;border:1px solid var(--line);margin-bottom:2rem;" />
+          <div class="article-layout">
+            <article class="panel article-body reveal">${bodyHtml}</article>
+            <aside class="article-side">
+              <div class="panel reveal">
+                <h2 class="mini-title">Back to the Journal</h2>
+                <p>More studio notes, project decisions, and behind-the-build writing.</p>
+                <a class="text-link" href="/journal.html">All posts</a>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+    `;
+    window.ScrollReveal.scan(document.getElementById('postContainer'));
+  }
+
+  function renderRelated(post, allPosts) {
+    const related = allPosts.filter((p) => p.id !== post.id && p.category === post.category).slice(0, 3);
+    if (related.length === 0) return;
+
+    document.getElementById('relatedSection').style.display = '';
+    const grid = document.getElementById('relatedPosts');
+    grid.innerHTML = related.map((p) => `
+      <article class="card article-card reveal">
+        <div class="meta">
+          <span class="chip">Journal</span>
+          <span class="chip ink">${escapeHtml(p.category)}</span>
+        </div>
+        <h3>${escapeHtml(p.title)}</h3>
+        <p>${escapeHtml(p.excerpt)}</p>
+        <footer><a class="text-link" href="/journal/post.html?id=${encodeURIComponent(p.id)}">Read post</a></footer>
+      </article>
+    `).join('');
+    window.ScrollReveal.scan(grid);
+  }
+
+  (async function init() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const post = id ? await JournalData.getPostById(id) : null;
+
+    if (!post) {
+      renderNotFound();
+      return;
+    }
+
+    renderPost(post);
+    const allPosts = await JournalData.getPosts();
+    renderRelated(post, allPosts);
+  })();
+})();

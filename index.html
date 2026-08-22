@@ -174,7 +174,9 @@
               Apps, games, and digital products shaped with care, restraint, and a clear sense of purpose.
             </p>
           </div>
-          <div class="work-grid" data-home-projects></div>
+          <div class="work-grid" id="homeProjects">
+            <p class="section-copy">Loading projects...</p>
+          </div>
         </div>
       </section>
 
@@ -216,7 +218,9 @@
               Recent notes on project progress, product decisions, lessons learned, and studio growth.
             </p>
           </div>
-          <div class="article-grid" data-home-posts></div>
+          <div class="article-grid" id="homePosts">
+            <p class="section-copy">Loading posts...</p>
+          </div>
         </div>
       </section>
 
@@ -286,7 +290,10 @@
       </div>
     </footer>
 
-    <script src="assets/js/content.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/cms.js"></script>
+    <script src="assets/js/reveal.js"></script>
+    <script src="assets/js/home-latest.js"></script>
     <script src="assets/js/site.js"></script>
   </body>
 </html>

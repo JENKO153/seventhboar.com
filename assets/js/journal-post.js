@@ -10,6 +10,10 @@
     return new Date(dateStr).toLocaleDateString('en-AU', { year: 'numeric', month: 'short', day: 'numeric' });
   }
 
+  function focalStyle(x, y) {
+    return `object-position:${x == null ? 50 : x}% ${y == null ? 50 : y}%`;
+  }
+
   function normalizeBlock(block) {
     if (typeof block === 'string') return { style: 'paragraph', text: block };
     return { style: block.style || 'paragraph', text: block.text || '', image: block.image || '' };
@@ -98,16 +102,7 @@
       <section class="section">
         <div class="shell">
           <img class="post-hero-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" />
-          <div class="article-layout">
-            <article class="panel article-body reveal">${bodyHtml}</article>
-            <aside class="article-side">
-              <div class="panel reveal">
-                <h2 class="mini-title">Back to the Devlog</h2>
-                <p>More studio notes, project decisions, and behind-the-build writing.</p>
-                <a class="text-link" href="/devlog/">All entries</a>
-              </div>
-            </aside>
-          </div>
+          <article class="panel article-body article-body--full reveal">${bodyHtml}</article>
         </div>
       </section>
     `;
@@ -122,7 +117,7 @@
     const grid = document.getElementById('relatedPosts');
     grid.innerHTML = related.map((p) => `
       <a class="card article-card reveal" href="/post/?id=${encodeURIComponent(p.id)}">
-        <img class="card-media" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" />
+        <img class="card-media" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" style="${focalStyle(p.imageFocalX, p.imageFocalY)}" />
         <div class="card-body">
           <div class="meta">
             <span class="chip">Devlog</span>

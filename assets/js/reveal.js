@@ -13,12 +13,22 @@ window.ScrollReveal = (function () {
   }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
 
   function reveal(el) {
-    el.classList.add('is-visible');
     if (observer) observer.unobserve(el);
     if (el.__revealFallback) {
       clearTimeout(el.__revealFallback);
       el.__revealFallback = null;
     }
+    // If the element already satisfies the intersection threshold the
+    // instant observe() starts watching it (very common on short mobile
+    // viewports), the class can flip before the browser ever paints the
+    // hidden starting state — the fade/slide then has nothing to animate
+    // from and just snaps straight to visible. Deferring a frame guarantees
+    // that first paint happens first, so the transition always plays.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        el.classList.add('is-visible');
+      });
+    });
   }
 
   function observe(el) {

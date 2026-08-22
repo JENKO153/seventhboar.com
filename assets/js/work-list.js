@@ -12,10 +12,14 @@
     return div.innerHTML;
   }
 
+  function focalStyle(x, y) {
+    return `object-position:${x == null ? 50 : x}% ${y == null ? 50 : y}%`;
+  }
+
   function projectCardMarkup(project) {
     return `
       <a class="card project-card reveal" href="/project/?id=${encodeURIComponent(project.id)}">
-        <img class="card-media" src="${escapeHtml(project.banner)}" alt="${escapeHtml(project.title)}" />
+        <img class="card-media" src="${escapeHtml(project.banner)}" alt="${escapeHtml(project.title)}" style="${focalStyle(project.bannerFocalX, project.bannerFocalY)}" />
         <div class="card-body">
           <div class="meta">
             ${(project.categories || []).map((cat) => `<span class="chip">${escapeHtml(cat)}</span>`).join('')}

@@ -47,6 +47,8 @@
       category: row.category,
       excerpt: row.excerpt,
       image: row.image_url,
+      imageFocalX: row.image_focal_x == null ? 50 : row.image_focal_x,
+      imageFocalY: row.image_focal_y == null ? 50 : row.image_focal_y,
       date: row.published_at,
       author: row.author,
       content: row.content
@@ -85,6 +87,8 @@
       category: post.category,
       excerpt: post.excerpt,
       image_url: post.image,
+      image_focal_x: post.imageFocalX == null ? 50 : post.imageFocalX,
+      image_focal_y: post.imageFocalY == null ? 50 : post.imageFocalY,
       content: post.content,
       author: post.author || 'Seventh Boar',
       published_at: post.publishAt || new Date().toISOString()
@@ -100,6 +104,8 @@
       category: post.category,
       excerpt: post.excerpt,
       image_url: post.image,
+      image_focal_x: post.imageFocalX == null ? 50 : post.imageFocalX,
+      image_focal_y: post.imageFocalY == null ? 50 : post.imageFocalY,
       content: post.content,
       published_at: post.publishAt || new Date().toISOString()
     };
@@ -124,6 +130,8 @@
       tagline: row.tagline,
       icon: row.icon_url,
       banner: row.banner_url,
+      bannerFocalX: row.banner_focal_x == null ? 50 : row.banner_focal_x,
+      bannerFocalY: row.banner_focal_y == null ? 50 : row.banner_focal_y,
       brief: row.brief,
       featured: row.featured,
       date: row.published_at,
@@ -167,6 +175,8 @@
       tagline: project.tagline,
       icon_url: project.icon || null,
       banner_url: project.banner,
+      banner_focal_x: project.bannerFocalX == null ? 50 : project.bannerFocalX,
+      banner_focal_y: project.bannerFocalY == null ? 50 : project.bannerFocalY,
       brief: project.brief,
       featured: !!project.featured,
       published_at: project.publishAt || new Date().toISOString(),
@@ -187,6 +197,8 @@
       tagline: project.tagline,
       icon_url: project.icon || null,
       banner_url: project.banner,
+      banner_focal_x: project.bannerFocalX == null ? 50 : project.bannerFocalX,
+      banner_focal_y: project.bannerFocalY == null ? 50 : project.bannerFocalY,
       brief: project.brief,
       featured: !!project.featured,
       published_at: project.publishAt || new Date().toISOString(),

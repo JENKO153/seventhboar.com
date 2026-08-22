@@ -72,7 +72,19 @@
                 <div class="form-group">
                   <label for="jImage">Cover Image</label>
                   <input type="file" id="jImage" accept="image/*" />
-                  <img id="jImagePreview" class="image-preview" alt="" />
+                  <p class="form-hint">Click or drag on the image to set what stays in frame when it's cropped for cards.</p>
+                  <div class="focal-editor" id="jImageFocalEditor">
+                    <div class="focal-frame" id="jImageFocalFrame">
+                      <img id="jImagePreview" alt="" />
+                      <div class="focal-marker" id="jImageFocalMarker"></div>
+                    </div>
+                    <div class="focal-card-preview">
+                      <span class="focal-card-preview-label">Card preview</span>
+                      <div class="focal-card-preview-box">
+                        <img id="jImageCardPreview" class="card-media" alt="" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label for="jExcerpt">Short Excerpt</label>
@@ -127,7 +139,19 @@
                 <div class="form-group">
                   <label for="pBanner">Cover / Banner Photo</label>
                   <input type="file" id="pBanner" accept="image/*" />
-                  <img id="pBannerPreview" class="image-preview" alt="" />
+                  <p class="form-hint">Click or drag on the image to set what stays in frame when it's cropped for cards.</p>
+                  <div class="focal-editor" id="pBannerFocalEditor">
+                    <div class="focal-frame" id="pBannerFocalFrame">
+                      <img id="pBannerPreview" alt="" />
+                      <div class="focal-marker" id="pBannerFocalMarker"></div>
+                    </div>
+                    <div class="focal-card-preview">
+                      <span class="focal-card-preview-label">Card preview</span>
+                      <div class="focal-card-preview-box">
+                        <img id="pBannerCardPreview" class="card-media" alt="" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label for="pIcon">Icon (optional)</label>

@@ -24,10 +24,14 @@
     return new Date(dateStr).toLocaleDateString('en-AU', { year: 'numeric', month: 'short', day: 'numeric' });
   }
 
+  function focalStyle(x, y) {
+    return `object-position:${x == null ? 50 : x}% ${y == null ? 50 : y}%`;
+  }
+
   function projectCardMarkup(project) {
     return `
       <a class="card project-card reveal" href="/project/?id=${encodeURIComponent(project.id)}">
-        <img class="card-media" src="${escapeHtml(project.banner)}" alt="${escapeHtml(project.title)}" />
+        <img class="card-media" src="${escapeHtml(project.banner)}" alt="${escapeHtml(project.title)}" style="${focalStyle(project.bannerFocalX, project.bannerFocalY)}" />
         <div class="card-body">
           <div class="meta">
             ${(project.platforms || []).map((tag) => `<span class="chip ink">${escapeHtml(tag)}</span>`).join('')}
@@ -43,7 +47,7 @@
   function postCardMarkup(post) {
     return `
       <a class="card article-card reveal" href="/post/?id=${encodeURIComponent(post.id)}">
-        <img class="card-media" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" />
+        <img class="card-media" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" style="${focalStyle(post.imageFocalX, post.imageFocalY)}" />
         <div class="card-body">
           <div class="meta">
             <span class="chip">Devlog</span>

@@ -481,8 +481,82 @@
     });
   }
 
-  wireImageInput('jImage', 'jImagePreview', (v) => { journalImageDataUrl = v; });
-  wireImageInput('pBanner', 'pBannerPreview', (v) => { projectBannerDataUrl = v; });
+  // ---------- Focal-point picker (cover/banner image "card preview" crop) ----------
+  // Click or drag on the full image to choose what stays in frame when a
+  // fixed-aspect card (.card-media) crops it with object-fit: cover.
+  function makeFocalPicker({ frameImgId, editorId, frameId, markerId, cardPreviewId, onChange }) {
+    const frameImg = document.getElementById(frameImgId);
+    const editor = document.getElementById(editorId);
+    const frame = document.getElementById(frameId);
+    const marker = document.getElementById(markerId);
+    const cardPreview = document.getElementById(cardPreviewId);
+    let focal = { x: 50, y: 50 };
+
+    function apply() {
+      marker.style.left = focal.x + '%';
+      marker.style.top = focal.y + '%';
+      cardPreview.style.objectPosition = `${focal.x}% ${focal.y}%`;
+    }
+
+    function setFromEvent(e) {
+      const rect = frameImg.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const point = e.touches ? e.touches[0] : e;
+      const x = Math.max(0, Math.min(100, ((point.clientX - rect.left) / rect.width) * 100));
+      const y = Math.max(0, Math.min(100, ((point.clientY - rect.top) / rect.height) * 100));
+      focal = { x, y };
+      apply();
+      onChange();
+    }
+
+    let dragging = false;
+    frame.addEventListener('mousedown', (e) => { dragging = true; setFromEvent(e); });
+    window.addEventListener('mousemove', (e) => { if (dragging) setFromEvent(e); });
+    window.addEventListener('mouseup', () => { dragging = false; });
+    frame.addEventListener('touchstart', (e) => { dragging = true; setFromEvent(e); }, { passive: true });
+    frame.addEventListener('touchmove', (e) => { if (dragging) setFromEvent(e); }, { passive: true });
+    frame.addEventListener('touchend', () => { dragging = false; });
+
+    function show(dataUrl) {
+      editor.classList.add('show');
+      cardPreview.src = dataUrl;
+      focal = { x: 50, y: 50 };
+      apply();
+    }
+
+    function hide() {
+      editor.classList.remove('show');
+      cardPreview.removeAttribute('src');
+      focal = { x: 50, y: 50 };
+    }
+
+    function setFocal(x, y) {
+      focal = { x: x == null ? 50 : x, y: y == null ? 50 : y };
+      apply();
+    }
+
+    function getFocal() { return focal; }
+
+    return { show, hide, setFocal, getFocal };
+  }
+
+  const journalFocalPicker = makeFocalPicker({
+    frameImgId: 'jImagePreview', editorId: 'jImageFocalEditor', frameId: 'jImageFocalFrame',
+    markerId: 'jImageFocalMarker', cardPreviewId: 'jImageCardPreview', onChange: handleFormChangeDebounced
+  });
+  const projectBannerFocalPicker = makeFocalPicker({
+    frameImgId: 'pBannerPreview', editorId: 'pBannerFocalEditor', frameId: 'pBannerFocalFrame',
+    markerId: 'pBannerFocalMarker', cardPreviewId: 'pBannerCardPreview', onChange: handleFormChangeDebounced
+  });
+
+  wireImageInput('jImage', 'jImagePreview', (v) => {
+    journalImageDataUrl = v;
+    if (v) journalFocalPicker.show(v); else journalFocalPicker.hide();
+  });
+  wireImageInput('pBanner', 'pBannerPreview', (v) => {
+    projectBannerDataUrl = v;
+    if (v) projectBannerFocalPicker.show(v); else projectBannerFocalPicker.hide();
+  });
   wireImageInput('pIcon', 'pIconPreview', (v) => { projectIconDataUrl = v; });
   wireImageInput('pClientLogo', 'pClientLogoPreview', (v) => { projectClientLogoDataUrl = v; });
 
@@ -623,7 +697,8 @@
         scheduled: document.getElementById('jScheduleToggle').checked,
         publishAt: document.getElementById('jPublishAt').value,
         blocks: journalBlocks.collectRaw(),
-        imageDataUrl: journalImageDataUrl
+        imageDataUrl: journalImageDataUrl,
+        imageFocal: journalFocalPicker.getFocal()
       };
       localStorage.setItem(DRAFT_KEYS.journal, JSON.stringify(draft));
     } else {
@@ -638,6 +713,7 @@
         publishAt: document.getElementById('pPublishAt').value,
         blocks: projectBlocks.collectRaw(),
         bannerDataUrl: projectBannerDataUrl,
+        bannerFocal: projectBannerFocalPicker.getFocal(),
         iconDataUrl: projectIconDataUrl,
         clientLogoDataUrl: projectClientLogoDataUrl,
         clientLinks: collectClientLinks()
@@ -685,6 +761,8 @@
       const preview = document.getElementById('jImagePreview');
       preview.src = draft.imageDataUrl;
       preview.classList.add('show');
+      journalFocalPicker.show(draft.imageDataUrl);
+      if (draft.imageFocal) journalFocalPicker.setFocal(draft.imageFocal.x, draft.imageFocal.y);
     }
   }
 
@@ -704,6 +782,8 @@
       const preview = document.getElementById('pBannerPreview');
       preview.src = draft.bannerDataUrl;
       preview.classList.add('show');
+      projectBannerFocalPicker.show(draft.bannerDataUrl);
+      if (draft.bannerFocal) projectBannerFocalPicker.setFocal(draft.bannerFocal.x, draft.bannerFocal.y);
     }
     if (draft.iconDataUrl) {
       projectIconDataUrl = draft.iconDataUrl;
@@ -732,6 +812,7 @@
     const preview = document.getElementById('jImagePreview');
     preview.classList.remove('show');
     preview.src = '';
+    journalFocalPicker.hide();
     journalBlocks.reset();
     document.getElementById('jSchedulePanel').classList.remove('open');
     document.getElementById('jPublishAt').value = '';
@@ -747,6 +828,7 @@
       preview.classList.remove('show');
       preview.src = '';
     });
+    projectBannerFocalPicker.hide();
     restoreClientLinks([]);
     projectBlocks.reset();
     document.getElementById('pSchedulePanel').classList.remove('open');
@@ -767,6 +849,8 @@
     const preview = document.getElementById('jImagePreview');
     preview.src = post.image;
     preview.classList.add('show');
+    journalFocalPicker.show(post.image);
+    journalFocalPicker.setFocal(post.imageFocalX, post.imageFocalY);
 
     journalBlocks.restore(post.content);
 
@@ -804,6 +888,8 @@
     const bannerPreview = document.getElementById('pBannerPreview');
     bannerPreview.src = project.banner;
     bannerPreview.classList.add('show');
+    projectBannerFocalPicker.show(project.banner);
+    projectBannerFocalPicker.setFocal(project.bannerFocalX, project.bannerFocalY);
 
     if (project.icon) {
       projectIconDataUrl = project.icon;
@@ -884,11 +970,14 @@
     try {
       const image = await resolveImageForSave('jImage', journalImageDataUrl);
       const content = await journalBlocks.collectForPublish();
+      const focal = journalFocalPicker.getFocal();
       const payload = {
         title: document.getElementById('jTitle').value.trim(),
         category: document.getElementById('jCategory').value.trim(),
         excerpt: document.getElementById('jExcerpt').value.trim(),
         image,
+        imageFocalX: focal.x,
+        imageFocalY: focal.y,
         content,
         publishAt: publishAtDate.toISOString()
       };
@@ -953,6 +1042,7 @@
         .split(',').map((s) => s.trim()).filter(Boolean);
       const brief = await projectBlocks.collectForPublish();
       const clientLinks = collectClientLinks();
+      const bannerFocal = projectBannerFocalPicker.getFocal();
 
       const payload = {
         title: document.getElementById('pTitle').value.trim(),
@@ -961,6 +1051,8 @@
         client: document.getElementById('pClient').value.trim() || null,
         tagline: document.getElementById('pTagline').value.trim(),
         banner,
+        bannerFocalX: bannerFocal.x,
+        bannerFocalY: bannerFocal.y,
         icon,
         brief,
         featured: document.getElementById('pFeatured').checked,

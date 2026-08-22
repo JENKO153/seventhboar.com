@@ -1098,15 +1098,23 @@ h3 {
 }
 
 .article-body ul,
-.article-body ol {
+.article-body ol,
+.case-block ul,
+.case-block ol {
   margin-bottom: 1.4rem;
   padding-left: 1.2rem;
   color: var(--ink-soft);
   list-style: initial;
 }
 
-.article-body li + li {
+.article-body li + li,
+.case-block li + li {
   margin-top: 0.5rem;
+}
+
+.post-block-lead {
+  font-size: 1.25rem;
+  color: var(--maroon);
 }
 
 .post-block-photo {

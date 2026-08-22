@@ -10,6 +10,7 @@
     { value: 'paragraph-lg', label: 'Paragraph — Large' },
     { value: 'paragraph', label: 'Paragraph — Normal' },
     { value: 'paragraph-sm', label: 'Paragraph — Small' },
+    { value: 'bullets', label: 'Bullet List' },
     { value: 'photo', label: 'Photo' }
   ];
 
@@ -59,6 +60,10 @@
       case 'subtitle': return `<h3 class="post-block-subtitle">${text}</h3>`;
       case 'paragraph-lg': return `<p class="post-block-lead">${text}</p>`;
       case 'paragraph-sm': return `<p class="post-block-sm">${text}</p>`;
+      case 'bullets': {
+        const items = text.split('\n').map((s) => s.trim()).filter(Boolean).map((s) => `<li>${s}</li>`).join('');
+        return items ? `<ul>${items}</ul>` : '';
+      }
       default: return `<p>${text}</p>`;
     }
   }
@@ -87,7 +92,9 @@
   // ---------- Block editor (shared factory for journal + project) ----------
   function setRowMode(row, style) {
     const isPhoto = style === 'photo';
-    row.querySelector('.block-text').style.display = isPhoto ? 'none' : '';
+    const textEl = row.querySelector('.block-text');
+    textEl.style.display = isPhoto ? 'none' : '';
+    textEl.placeholder = style === 'bullets' ? 'One point per line...' : "Write this block's text...";
     row.querySelector('.block-photo-field').classList.toggle('show', isPhoto);
   }
 

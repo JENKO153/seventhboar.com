@@ -21,8 +21,12 @@
     switch (block.style) {
       case 'title': return `<h2>${text}</h2>`;
       case 'subtitle': return `<h3>${text}</h3>`;
-      case 'paragraph-lg': return `<p style="font-size:1.15rem;">${text}</p>`;
+      case 'paragraph-lg': return `<p style="font-size:1.25rem;color:var(--maroon);">${text}</p>`;
       case 'paragraph-sm': return `<p style="font-size:0.92rem;color:var(--ink-soft);">${text}</p>`;
+      case 'bullets': {
+        const items = text.split('\n').map((s) => s.trim()).filter(Boolean).map((s) => `<li>${s}</li>`).join('');
+        return items ? `<ul>${items}</ul>` : '';
+      }
       default: return `<p>${text}</p>`;
     }
   }

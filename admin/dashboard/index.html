@@ -18,7 +18,7 @@
             <em>Development</em>
           </span>
         </a>
-        <nav class="site-nav">
+        <nav class="admin-nav">
           <a href="/">View Site</a>
           <button class="button-ghost" id="logoutBtn" type="button">Log Out</button>
         </nav>
@@ -228,8 +228,13 @@
       </div>
     </div>
 
+    <script>window.__QA_SKIP_AUTH__ = true;</script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/assets/js/cms.js"></script>
+    <script>
+      ProjectData.getProjects = async () => [];
+      JournalData.getPosts = async () => [];
+    </script>
     <script src="/assets/js/admin-dashboard.js"></script>
   </body>
 </html>

@@ -190,6 +190,41 @@ a.brand:hover {
   color: var(--ink);
 }
 
+/* Admin header nav: just "View Site" + "Log Out" — always visible, never
+   collapses behind the hamburger drawer the public site's .site-nav uses. */
+.admin-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  font-family: var(--ui-font);
+}
+
+.admin-nav a {
+  padding: 0.5rem 0.6rem;
+  color: var(--ink-soft);
+  font-size: 0.94rem;
+  transition: color 160ms ease;
+  white-space: nowrap;
+}
+
+.admin-nav a:hover {
+  color: var(--ink);
+}
+
+@media (max-width: 480px) {
+  .admin-nav a {
+    padding: 0.5rem 0.35rem;
+    font-size: 0.85rem;
+  }
+
+  .admin-nav .button-ghost {
+    min-height: auto;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.85rem;
+  }
+}
+
 main {
   padding-bottom: 4rem;
 }

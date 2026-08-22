@@ -1754,74 +1754,64 @@ textarea {
   display: block;
 }
 
-.focal-editor {
+.crop-editor {
   display: none;
   margin-top: 0.6rem;
-  gap: 1rem;
-  flex-wrap: wrap;
 }
 
-.focal-editor.show {
-  display: flex;
-}
-
-.focal-frame {
-  position: relative;
-  flex: 1 1 14rem;
-  max-width: 20rem;
-  cursor: crosshair;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  background: var(--bg-soft);
-  user-select: none;
-}
-
-.focal-frame img {
+.crop-editor.show {
   display: block;
-  width: 100%;
-  max-height: 14rem;
-  object-fit: contain;
-  pointer-events: none;
 }
 
-.focal-marker {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 1.3rem;
-  height: 1.3rem;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  background: rgba(151, 41, 42, 0.85);
-  box-shadow: 0 0 0 2px rgba(20, 25, 30, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-
-.focal-card-preview {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.focal-card-preview-label {
+.crop-editor-label {
   font-family: var(--ui-font);
   font-size: 0.78rem;
   color: var(--ink-soft);
+  margin-bottom: 0.4rem;
 }
 
-.focal-card-preview-box {
-  width: 11rem;
-  height: 7rem;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  box-shadow: var(--shadow);
-}
-
-.focal-card-preview-box .card-media {
+.crop-frame {
+  position: relative;
   width: 100%;
-  height: 100%;
+  max-width: 24rem;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--bg-soft);
+  cursor: grab;
+  touch-action: none;
+}
+
+.crop-frame:active {
+  cursor: grabbing;
+}
+
+.crop-frame img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: none;
+  pointer-events: none;
+}
+
+.crop-zoom-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.7rem;
+  max-width: 24rem;
+}
+
+.crop-zoom-row span {
+  font-family: var(--ui-font);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  flex-shrink: 0;
+}
+
+.crop-zoom-row input[type="range"] {
+  flex: 1;
+  accent-color: var(--maroon);
 }
 
 .form-error,

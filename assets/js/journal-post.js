@@ -10,10 +10,6 @@
     return new Date(dateStr).toLocaleDateString('en-AU', { year: 'numeric', month: 'short', day: 'numeric' });
   }
 
-  function focalStyle(x, y) {
-    return `object-position:${x == null ? 50 : x}% ${y == null ? 50 : y}%`;
-  }
-
   function normalizeBlock(block) {
     if (typeof block === 'string') return { style: 'paragraph', text: block };
     return { style: block.style || 'paragraph', text: block.text || '', image: block.image || '' };
@@ -117,7 +113,7 @@
     const grid = document.getElementById('relatedPosts');
     grid.innerHTML = related.map((p) => `
       <a class="card article-card reveal" href="/post/?id=${encodeURIComponent(p.id)}">
-        <img class="card-media" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" style="${focalStyle(p.imageFocalX, p.imageFocalY)}" />
+        <img class="card-media" src="${escapeHtml(p.cardImage || p.image)}" alt="${escapeHtml(p.title)}" />
         <div class="card-body">
           <div class="meta">
             <span class="chip">Devlog</span>

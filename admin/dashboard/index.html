@@ -72,17 +72,14 @@
                 <div class="form-group">
                   <label for="jImage">Cover Image</label>
                   <input type="file" id="jImage" accept="image/*" />
-                  <p class="form-hint">Click or drag on the image to set what stays in frame when it's cropped for cards.</p>
-                  <div class="focal-editor" id="jImageFocalEditor">
-                    <div class="focal-frame" id="jImageFocalFrame">
-                      <img id="jImagePreview" alt="" />
-                      <div class="focal-marker" id="jImageFocalMarker"></div>
+                  <div class="crop-editor" id="jImageCropEditor">
+                    <div class="crop-editor-label">Drag to reposition, use the slider to zoom — this is exactly what cards will show.</div>
+                    <div class="crop-frame" id="jImageCropFrame">
+                      <img id="jImageCropImg" alt="" draggable="false" />
                     </div>
-                    <div class="focal-card-preview">
-                      <span class="focal-card-preview-label">Card preview</span>
-                      <div class="focal-card-preview-box">
-                        <img id="jImageCardPreview" class="card-media" alt="" />
-                      </div>
+                    <div class="crop-zoom-row">
+                      <span>Zoom</span>
+                      <input type="range" id="jImageCropZoom" min="100" max="300" value="100" step="1" />
                     </div>
                   </div>
                 </div>
@@ -139,17 +136,14 @@
                 <div class="form-group">
                   <label for="pBanner">Cover / Banner Photo</label>
                   <input type="file" id="pBanner" accept="image/*" />
-                  <p class="form-hint">Click or drag on the image to set what stays in frame when it's cropped for cards.</p>
-                  <div class="focal-editor" id="pBannerFocalEditor">
-                    <div class="focal-frame" id="pBannerFocalFrame">
-                      <img id="pBannerPreview" alt="" />
-                      <div class="focal-marker" id="pBannerFocalMarker"></div>
+                  <div class="crop-editor" id="pBannerCropEditor">
+                    <div class="crop-editor-label">Drag to reposition, use the slider to zoom — this is exactly what cards will show.</div>
+                    <div class="crop-frame" id="pBannerCropFrame">
+                      <img id="pBannerCropImg" alt="" draggable="false" />
                     </div>
-                    <div class="focal-card-preview">
-                      <span class="focal-card-preview-label">Card preview</span>
-                      <div class="focal-card-preview-box">
-                        <img id="pBannerCardPreview" class="card-media" alt="" />
-                      </div>
+                    <div class="crop-zoom-row">
+                      <span>Zoom</span>
+                      <input type="range" id="pBannerCropZoom" min="100" max="300" value="100" step="1" />
                     </div>
                   </div>
                 </div>

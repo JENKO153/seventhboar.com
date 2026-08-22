@@ -13,13 +13,11 @@ create table if not exists journal_posts (
   author text not null default 'Seventh Boar',
   published_at timestamptz not null default now(),
   created_at timestamptz not null default now(),
-  image_focal_x numeric not null default 50,
-  image_focal_y numeric not null default 50
+  card_image_url text
 );
 
--- Adds the cover-image focal point to a journal_posts table created before it existed.
-alter table journal_posts add column if not exists image_focal_x numeric not null default 50;
-alter table journal_posts add column if not exists image_focal_y numeric not null default 50;
+-- Adds the cropped card-thumbnail image to a journal_posts table created before it existed.
+alter table journal_posts add column if not exists card_image_url text;
 
 alter table journal_posts enable row level security;
 
@@ -52,16 +50,14 @@ create table if not exists projects (
   created_at timestamptz not null default now(),
   client_logo_url text,
   client_links jsonb not null default '[]'::jsonb,
-  banner_focal_x numeric not null default 50,
-  banner_focal_y numeric not null default 50
+  card_banner_url text
 );
 
 -- Adds the client-card columns to a projects table created before they existed.
 alter table projects add column if not exists client_logo_url text;
 alter table projects add column if not exists client_links jsonb not null default '[]'::jsonb;
--- Adds the banner focal point to a projects table created before it existed.
-alter table projects add column if not exists banner_focal_x numeric not null default 50;
-alter table projects add column if not exists banner_focal_y numeric not null default 50;
+-- Adds the cropped card-thumbnail image to a projects table created before it existed.
+alter table projects add column if not exists card_banner_url text;
 
 alter table projects enable row level security;
 

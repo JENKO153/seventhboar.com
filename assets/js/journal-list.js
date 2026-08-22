@@ -18,10 +18,6 @@
     return new Date(dateStr).toLocaleDateString('en-AU', { year: 'numeric', month: 'short', day: 'numeric' });
   }
 
-  function focalStyle(x, y) {
-    return `object-position:${x == null ? 50 : x}% ${y == null ? 50 : y}%`;
-  }
-
   function buildFilterTags() {
     const categories = Array.from(new Set(allPosts.map((p) => p.category))).sort();
     const extraButtons = categories.map((cat) => `
@@ -63,7 +59,7 @@
 
     grid.innerHTML = posts.map((post) => `
       <a class="card article-card reveal" href="/post/?id=${encodeURIComponent(post.id)}">
-        <img class="card-media" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" style="${focalStyle(post.imageFocalX, post.imageFocalY)}" />
+        <img class="card-media" src="${escapeHtml(post.cardImage || post.image)}" alt="${escapeHtml(post.title)}" />
         <div class="card-body">
           <div class="meta">
             <span class="chip">Devlog</span>

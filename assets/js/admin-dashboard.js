@@ -464,98 +464,194 @@
 
   function wireImageInput(inputId, previewId, onSet) {
     const input = document.getElementById(inputId);
-    const preview = document.getElementById(previewId);
+    const preview = previewId ? document.getElementById(previewId) : null;
     input.addEventListener('change', async () => {
       const file = input.files[0];
       if (!file) {
         onSet(null);
-        preview.classList.remove('show');
+        if (preview) preview.classList.remove('show');
         handleFormChange();
         return;
       }
       const dataUrl = await CmsImages.resizeImageToDataUrl(file);
       onSet(dataUrl);
-      preview.src = dataUrl;
-      preview.classList.add('show');
+      if (preview) {
+        preview.src = dataUrl;
+        preview.classList.add('show');
+      }
       handleFormChange();
     });
   }
 
-  // ---------- Focal-point picker (cover/banner image "card preview" crop) ----------
-  // Click or drag on the full image to choose what stays in frame when a
-  // fixed-aspect card (.card-media) crops it with object-fit: cover.
-  function makeFocalPicker({ frameImgId, editorId, frameId, markerId, cardPreviewId, onChange }) {
-    const frameImg = document.getElementById(frameImgId);
+  // ---------- Crop tool (cover/banner image -> a separate cropped card image) ----------
+  // A fixed 16:9 frame the source image is panned/zoomed inside; whatever is
+  // visible in the frame is rendered to a canvas on demand as the actual
+  // image used on cards (Home/Work/Devlog), completely separate from the
+  // original full image used as the post/project's own hero photo.
+  const CROP_ASPECT = 16 / 9;
+
+  function makeCropPicker({ imgId, editorId, frameId, zoomId, onChange }) {
+    const img = document.getElementById(imgId);
     const editor = document.getElementById(editorId);
     const frame = document.getElementById(frameId);
-    const marker = document.getElementById(markerId);
-    const cardPreview = document.getElementById(cardPreviewId);
-    let focal = { x: 50, y: 50 };
+    const zoomInput = document.getElementById(zoomId);
+    img.crossOrigin = 'anonymous';
 
-    function apply() {
-      marker.style.left = focal.x + '%';
-      marker.style.top = focal.y + '%';
-      cardPreview.style.objectPosition = `${focal.x}% ${focal.y}%`;
+    let naturalW = 0;
+    let naturalH = 0;
+    let baseScale = 1;
+    let zoom = 1;
+    let panX = 0;
+    let panY = 0;
+
+    function frameSize() {
+      const rect = frame.getBoundingClientRect();
+      return { w: rect.width, h: rect.height };
     }
 
-    function setFromEvent(e) {
-      const rect = frameImg.getBoundingClientRect();
-      if (!rect.width || !rect.height) return;
-      const point = e.touches ? e.touches[0] : e;
-      const x = Math.max(0, Math.min(100, ((point.clientX - rect.left) / rect.width) * 100));
-      const y = Math.max(0, Math.min(100, ((point.clientY - rect.top) / rect.height) * 100));
-      focal = { x, y };
-      apply();
-      onChange();
+    function clampPan() {
+      const { w: fw, h: fh } = frameSize();
+      const scale = baseScale * zoom;
+      panX = Math.max(fw - naturalW * scale, Math.min(0, panX));
+      panY = Math.max(fh - naturalH * scale, Math.min(0, panY));
     }
 
-    let dragging = false;
-    frame.addEventListener('mousedown', (e) => { dragging = true; setFromEvent(e); });
-    window.addEventListener('mousemove', (e) => { if (dragging) setFromEvent(e); });
-    window.addEventListener('mouseup', () => { dragging = false; });
-    frame.addEventListener('touchstart', (e) => { dragging = true; setFromEvent(e); }, { passive: true });
-    frame.addEventListener('touchmove', (e) => { if (dragging) setFromEvent(e); }, { passive: true });
-    frame.addEventListener('touchend', () => { dragging = false; });
+    function render() {
+      const scale = baseScale * zoom;
+      img.style.width = (naturalW * scale) + 'px';
+      img.style.height = (naturalH * scale) + 'px';
+      img.style.transform = `translate(${panX}px, ${panY}px)`;
+    }
 
-    function show(dataUrl) {
-      editor.classList.add('show');
-      cardPreview.src = dataUrl;
-      focal = { x: 50, y: 50 };
-      apply();
+    function emitChange() {
+      onChange(toDataUrl());
+    }
+
+    function load(dataUrl) {
+      return new Promise((resolve) => {
+        const probe = new Image();
+        probe.crossOrigin = 'anonymous';
+        probe.onload = () => {
+          naturalW = probe.naturalWidth;
+          naturalH = probe.naturalHeight;
+          img.src = dataUrl;
+          editor.classList.add('show');
+          requestAnimationFrame(() => {
+            const { w: fw, h: fh } = frameSize();
+            baseScale = Math.max(fw / naturalW, fh / naturalH);
+            zoom = 1;
+            zoomInput.value = 100;
+            panX = (fw - naturalW * baseScale) / 2;
+            panY = (fh - naturalH * baseScale) / 2;
+            clampPan();
+            render();
+            emitChange();
+            resolve();
+          });
+        };
+        probe.src = dataUrl;
+      });
     }
 
     function hide() {
       editor.classList.remove('show');
-      cardPreview.removeAttribute('src');
-      focal = { x: 50, y: 50 };
+      img.removeAttribute('src');
+      naturalW = 0;
+      naturalH = 0;
     }
 
-    function setFocal(x, y) {
-      focal = { x: x == null ? 50 : x, y: y == null ? 50 : y };
-      apply();
+    let dragging = false;
+    let startX = 0;
+    let startY = 0;
+    let startPanX = 0;
+    let startPanY = 0;
+
+    function pointerDown(e) {
+      if (!naturalW) return;
+      dragging = true;
+      const p = e.touches ? e.touches[0] : e;
+      startX = p.clientX;
+      startY = p.clientY;
+      startPanX = panX;
+      startPanY = panY;
     }
 
-    function getFocal() { return focal; }
+    function pointerMove(e) {
+      if (!dragging) return;
+      const p = e.touches ? e.touches[0] : e;
+      panX = startPanX + (p.clientX - startX);
+      panY = startPanY + (p.clientY - startY);
+      clampPan();
+      render();
+      emitChange();
+    }
 
-    return { show, hide, setFocal, getFocal };
+    function pointerUp() { dragging = false; }
+
+    frame.addEventListener('mousedown', pointerDown);
+    window.addEventListener('mousemove', pointerMove);
+    window.addEventListener('mouseup', pointerUp);
+    frame.addEventListener('touchstart', pointerDown, { passive: true });
+    frame.addEventListener('touchmove', pointerMove, { passive: true });
+    frame.addEventListener('touchend', pointerUp);
+
+    zoomInput.addEventListener('input', () => {
+      if (!naturalW) return;
+      const { w: fw, h: fh } = frameSize();
+      const oldScale = baseScale * zoom;
+      const centerImgX = (fw / 2 - panX) / oldScale;
+      const centerImgY = (fh / 2 - panY) / oldScale;
+      zoom = Number(zoomInput.value) / 100;
+      const newScale = baseScale * zoom;
+      panX = fw / 2 - centerImgX * newScale;
+      panY = fh / 2 - centerImgY * newScale;
+      clampPan();
+      render();
+      emitChange();
+    });
+
+    // Renders whatever is currently visible inside the frame to a canvas —
+    // this is the actual cropped image that gets uploaded for cards.
+    function toDataUrl(outputW = 800) {
+      if (!naturalW) return null;
+      const outputH = Math.round(outputW / CROP_ASPECT);
+      const scale = baseScale * zoom;
+      const { w: fw, h: fh } = frameSize();
+      const sx = -panX / scale;
+      const sy = -panY / scale;
+      const sw = fw / scale;
+      const sh = fh / scale;
+      const canvas = document.createElement('canvas');
+      canvas.width = outputW;
+      canvas.height = outputH;
+      canvas.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, outputW, outputH);
+      return canvas.toDataURL('image/jpeg', 0.85);
+    }
+
+    function hasImage() { return naturalW > 0; }
+
+    return { load, hide, toDataUrl, hasImage };
   }
 
-  const journalFocalPicker = makeFocalPicker({
-    frameImgId: 'jImagePreview', editorId: 'jImageFocalEditor', frameId: 'jImageFocalFrame',
-    markerId: 'jImageFocalMarker', cardPreviewId: 'jImageCardPreview', onChange: handleFormChangeDebounced
+  let journalCardImageDataUrl = null;
+  let projectCardBannerDataUrl = null;
+
+  const journalCropPicker = makeCropPicker({
+    imgId: 'jImageCropImg', editorId: 'jImageCropEditor', frameId: 'jImageCropFrame', zoomId: 'jImageCropZoom',
+    onChange: (dataUrl) => { journalCardImageDataUrl = dataUrl; handleFormChangeDebounced(); }
   });
-  const projectBannerFocalPicker = makeFocalPicker({
-    frameImgId: 'pBannerPreview', editorId: 'pBannerFocalEditor', frameId: 'pBannerFocalFrame',
-    markerId: 'pBannerFocalMarker', cardPreviewId: 'pBannerCardPreview', onChange: handleFormChangeDebounced
+  const projectCropPicker = makeCropPicker({
+    imgId: 'pBannerCropImg', editorId: 'pBannerCropEditor', frameId: 'pBannerCropFrame', zoomId: 'pBannerCropZoom',
+    onChange: (dataUrl) => { projectCardBannerDataUrl = dataUrl; handleFormChangeDebounced(); }
   });
 
-  wireImageInput('jImage', 'jImagePreview', (v) => {
+  wireImageInput('jImage', null, (v) => {
     journalImageDataUrl = v;
-    if (v) journalFocalPicker.show(v); else journalFocalPicker.hide();
+    if (v) journalCropPicker.load(v); else { journalCropPicker.hide(); journalCardImageDataUrl = null; }
   });
-  wireImageInput('pBanner', 'pBannerPreview', (v) => {
+  wireImageInput('pBanner', null, (v) => {
     projectBannerDataUrl = v;
-    if (v) projectBannerFocalPicker.show(v); else projectBannerFocalPicker.hide();
+    if (v) projectCropPicker.load(v); else { projectCropPicker.hide(); projectCardBannerDataUrl = null; }
   });
   wireImageInput('pIcon', 'pIconPreview', (v) => { projectIconDataUrl = v; });
   wireImageInput('pClientLogo', 'pClientLogoPreview', (v) => { projectClientLogoDataUrl = v; });
@@ -568,6 +664,14 @@
     if (file) return CmsImages.uploadImage(file);
     if (!currentValue) return null;
     return currentValue.startsWith('data:') ? CmsImages.uploadImageFromDataUrl(currentValue) : currentValue;
+  }
+
+  // Cropped card images only ever exist as a canvas-rendered data URL (fresh
+  // crop) or an already-hosted URL carried over unchanged from edit mode —
+  // never a raw <input type=file>, so this is simpler than resolveImageForSave.
+  async function resolveCardImageForSave(dataUrlOrUrl) {
+    if (!dataUrlOrUrl) return null;
+    return dataUrlOrUrl.startsWith('data:') ? CmsImages.uploadImageFromDataUrl(dataUrlOrUrl) : dataUrlOrUrl;
   }
 
   // ---------- Client social links ----------
@@ -698,7 +802,7 @@
         publishAt: document.getElementById('jPublishAt').value,
         blocks: journalBlocks.collectRaw(),
         imageDataUrl: journalImageDataUrl,
-        imageFocal: journalFocalPicker.getFocal()
+        cardImageDataUrl: journalCardImageDataUrl
       };
       localStorage.setItem(DRAFT_KEYS.journal, JSON.stringify(draft));
     } else {
@@ -713,7 +817,7 @@
         publishAt: document.getElementById('pPublishAt').value,
         blocks: projectBlocks.collectRaw(),
         bannerDataUrl: projectBannerDataUrl,
-        bannerFocal: projectBannerFocalPicker.getFocal(),
+        cardBannerDataUrl: projectCardBannerDataUrl,
         iconDataUrl: projectIconDataUrl,
         clientLogoDataUrl: projectClientLogoDataUrl,
         clientLinks: collectClientLinks()
@@ -758,11 +862,9 @@
     journalBlocks.restore(draft.blocks);
     if (draft.imageDataUrl) {
       journalImageDataUrl = draft.imageDataUrl;
-      const preview = document.getElementById('jImagePreview');
-      preview.src = draft.imageDataUrl;
-      preview.classList.add('show');
-      journalFocalPicker.show(draft.imageDataUrl);
-      if (draft.imageFocal) journalFocalPicker.setFocal(draft.imageFocal.x, draft.imageFocal.y);
+      journalCropPicker.load(draft.imageDataUrl).then(() => {
+        if (draft.cardImageDataUrl) journalCardImageDataUrl = draft.cardImageDataUrl;
+      });
     }
   }
 
@@ -779,11 +881,9 @@
     projectBlocks.restore(draft.blocks);
     if (draft.bannerDataUrl) {
       projectBannerDataUrl = draft.bannerDataUrl;
-      const preview = document.getElementById('pBannerPreview');
-      preview.src = draft.bannerDataUrl;
-      preview.classList.add('show');
-      projectBannerFocalPicker.show(draft.bannerDataUrl);
-      if (draft.bannerFocal) projectBannerFocalPicker.setFocal(draft.bannerFocal.x, draft.bannerFocal.y);
+      projectCropPicker.load(draft.bannerDataUrl).then(() => {
+        if (draft.cardBannerDataUrl) projectCardBannerDataUrl = draft.cardBannerDataUrl;
+      });
     }
     if (draft.iconDataUrl) {
       projectIconDataUrl = draft.iconDataUrl;
@@ -809,10 +909,8 @@
   function resetJournalForm() {
     document.getElementById('journalForm').reset();
     journalImageDataUrl = null;
-    const preview = document.getElementById('jImagePreview');
-    preview.classList.remove('show');
-    preview.src = '';
-    journalFocalPicker.hide();
+    journalCardImageDataUrl = null;
+    journalCropPicker.hide();
     journalBlocks.reset();
     document.getElementById('jSchedulePanel').classList.remove('open');
     document.getElementById('jPublishAt').value = '';
@@ -821,14 +919,15 @@
   function resetProjectForm() {
     document.getElementById('projectForm').reset();
     projectBannerDataUrl = null;
+    projectCardBannerDataUrl = null;
     projectIconDataUrl = null;
     projectClientLogoDataUrl = null;
-    ['pBannerPreview', 'pIconPreview', 'pClientLogoPreview'].forEach((id) => {
+    ['pIconPreview', 'pClientLogoPreview'].forEach((id) => {
       const preview = document.getElementById(id);
       preview.classList.remove('show');
       preview.src = '';
     });
-    projectBannerFocalPicker.hide();
+    projectCropPicker.hide();
     restoreClientLinks([]);
     projectBlocks.reset();
     document.getElementById('pSchedulePanel').classList.remove('open');
@@ -846,11 +945,9 @@
     document.getElementById('jExcerpt').value = post.excerpt;
 
     journalImageDataUrl = post.image;
-    const preview = document.getElementById('jImagePreview');
-    preview.src = post.image;
-    preview.classList.add('show');
-    journalFocalPicker.show(post.image);
-    journalFocalPicker.setFocal(post.imageFocalX, post.imageFocalY);
+    journalCropPicker.load(post.image).then(() => {
+      if (post.cardImage) journalCardImageDataUrl = post.cardImage;
+    });
 
     journalBlocks.restore(post.content);
 
@@ -885,11 +982,9 @@
     document.getElementById('pFeatured').checked = !!project.featured;
 
     projectBannerDataUrl = project.banner;
-    const bannerPreview = document.getElementById('pBannerPreview');
-    bannerPreview.src = project.banner;
-    bannerPreview.classList.add('show');
-    projectBannerFocalPicker.show(project.banner);
-    projectBannerFocalPicker.setFocal(project.bannerFocalX, project.bannerFocalY);
+    projectCropPicker.load(project.banner).then(() => {
+      if (project.cardBanner) projectCardBannerDataUrl = project.cardBanner;
+    });
 
     if (project.icon) {
       projectIconDataUrl = project.icon;
@@ -969,15 +1064,14 @@
 
     try {
       const image = await resolveImageForSave('jImage', journalImageDataUrl);
+      const cardImage = await resolveCardImageForSave(journalCardImageDataUrl);
       const content = await journalBlocks.collectForPublish();
-      const focal = journalFocalPicker.getFocal();
       const payload = {
         title: document.getElementById('jTitle').value.trim(),
         category: document.getElementById('jCategory').value.trim(),
         excerpt: document.getElementById('jExcerpt').value.trim(),
         image,
-        imageFocalX: focal.x,
-        imageFocalY: focal.y,
+        cardImage,
         content,
         publishAt: publishAtDate.toISOString()
       };
@@ -1035,6 +1129,7 @@
 
     try {
       const banner = await resolveImageForSave('pBanner', projectBannerDataUrl);
+      const cardBanner = await resolveCardImageForSave(projectCardBannerDataUrl);
       const icon = await resolveImageForSave('pIcon', projectIconDataUrl);
       const clientLogo = await resolveImageForSave('pClientLogo', projectClientLogoDataUrl);
 
@@ -1042,7 +1137,6 @@
         .split(',').map((s) => s.trim()).filter(Boolean);
       const brief = await projectBlocks.collectForPublish();
       const clientLinks = collectClientLinks();
-      const bannerFocal = projectBannerFocalPicker.getFocal();
 
       const payload = {
         title: document.getElementById('pTitle').value.trim(),
@@ -1051,8 +1145,7 @@
         client: document.getElementById('pClient').value.trim() || null,
         tagline: document.getElementById('pTagline').value.trim(),
         banner,
-        bannerFocalX: bannerFocal.x,
-        bannerFocalY: bannerFocal.y,
+        cardBanner,
         icon,
         brief,
         featured: document.getElementById('pFeatured').checked,

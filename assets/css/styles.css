@@ -495,6 +495,7 @@ h3 {
 .page-hero-photo .hero-content .eyebrow { animation-delay: 0.05s; }
 .page-hero-photo .hero-content h1 { animation-delay: 0.15s; }
 .page-hero-photo .hero-content .page-lead { animation-delay: 0.25s; }
+.page-hero-photo .hero-content .hero-actions { animation-delay: 0.35s; }
 
 @media (prefers-reduced-motion: reduce) {
   .page-hero-photo .hero-content > * {

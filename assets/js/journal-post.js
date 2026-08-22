@@ -12,10 +12,15 @@
 
   function normalizeBlock(block) {
     if (typeof block === 'string') return { style: 'paragraph', text: block };
-    return { style: block.style || 'paragraph', text: block.text || '' };
+    return { style: block.style || 'paragraph', text: block.text || '', image: block.image || '' };
   }
 
   function renderBlock(block) {
+    if (block.style === 'photo') {
+      if (!block.image) return '';
+      const caption = block.text ? `<figcaption>${escapeHtml(block.text)}</figcaption>` : '';
+      return `<figure class="post-block-photo"><img src="${escapeHtml(block.image)}" alt="${escapeHtml(block.text || '')}" loading="lazy" />${caption}</figure>`;
+    }
     const text = escapeHtml(block.text);
     switch (block.style) {
       case 'title': return `<h2>${text}</h2>`;
@@ -49,7 +54,8 @@
   function renderPost(post) {
     document.getElementById('pageTitle').textContent = `${post.title} | Seventh Boar Development`;
 
-    const blocks = (post.content || []).map(normalizeBlock).filter((b) => b.text.trim() !== '');
+    const blocks = (post.content || []).map(normalizeBlock)
+      .filter((b) => b.text.trim() !== '' || (b.style === 'photo' && b.image));
     const bodyHtml = blocks.map(renderBlock).join('');
     const readingMinutes = estimateReadingMinutes(blocks);
 

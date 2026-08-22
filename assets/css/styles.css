@@ -614,6 +614,19 @@ h3 {
   padding: 0;
 }
 
+.article-hero .eyebrow {
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(151, 41, 42, 0.08);
+  font-size: 0.72rem;
+  letter-spacing: 0.13em;
+  margin-bottom: 1.4rem;
+}
+
+.article-hero .eyebrow::before {
+  display: none;
+}
+
 /* ---------- Cards / surfaces ---------- */
 
 .hero-panel,
@@ -1096,6 +1109,24 @@ h3 {
   margin-top: 0.5rem;
 }
 
+.post-block-photo {
+  margin: 1.8rem 0;
+}
+
+.post-block-photo img {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+}
+
+.post-block-photo figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
 .article-side {
   display: grid;
   gap: 1.25rem;
@@ -1467,28 +1498,14 @@ textarea {
 /* ---------- Admin / CMS ---------- */
 
 .auth-wrap {
-  position: relative;
   min-height: 70vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 3rem 1.25rem;
-  overflow: hidden;
-  background: linear-gradient(160deg, var(--ink), #2c1416 130%);
-}
-
-.auth-wrap::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 12% 15%, rgba(255, 255, 255, 0.07), transparent 45%),
-    radial-gradient(circle at 88% 90%, rgba(151, 41, 42, 0.4), transparent 55%);
 }
 
 .auth-card {
-  position: relative;
-  z-index: 1;
   width: 100%;
   max-width: 24rem;
   padding: 2.75rem 2.25rem;
@@ -1676,6 +1693,25 @@ textarea {
   resize: vertical;
 }
 
+.block-photo-field {
+  display: none;
+}
+
+.block-photo-field.show {
+  display: block;
+}
+
+.block-photo-caption {
+  width: 100%;
+  margin-top: 0.85rem;
+  padding: 0.5rem 0.7rem;
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-family: var(--ui-font);
+  font-size: 0.85rem;
+}
+
 .icon-btn {
   background: none;
   border: 0;
@@ -1848,6 +1884,12 @@ textarea {
   max-height: 11rem;
   object-fit: cover;
   margin: 1rem 0;
+  box-shadow: none;
+}
+
+.preview-content .post-block-photo img {
+  max-height: 11rem;
+  object-fit: cover;
   box-shadow: none;
 }
 

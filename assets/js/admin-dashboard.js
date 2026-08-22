@@ -9,7 +9,8 @@
     { value: 'subtitle', label: 'Subtitle' },
     { value: 'paragraph-lg', label: 'Paragraph — Large' },
     { value: 'paragraph', label: 'Paragraph — Normal' },
-    { value: 'paragraph-sm', label: 'Paragraph — Small' }
+    { value: 'paragraph-sm', label: 'Paragraph — Small' },
+    { value: 'photo', label: 'Photo' }
   ];
 
   let activeType = 'journal';
@@ -47,6 +48,11 @@
   }
 
   function renderBlockHtml(block) {
+    if (block.style === 'photo') {
+      if (!block.image) return '';
+      const caption = block.text ? `<figcaption>${escapeHtml(block.text)}</figcaption>` : '';
+      return `<figure class="post-block-photo"><img src="${escapeHtml(block.image)}" alt="${escapeHtml(block.text || '')}" />${caption}</figure>`;
+    }
     const text = escapeHtml(block.text);
     switch (block.style) {
       case 'title': return `<h2>${text}</h2>`;
@@ -79,7 +85,13 @@
   });
 
   // ---------- Block editor (shared factory for journal + project) ----------
-  function createBlockRow(style, text) {
+  function setRowMode(row, style) {
+    const isPhoto = style === 'photo';
+    row.querySelector('.block-text').style.display = isPhoto ? 'none' : '';
+    row.querySelector('.block-photo-field').classList.toggle('show', isPhoto);
+  }
+
+  function createBlockRow(style, text, image) {
     const row = document.createElement('div');
     row.className = 'content-block-row';
     const options = BLOCK_STYLES.map((s) => `<option value="${s.value}">${s.label}</option>`).join('');
@@ -93,17 +105,33 @@
         </div>
       </div>
       <textarea class="block-text" placeholder="Write this block's text..."></textarea>
+      <div class="block-photo-field">
+        <input type="file" class="block-photo-file" accept="image/*" />
+        <img class="image-preview block-photo-preview" alt="" />
+        <input type="text" class="block-photo-caption" placeholder="Caption (optional)" />
+      </div>
     `;
-    row.querySelector('.block-style').value = style || 'paragraph';
-    row.querySelector('.block-text').value = text || '';
+    const resolvedStyle = style || 'paragraph';
+    row.querySelector('.block-style').value = resolvedStyle;
+    if (resolvedStyle === 'photo') {
+      row.querySelector('.block-photo-caption').value = text || '';
+    } else {
+      row.querySelector('.block-text').value = text || '';
+    }
+    if (image) {
+      const preview = row.querySelector('.block-photo-preview');
+      preview.src = image;
+      preview.classList.add('show');
+    }
+    setRowMode(row, resolvedStyle);
     return row;
   }
 
   function makeBlockEditor(containerId, onChange) {
     const container = document.getElementById(containerId);
 
-    function addBlock(style, text) {
-      container.appendChild(createBlockRow(style, text));
+    function addBlock(style, text, image) {
+      container.appendChild(createBlockRow(style, text, image));
     }
 
     function reset() {
@@ -132,15 +160,68 @@
       }
     });
 
+    container.addEventListener('change', async (e) => {
+      const row = e.target.closest('.content-block-row');
+      if (!row) return;
+      if (e.target.classList.contains('block-style')) {
+        setRowMode(row, e.target.value);
+        onChange();
+        return;
+      }
+      if (e.target.classList.contains('block-photo-file')) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const dataUrl = await CmsImages.resizeImageToDataUrl(file);
+        const preview = row.querySelector('.block-photo-preview');
+        preview.src = dataUrl;
+        preview.classList.add('show');
+        onChange();
+      }
+    });
+
     function collectRaw() {
-      return Array.from(container.querySelectorAll('.content-block-row')).map((row) => ({
-        style: row.querySelector('.block-style').value,
-        text: row.querySelector('.block-text').value
-      }));
+      return Array.from(container.querySelectorAll('.content-block-row')).map((row) => {
+        const style = row.querySelector('.block-style').value;
+        if (style === 'photo') {
+          const preview = row.querySelector('.block-photo-preview');
+          return {
+            style,
+            text: row.querySelector('.block-photo-caption').value,
+            image: preview.classList.contains('show') ? preview.src : ''
+          };
+        }
+        return { style, text: row.querySelector('.block-text').value };
+      });
     }
 
     function collect() {
-      return collectRaw().map((b) => ({ style: b.style, text: b.text.trim() })).filter((b) => b.text !== '');
+      return collectRaw()
+        .map((b) => ({ style: b.style, text: (b.text || '').trim(), image: b.image }))
+        .filter((b) => (b.style === 'photo' ? !!b.image : b.text !== ''));
+    }
+
+    // Uploads any pending photo-block files to storage (or promotes a
+    // restored-draft data URL) and returns the final blocks ready to save.
+    async function collectForPublish() {
+      const rows = Array.from(container.querySelectorAll('.content-block-row'));
+      const result = [];
+      for (const row of rows) {
+        const style = row.querySelector('.block-style').value;
+        if (style === 'photo') {
+          const file = row.querySelector('.block-photo-file').files[0];
+          const preview = row.querySelector('.block-photo-preview');
+          const existingDataUrl = preview.classList.contains('show') ? preview.src : null;
+          if (!file && !existingDataUrl) continue;
+          const image = file ? await CmsImages.uploadImage(file) : await CmsImages.uploadImageFromDataUrl(existingDataUrl);
+          const caption = row.querySelector('.block-photo-caption').value.trim();
+          result.push({ style: 'photo', text: caption, image });
+        } else {
+          const text = row.querySelector('.block-text').value.trim();
+          if (text === '') continue;
+          result.push({ style, text });
+        }
+      }
+      return result;
     }
 
     function restore(blocks) {
@@ -149,11 +230,11 @@
         addBlock('paragraph-lg', '');
         return;
       }
-      blocks.forEach((b) => addBlock(b.style, b.text));
+      blocks.forEach((b) => addBlock(b.style, b.text, b.image));
     }
 
     reset();
-    return { addBlock, reset, collectRaw, collect, restore };
+    return { addBlock, reset, collectRaw, collect, collectForPublish, restore };
   }
 
   const handleFormChangeDebounced = debounce(() => handleFormChange(), 400);
@@ -523,9 +604,8 @@
       alert('Add a cover image before publishing.');
       return;
     }
-    const content = journalBlocks.collect();
-    if (content.length === 0) {
-      alert('Add at least one content block with some text.');
+    if (journalBlocks.collect().length === 0) {
+      alert('Add at least one content block with some text or a photo.');
       return;
     }
 
@@ -546,6 +626,7 @@
       const image = imageFile
         ? await CmsImages.uploadImage(imageFile)
         : await CmsImages.uploadImageFromDataUrl(journalImageDataUrl);
+      const content = await journalBlocks.collectForPublish();
 
       await JournalData.addPost({
         title: document.getElementById('jTitle').value.trim(),
@@ -578,9 +659,8 @@
       alert('Add a cover/banner photo before publishing.');
       return;
     }
-    const brief = projectBlocks.collect();
-    if (brief.length === 0) {
-      alert('Add at least one brief block with some text.');
+    if (projectBlocks.collect().length === 0) {
+      alert('Add at least one brief block with some text or a photo.');
       return;
     }
     const categories = Array.from(document.querySelectorAll('.pCategory:checked')).map((c) => c.value);
@@ -613,6 +693,7 @@
 
       const platforms = document.getElementById('pPlatforms').value
         .split(',').map((s) => s.trim()).filter(Boolean);
+      const brief = await projectBlocks.collectForPublish();
 
       await ProjectData.addProject({
         title: document.getElementById('pTitle').value.trim(),

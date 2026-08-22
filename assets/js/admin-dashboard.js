@@ -1009,7 +1009,7 @@
 
   // ---------- Auth guard ----------
   (async function init() {
-    const session = window.__QA_SKIP_AUTH__ ? { user: { email: 'qa@test.com' } } : await CmsAuth.getSession();
+    const session = await CmsAuth.getSession();
     if (!session) {
       window.location.href = '/admin/login/';
       return;

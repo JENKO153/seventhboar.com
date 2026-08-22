@@ -56,7 +56,29 @@
   }
 
   function renderPost(post) {
-    document.getElementById('pageTitle').textContent = `${post.title} | Seventh Boar Development`;
+    const url = `https://seventhboar.com/post/?id=${encodeURIComponent(post.id)}`;
+    window.SeoMeta.apply({
+      title: `${post.title} | Seventh Boar Development`,
+      description: post.excerpt,
+      url,
+      image: post.image,
+      type: 'article'
+    });
+    window.SeoMeta.upsertJsonLd('postJsonLd', {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.excerpt,
+      image: post.image,
+      datePublished: post.date,
+      author: { '@type': 'Organization', name: 'Seventh Boar Development' },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Seventh Boar Development',
+        logo: { '@type': 'ImageObject', url: 'https://seventhboar.com/assets/images/seventh-boar-mark.png' }
+      },
+      mainEntityOfPage: { '@type': 'WebPage', '@id': url }
+    });
 
     const blocks = (post.content || []).map(normalizeBlock)
       .filter((b) => b.text.trim() !== '' || (b.style === 'photo' && b.image));

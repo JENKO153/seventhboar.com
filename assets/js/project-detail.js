@@ -78,7 +78,24 @@
   }
 
   function renderProject(project) {
-    document.getElementById('pageTitle').textContent = `${project.title} | Seventh Boar Development`;
+    const url = `https://seventhboar.com/project/?id=${encodeURIComponent(project.id)}`;
+    window.SeoMeta.apply({
+      title: `${project.title} | Seventh Boar Development`,
+      description: project.tagline,
+      url,
+      image: project.banner,
+      type: 'website'
+    });
+    window.SeoMeta.upsertJsonLd('projectJsonLd', {
+      '@context': 'https://schema.org',
+      '@type': 'CreativeWork',
+      name: project.title,
+      description: project.tagline,
+      image: project.banner,
+      creator: { '@type': 'Organization', name: 'Seventh Boar Development' },
+      datePublished: project.date,
+      mainEntityOfPage: { '@type': 'WebPage', '@id': url }
+    });
 
     const blocks = (project.brief || []).map(normalizeBlock)
       .filter((b) => b.text.trim() !== '' || (b.style === 'photo' && b.image));

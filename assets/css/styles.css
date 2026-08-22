@@ -459,13 +459,19 @@ h3 {
 }
 
 .page-hero-photo .hero-bg {
-  background: linear-gradient(160deg, var(--ink), #2c1416 130%);
+  background: url("../images/Generic_Banner.png") center 40% / cover no-repeat;
 }
 
 .page-hero-photo .hero-scrim {
-  background:
-    radial-gradient(circle at 12% 15%, rgba(255, 255, 255, 0.07), transparent 45%),
-    radial-gradient(circle at 88% 90%, rgba(151, 41, 42, 0.4), transparent 55%);
+  background: linear-gradient(180deg, rgba(10, 13, 10, 0.3) 0%, rgba(8, 10, 8, 0.75) 100%);
+}
+
+.page-hero-photo--devlog .hero-bg {
+  background: url("../images/Devlog_Page_Banner.png") center 42% / cover no-repeat;
+}
+
+.page-hero-photo--devlog .hero-scrim {
+  background: linear-gradient(180deg, rgba(10, 13, 10, 0.55) 0%, rgba(8, 10, 8, 0.82) 100%);
 }
 
 .page-hero-photo .hero-content {
@@ -521,19 +527,17 @@ h3 {
 }
 
 .about-teaser-badge {
-  display: grid;
-  place-items: center;
   aspect-ratio: 4 / 5;
-  padding: 3rem;
-  background: var(--bg-soft);
-  border-top: 3px solid var(--maroon);
+  overflow: hidden;
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-lift);
 }
 
 .about-teaser-badge img {
   width: 100%;
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 38%;
 }
 
 @media (max-width: 860px) {
@@ -544,7 +548,6 @@ h3 {
   .about-teaser-badge {
     order: -1;
     aspect-ratio: 16 / 10;
-    padding: 2rem;
   }
 }
 
@@ -1464,14 +1467,28 @@ textarea {
 /* ---------- Admin / CMS ---------- */
 
 .auth-wrap {
+  position: relative;
   min-height: 70vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 3rem 1.25rem;
+  overflow: hidden;
+  background: linear-gradient(160deg, var(--ink), #2c1416 130%);
+}
+
+.auth-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 15%, rgba(255, 255, 255, 0.07), transparent 45%),
+    radial-gradient(circle at 88% 90%, rgba(151, 41, 42, 0.4), transparent 55%);
 }
 
 .auth-card {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 24rem;
   padding: 2.75rem 2.25rem;
@@ -1682,11 +1699,11 @@ textarea {
 }
 
 .welcome-banner {
-  padding: 1.6rem 1.75rem;
+  padding: 1.75rem;
   margin-bottom: 2rem;
   border-radius: var(--radius);
-  background: var(--bg-soft);
-  border-top: 3px solid var(--maroon);
+  background: linear-gradient(160deg, var(--ink), #2c1416 130%);
+  color: #fff;
   box-shadow: var(--shadow);
   font-family: var(--heading-font);
   font-size: 1.3rem;

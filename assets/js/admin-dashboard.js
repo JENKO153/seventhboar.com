@@ -69,10 +69,10 @@
       document.querySelectorAll('.type-toggle-option').forEach((b) => b.classList.toggle('is-active', b === btn));
       journalForm.style.display = activeType === 'journal' ? '' : 'none';
       projectForm.style.display = activeType === 'project' ? '' : 'none';
-      formTitle.textContent = activeType === 'journal' ? 'Write a Journal Post' : 'Add a Project';
+      formTitle.textContent = activeType === 'journal' ? 'Write a Devlog Entry' : 'Add a Project';
       previewUrl.textContent = activeType === 'journal'
-        ? 'seventhboar.com/journal/post.html'
-        : 'seventhboar.com/projects/detail.html';
+        ? 'seventhboar.com/post/'
+        : 'seventhboar.com/project/';
       document.getElementById('draftRestored').classList.remove('show');
       updatePreview();
     });
@@ -238,7 +238,7 @@
             <div class="post-row-meta">${escapeHtml(post.category)} &middot; ${meta}</div>
           </div>
           <div class="post-row-actions">
-            <a class="icon-btn" href="/journal/post.html?id=${encodeURIComponent(post.id)}">View</a>
+            <a class="icon-btn" href="/post/?id=${encodeURIComponent(post.id)}">View</a>
             <button class="icon-btn danger" data-delete-post="${escapeHtml(post.id)}">Delete</button>
           </div>
         </div>`;
@@ -271,7 +271,7 @@
             <div class="post-row-meta">${escapeHtml((project.categories || []).join(', '))} &middot; ${meta}</div>
           </div>
           <div class="post-row-actions">
-            <a class="icon-btn" href="/projects/detail.html?id=${encodeURIComponent(project.id)}">View</a>
+            <a class="icon-btn" href="/project/?id=${encodeURIComponent(project.id)}">View</a>
             <button class="icon-btn danger" data-delete-project="${escapeHtml(project.id)}">Delete</button>
           </div>
         </div>`;

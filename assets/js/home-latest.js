@@ -1,5 +1,19 @@
-/* Homepage: renders the latest projects + journal posts from the live CMS. */
+/* Homepage: hero parallax, and renders the latest projects + devlog entries from the live CMS. */
 (function () {
+  // Subtle parallax on the hero photo as the page scrolls.
+  const heroBg = document.getElementById('heroBg');
+  if (heroBg && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        heroBg.style.transform = `translateY(${window.scrollY * 0.22}px)`;
+        ticking = false;
+      });
+    }, { passive: true });
+  }
+
   function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str == null ? '' : str;
@@ -11,26 +25,17 @@
   }
 
   function projectCardMarkup(project) {
-    const visual = `
-      <div class="project-visual project-visual--brand">
-        <div class="project-banner project-banner--card project-banner--photo" style="background-image:url('${escapeHtml(project.banner)}')">
-          <div class="project-banner__copy">
-            <span class="project-banner__eyebrow">${escapeHtml((project.categories || [])[0] || 'Project')}</span>
-            <strong>${escapeHtml(project.title)}</strong>
-            <span>${escapeHtml(project.tagline)}</span>
-          </div>
-          ${project.icon ? `<div class="app-icon-frame app-icon-frame--card"><img src="${escapeHtml(project.icon)}" alt="${escapeHtml(project.title)} icon" /></div>` : ''}
-        </div>
-      </div>
-    `;
     return `
       <article class="card project-card reveal">
-        ${visual}
-        <div class="meta">
-          ${(project.platforms || []).map((tag) => `<span class="chip ink">${escapeHtml(tag)}</span>`).join('')}
+        <img class="card-media" src="${escapeHtml(project.banner)}" alt="${escapeHtml(project.title)}" />
+        <div class="card-body">
+          <div class="meta">
+            ${(project.platforms || []).map((tag) => `<span class="chip ink">${escapeHtml(tag)}</span>`).join('')}
+          </div>
+          <h3>${escapeHtml(project.title)}</h3>
+          <p>${escapeHtml(project.tagline)}</p>
+          <footer><a class="text-link" href="/project/?id=${encodeURIComponent(project.id)}">View project</a></footer>
         </div>
-        <h3>${escapeHtml(project.title)}</h3>
-        <footer><a class="text-link" href="/projects/detail.html?id=${encodeURIComponent(project.id)}">View project</a></footer>
       </article>
     `;
   }
@@ -38,16 +43,19 @@
   function postCardMarkup(post) {
     return `
       <article class="card article-card reveal">
-        <div class="meta">
-          <span class="chip">Journal</span>
-          <span class="chip ink">${escapeHtml(post.category)}</span>
+        <img class="card-media" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" />
+        <div class="card-body">
+          <div class="meta">
+            <span class="chip">Devlog</span>
+            <span class="chip ink">${escapeHtml(post.category)}</span>
+          </div>
+          <h3>${escapeHtml(post.title)}</h3>
+          <p>${escapeHtml(post.excerpt)}</p>
+          <footer>
+            <p class="microcopy">Published ${formatDate(post.date)}</p>
+            <a class="text-link" href="/post/?id=${encodeURIComponent(post.id)}">Read entry</a>
+          </footer>
         </div>
-        <h3>${escapeHtml(post.title)}</h3>
-        <p>${escapeHtml(post.excerpt)}</p>
-        <footer>
-          <p class="microcopy">Published ${formatDate(post.date)}</p>
-          <a class="text-link" href="/journal/post.html?id=${encodeURIComponent(post.id)}">Read post</a>
-        </footer>
       </article>
     `;
   }
@@ -70,7 +78,7 @@
 
     postsTarget.innerHTML = latestPosts.length
       ? latestPosts.map(postCardMarkup).join('')
-      : '<p class="section-copy">Journal posts will appear here as they are published.</p>';
+      : '<p class="section-copy">Devlog entries will appear here as they are published.</p>';
     window.ScrollReveal.scan(postsTarget);
   })();
 })();

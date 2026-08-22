@@ -6,16 +6,16 @@
     <title>Contact | Seventh Boar Development</title>
     <meta
       name="description"
-      content="Contact Seventh Boar Development."
+      content="Contact Seventh Boar Development for business enquiries, feedback, or general questions."
     />
-    <link rel="icon" type="image/png" href="assets/images/seventh-boar-mark.png" />
-    <link rel="stylesheet" href="assets/css/styles.css" />
+    <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark.png" />
+    <link rel="stylesheet" href="/assets/css/styles.css" />
   </head>
   <body class="site-frame" data-nav="contact">
     <header class="site-header">
       <div class="shell nav-shell">
         <a class="brand" href="/" aria-label="Seventh Boar Development home">
-          <img src="assets/images/seventh-boar-mark.png" alt="" />
+          <img src="/assets/images/seventh-boar-mark.png" alt="" />
           <span>
             <strong>Seventh Boar</strong>
             <em>Development</em>
@@ -28,11 +28,11 @@
         </button>
         <nav class="site-nav" id="site-menu" data-nav-panel>
           <a href="/" data-page="home">Home</a>
-          <a href="work.html" data-page="work">Work</a>
-          <a href="services.html" data-page="services">Services</a>
-          <a href="journal.html" data-page="journal">Journal</a>
-          <a href="about.html" data-page="about">About</a>
-          <a href="contact.html" data-page="contact">Contact</a>
+          <a href="/work/" data-page="work">Work</a>
+          <a href="/services/" data-page="services">Services</a>
+          <a href="/devlog/" data-page="devlog">Devlog</a>
+          <a href="/about/" data-page="about">About</a>
+          <a href="/contact/" data-page="contact">Contact</a>
         </nav>
       </div>
     </header>
@@ -50,9 +50,7 @@
           <aside class="panel ink-panel reveal">
             <div class="eyebrow">Direct Contact</div>
             <h2 class="mini-title">Admin@seventhboar.com</h2>
-            <p>
-              Email directly or use the form below to prepare a message for the same inbox.
-            </p>
+            <p>Email directly or use the form below to prepare a message for the same inbox.</p>
             <div class="hero-actions">
               <a class="button-ghost" href="mailto:Admin@seventhboar.com">Email directly</a>
             </div>
@@ -84,8 +82,8 @@
 
       <section class="section">
         <div class="shell contact-grid">
-          <div class="form-shell reveal">
-            <form class="form-grid" data-contact-form>
+          <form class="form-shell reveal" data-contact-form>
+            <div class="form-grid">
               <div class="field">
                 <label for="name">Name</label>
                 <input id="name" name="name" type="text" required />
@@ -102,9 +100,10 @@
                 <label for="reason">Reason</label>
                 <select id="reason" name="reason">
                   <option>General enquiry</option>
-                  <option>Business</option>
+                  <option>Project / commission enquiry</option>
+                  <option>Press or partnership</option>
                   <option>Website feedback</option>
-                  <option>Press or media</option>
+                  <option>Other</option>
                 </select>
               </div>
               <div class="field-full">
@@ -113,40 +112,32 @@
               </div>
               <div class="field-full">
                 <label for="message">Message</label>
-                <textarea id="message" name="message"></textarea>
+                <textarea id="message" name="message" required></textarea>
               </div>
-              <div class="field-full">
-                <button class="button" type="submit">Open Email Draft</button>
-              </div>
-            </form>
-            <p class="form-note">
-              The form opens an email draft addressed to Seventh Boar Development.
-            </p>
-          </div>
-
+            </div>
+            <button class="button" type="submit">Open Email Draft</button>
+            <p class="form-note">The form opens an email draft addressed to Seventh Boar Development.</p>
+          </form>
           <div class="form-aside">
-            <article class="panel quiet-panel reveal">
+            <div class="panel reveal">
               <div class="eyebrow">Helpful Notes</div>
               <ul class="feature-list">
                 <li>Use the direct email if you prefer not to use the form.</li>
                 <li>Include any useful context so the message can be answered clearly.</li>
                 <li>Follow the social channels for studio updates and project posts.</li>
               </ul>
-            </article>
-            <article class="panel quiet-panel reveal">
+            </div>
+            <div class="panel reveal">
               <div class="eyebrow">Social</div>
               <ul class="feature-list">
                 <li><a href="https://instagram.com/seventhboardevelopment">Instagram</a></li>
                 <li><a href="https://www.tiktok.com/@seventhboardevelopment">TikTok</a></li>
               </ul>
-            </article>
-            <article class="panel quiet-panel reveal">
+            </div>
+            <div class="panel reveal">
               <div class="eyebrow">Direct</div>
-              <p class="section-copy">
-                For anything connected to Seventh Boar Development, contact the company directly at
-                Admin@seventhboar.com.
-              </p>
-            </article>
+              <p>For anything connected to Seventh Boar Development, contact the company directly at Admin@seventhboar.com.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -157,7 +148,7 @@
         <div class="footer-grid">
           <div>
             <div class="brand">
-              <img src="assets/images/seventh-boar-mark.png" alt="" />
+              <img src="/assets/images/seventh-boar-mark.png" alt="" />
               <span>
                 <strong>Seventh Boar</strong>
                 <em>Development</em>
@@ -168,10 +159,10 @@
           <div>
             <h3>Pages</h3>
             <ul>
-              <li><a href="work.html">Work</a></li>
-              <li><a href="services.html">Services</a></li>
-              <li><a href="journal.html">Journal</a></li>
-              <li><a href="privacy.html">Privacy</a></li>
+              <li><a href="/work/">Work</a></li>
+              <li><a href="/services/">Services</a></li>
+              <li><a href="/devlog/">Devlog</a></li>
+              <li><a href="/privacy/">Privacy</a></li>
             </ul>
           </div>
           <div>
@@ -195,7 +186,7 @@
       </div>
     </footer>
 
-    <script src="assets/js/reveal.js"></script>
-    <script src="assets/js/site.js"></script>
+    <script src="/assets/js/reveal.js"></script>
+    <script src="/assets/js/site.js"></script>
   </body>
 </html>

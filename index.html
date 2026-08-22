@@ -8,14 +8,14 @@
       name="description"
       content="Seventh Boar Development creates polished apps and engaging games for iOS, Android and PC."
     />
-    <link rel="icon" type="image/png" href="assets/images/seventh-boar-mark.png" />
-    <link rel="stylesheet" href="assets/css/styles.css" />
+    <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark.png" />
+    <link rel="stylesheet" href="/assets/css/styles.css" />
   </head>
   <body class="site-frame" data-nav="home">
     <header class="site-header">
       <div class="shell nav-shell">
         <a class="brand" href="/" aria-label="Seventh Boar Development home">
-          <img src="assets/images/seventh-boar-mark.png" alt="" />
+          <img src="/assets/images/seventh-boar-mark.png" alt="" />
           <span>
             <strong>Seventh Boar</strong>
             <em>Development</em>
@@ -41,47 +41,37 @@
         </button>
         <nav class="site-nav" id="site-menu" data-nav-panel>
           <a href="/" data-page="home">Home</a>
-          <a href="work.html" data-page="work">Work</a>
-          <a href="services.html" data-page="services">Services</a>
-          <a href="journal.html" data-page="journal">Journal</a>
-          <a href="about.html" data-page="about">About</a>
-          <a href="contact.html" data-page="contact">Contact</a>
+          <a href="/work/" data-page="work">Work</a>
+          <a href="/services/" data-page="services">Services</a>
+          <a href="/devlog/" data-page="devlog">Devlog</a>
+          <a href="/about/" data-page="about">About</a>
+          <a href="/contact/" data-page="contact">Contact</a>
         </nav>
       </div>
     </header>
 
     <main>
       <section class="hero">
-        <div class="shell hero-grid">
+        <div class="hero-bg" id="heroBg"></div>
+        <div class="hero-scrim"></div>
+        <div class="hero-content">
+          <div class="hero-actions">
+            <a class="button" href="/work/">View the work</a>
+            <a class="button-ghost" href="/devlog/">Read the devlog</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="page-hero" style="padding-bottom: 0.5rem">
+        <div class="shell">
           <div class="hero-copy reveal">
             <div class="eyebrow">Independent Australian Studio</div>
             <h1>Built With Purpose. Made With Bite</h1>
-            <p class="hero-lead">
+            <p class="page-lead">
               Seventh Boar Development creates polished apps and engaging games for iOS, Android
               and PC.
             </p>
-            <div class="hero-actions">
-              <a class="button" href="work.html">View the work</a>
-              <a class="button-ghost" href="journal.html">Read the journal</a>
-            </div>
           </div>
-          <aside class="hero-panel ink-panel reveal">
-            <div class="hero-panel-label">At a Glance</div>
-            <div class="story-list">
-              <div class="story-item">
-                <strong>Apps</strong>
-                <p>Useful, intuitive products built for real people.</p>
-              </div>
-              <div class="story-item">
-                <strong>Games</strong>
-                <p>Original experiences designed to keep players engaged.</p>
-              </div>
-              <div class="story-item">
-                <strong>Independent</strong>
-                <p>Australian-made development with ambition beyond borders.</p>
-              </div>
-            </div>
-          </aside>
         </div>
       </section>
 
@@ -89,19 +79,19 @@
         <div class="shell">
           <div class="overview-strip reveal">
             <div class="overview-item">
-              <span class="overview-label">Purposeful Design</span>
-              <strong>Every feature earns its place.</strong>
-              <p>Design decisions stay focused, intentional, and clear from the start.</p>
+              <span class="overview-label">Apps</span>
+              <strong>Useful, intuitive products</strong>
+              <p>Practical tools built for real people, on real devices, every day.</p>
             </div>
             <div class="overview-item">
-              <span class="overview-label">Built In-House</span>
-              <strong>From the first idea to the final release.</strong>
-              <p>The work stays close to the studio vision all the way through development.</p>
+              <span class="overview-label">Games</span>
+              <strong>Original experiences</strong>
+              <p>Interactive ideas designed to keep players engaged and coming back.</p>
             </div>
             <div class="overview-item">
-              <span class="overview-label">Always Evolving</span>
-              <strong>Tested, refined and improved with every build.</strong>
-              <p>Each release is part of an ongoing process of learning and sharpening.</p>
+              <span class="overview-label">Independent</span>
+              <strong>Australian-made</strong>
+              <p>Small studio, big ambition — development with a clear point of view.</p>
             </div>
           </div>
         </div>
@@ -119,7 +109,7 @@
             </p>
           </div>
           <nav class="site-index reveal" aria-label="Site sections">
-            <a class="site-index-row" href="work.html">
+            <a class="site-index-row" href="/work/">
               <span class="site-index-number">01</span>
               <span class="site-index-copy">
                 <strong>Work</strong>
@@ -127,7 +117,7 @@
               </span>
               <span class="site-index-arrow" aria-hidden="true">&rarr;</span>
             </a>
-            <a class="site-index-row" href="services.html">
+            <a class="site-index-row" href="/services/">
               <span class="site-index-number">02</span>
               <span class="site-index-copy">
                 <strong>Services</strong>
@@ -135,15 +125,15 @@
               </span>
               <span class="site-index-arrow" aria-hidden="true">&rarr;</span>
             </a>
-            <a class="site-index-row" href="journal.html">
+            <a class="site-index-row" href="/devlog/">
               <span class="site-index-number">03</span>
               <span class="site-index-copy">
-                <strong>Journal</strong>
+                <strong>Devlog</strong>
                 <span>Development updates, lessons learned and a look behind the builds.</span>
               </span>
               <span class="site-index-arrow" aria-hidden="true">&rarr;</span>
             </a>
-            <a class="site-index-row" href="about.html">
+            <a class="site-index-row" href="/about/">
               <span class="site-index-number">04</span>
               <span class="site-index-copy">
                 <strong>About</strong>
@@ -151,7 +141,7 @@
               </span>
               <span class="site-index-arrow" aria-hidden="true">&rarr;</span>
             </a>
-            <a class="site-index-row" href="contact.html">
+            <a class="site-index-row" href="/contact/">
               <span class="site-index-number">05</span>
               <span class="site-index-copy">
                 <strong>Contact</strong>
@@ -190,7 +180,7 @@
               selected collaborations rather than open client intake.
             </p>
             <div class="hero-actions">
-              <a class="button-ghost" href="services.html">View services</a>
+              <a class="button-ghost" href="/services/">View services</a>
             </div>
           </article>
           <article class="panel ink-panel reveal">
@@ -201,7 +191,7 @@
               practical digital experiences.
             </p>
             <div class="hero-actions">
-              <a class="button-ghost" href="about.html">Open About</a>
+              <a class="button-ghost" href="/about/">Open About</a>
             </div>
           </article>
         </div>
@@ -211,8 +201,8 @@
         <div class="shell">
           <div class="section-header reveal">
             <div>
-              <div class="eyebrow">Latest Blog Posts</div>
-              <h2 class="section-title">Recent writing from the journal.</h2>
+              <div class="eyebrow">From The Devlog</div>
+              <h2 class="section-title">Recent writing from the devlog.</h2>
             </div>
             <p class="section-copy">
               Recent notes on project progress, product decisions, lessons learned, and studio growth.
@@ -224,22 +214,16 @@
         </div>
       </section>
 
-      <section class="section">
+      <section class="contact-band">
         <div class="shell">
-          <div class="panel ink-panel reveal">
-            <div class="section-header">
-              <div>
-                <div class="eyebrow">Contact</div>
-                <h2 class="section-title">General business enquiries and direct contact.</h2>
-              </div>
-              <p class="section-copy">
-                General questions, business communication, and direct messages can be sent to
-                Admin@seventhboar.com.
-              </p>
-            </div>
-            <div class="hero-actions">
-              <a class="button" href="contact.html">Contact us</a>
-            </div>
+          <span class="eyebrow">Contact</span>
+          <h2>General business enquiries and direct contact.</h2>
+          <p>
+            General questions, business communication, and direct messages can be sent to
+            Admin@seventhboar.com.
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="/contact/">Contact us</a>
           </div>
         </div>
       </section>
@@ -250,7 +234,7 @@
         <div class="footer-grid">
           <div>
             <div class="brand" aria-label="Seventh Boar Development">
-              <img src="assets/images/seventh-boar-mark.png" alt="" />
+              <img src="/assets/images/seventh-boar-mark.png" alt="" />
               <span>
                 <strong>Seventh Boar</strong>
                 <em>Development</em>
@@ -261,17 +245,17 @@
           <div>
             <h3>Explore</h3>
             <ul>
-              <li><a href="work.html">Work</a></li>
-              <li><a href="services.html">Services</a></li>
-              <li><a href="journal.html">Journal</a></li>
+              <li><a href="/work/">Work</a></li>
+              <li><a href="/services/">Services</a></li>
+              <li><a href="/devlog/">Devlog</a></li>
             </ul>
           </div>
           <div>
             <h3>Company</h3>
             <ul>
-              <li><a href="about.html">About</a></li>
-              <li><a href="contact.html">Contact</a></li>
-              <li><a href="privacy.html">Privacy</a></li>
+              <li><a href="/about/">About</a></li>
+              <li><a href="/contact/">Contact</a></li>
+              <li><a href="/privacy/">Privacy</a></li>
             </ul>
           </div>
           <div>
@@ -291,9 +275,9 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="assets/js/cms.js"></script>
-    <script src="assets/js/reveal.js"></script>
-    <script src="assets/js/home-latest.js"></script>
-    <script src="assets/js/site.js"></script>
+    <script src="/assets/js/cms.js"></script>
+    <script src="/assets/js/reveal.js"></script>
+    <script src="/assets/js/home-latest.js"></script>
+    <script src="/assets/js/site.js"></script>
   </body>
 </html>

@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
     <title>Studio Dashboard | Seventh Boar Development</title>
-    <link rel="icon" type="image/png" href="../../assets/images/seventh-boar-mark.png" />
-    <link rel="stylesheet" href="../../assets/css/styles.css" />
+    <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark.png" />
+    <link rel="stylesheet" href="/assets/css/styles.css" />
   </head>
   <body class="site-frame">
     <header class="site-header">
       <div class="shell nav-shell">
         <a class="brand" href="/" aria-label="Seventh Boar Development home">
-          <img src="../../assets/images/seventh-boar-mark.png" alt="" />
+          <img src="/assets/images/seventh-boar-mark.png" alt="" />
           <span>
             <strong>Seventh Boar</strong>
             <em>Development</em>
@@ -35,14 +35,14 @@
       <section class="section">
         <div class="shell">
           <div class="type-toggle" role="tablist" aria-label="Content type">
-            <button type="button" class="type-toggle-option is-active" data-type="journal">Journal Post</button>
+            <button type="button" class="type-toggle-option is-active" data-type="journal">Devlog Entry</button>
             <button type="button" class="type-toggle-option" data-type="project">Project</button>
           </div>
 
           <div class="dashboard">
             <div class="dashboard-panel">
               <div class="dashboard-header">
-                <h2 class="mini-title" id="formTitle">Write a Journal Post</h2>
+                <h2 class="mini-title" id="formTitle">Write a Devlog Entry</h2>
               </div>
 
               <div class="form-success" id="formSuccess"></div>
@@ -51,7 +51,7 @@
                 <button type="button" id="discardDraftBtn" class="icon-btn" style="text-decoration: underline">Discard it</button>
               </div>
 
-              <!-- ---------- Journal form ---------- -->
+              <!-- ---------- Devlog form ---------- -->
               <form id="journalForm">
                 <div class="form-group">
                   <label for="jTitle">Title</label>
@@ -59,7 +59,7 @@
                 </div>
                 <div class="form-group">
                   <label for="jCategory">Category</label>
-                  <input type="text" id="jCategory" required placeholder="e.g. Studio Journal, Commissioned Work" />
+                  <input type="text" id="jCategory" required placeholder="e.g. Devlog, Commissioned Work" />
                 </div>
                 <div class="form-group">
                   <label for="jImage">Cover Image</label>
@@ -71,8 +71,8 @@
                   <input type="text" id="jExcerpt" required maxlength="200" placeholder="One or two sentences shown on post cards" />
                 </div>
                 <div class="form-group">
-                  <label>Post Content</label>
-                  <p class="form-hint">Build the post block by block — titles and subtitles break up the story, paragraphs come in three sizes.</p>
+                  <label>Entry Content</label>
+                  <p class="form-hint">Build the entry block by block — titles and subtitles break up the story, paragraphs come in three sizes.</p>
                   <div id="journalBlocks"></div>
                   <button type="button" id="jAddBlockBtn" class="button-ghost">+ Add Block</button>
                 </div>
@@ -86,7 +86,7 @@
                     <input type="datetime-local" id="jPublishAt" />
                   </div>
                 </div>
-                <button type="submit" class="button" id="jSubmitBtn" style="width: 100%">Publish Post</button>
+                <button type="submit" class="button" id="jSubmitBtn" style="width: 100%">Publish Entry</button>
               </form>
 
               <!-- ---------- Project form ---------- -->
@@ -128,7 +128,7 @@
                 </div>
                 <div class="form-group">
                   <label>The Brief</label>
-                  <p class="form-hint">A photo and a short write-up of what it is — build it block by block same as a post.</p>
+                  <p class="form-hint">A photo and a short write-up of what it is — build it block by block same as an entry.</p>
                   <div id="projectBlocks"></div>
                   <button type="button" id="pAddBlockBtn" class="button-ghost">+ Add Block</button>
                 </div>
@@ -159,7 +159,7 @@
               <div class="preview-frame">
                 <div class="preview-chrome">
                   <span class="preview-dot"></span><span class="preview-dot"></span><span class="preview-dot"></span>
-                  <span class="preview-url" id="previewUrl">seventhboar.com/journal/post.html</span>
+                  <span class="preview-url" id="previewUrl">seventhboar.com/post/</span>
                 </div>
                 <div class="preview-scroll">
                   <div class="preview-content" id="previewContent"></div>
@@ -174,7 +174,7 @@
         <div class="shell">
           <div class="dashboard-panel">
             <div class="dashboard-header">
-              <h2 class="mini-title">Published Journal Posts</h2>
+              <h2 class="mini-title">Published Devlog Entries</h2>
             </div>
             <div id="journalList"></div>
           </div>
@@ -210,7 +210,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../../assets/js/cms.js"></script>
-    <script src="../../assets/js/admin-dashboard.js"></script>
+    <script src="/assets/js/cms.js"></script>
+    <script src="/assets/js/admin-dashboard.js"></script>
   </body>
 </html>

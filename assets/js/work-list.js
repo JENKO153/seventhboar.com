@@ -13,41 +13,18 @@
   }
 
   function projectCardMarkup(project) {
-    const visual = project.icon
-      ? `
-        <div class="project-visual project-visual--brand">
-          <div class="project-banner project-banner--card project-banner--photo" style="background-image:url('${escapeHtml(project.banner)}')">
-            <div class="project-banner__copy">
-              <span class="project-banner__eyebrow">${escapeHtml((project.categories || [])[0] || 'Project')}</span>
-              <strong>${escapeHtml(project.title)}</strong>
-              <span>${escapeHtml(project.tagline)}</span>
-            </div>
-            <div class="app-icon-frame app-icon-frame--card">
-              <img src="${escapeHtml(project.icon)}" alt="${escapeHtml(project.title)} icon" />
-            </div>
-          </div>
-        </div>
-      `
-      : `
-        <div class="project-visual project-visual--brand">
-          <div class="project-banner project-banner--card project-banner--photo" style="background-image:url('${escapeHtml(project.banner)}')">
-            <div class="project-banner__copy">
-              <span class="project-banner__eyebrow">${escapeHtml((project.categories || [])[0] || 'Project')}</span>
-              <strong>${escapeHtml(project.title)}</strong>
-              <span>${escapeHtml(project.tagline)}</span>
-            </div>
-          </div>
-        </div>
-      `;
-
     return `
       <article class="card project-card reveal">
-        ${visual}
-        <div class="meta">
-          ${(project.platforms || []).map((tag) => `<span class="chip ink">${escapeHtml(tag)}</span>`).join('')}
+        <img class="card-media" src="${escapeHtml(project.banner)}" alt="${escapeHtml(project.title)}" />
+        <div class="card-body">
+          <div class="meta">
+            ${(project.categories || []).map((cat) => `<span class="chip">${escapeHtml(cat)}</span>`).join('')}
+            ${(project.platforms || []).map((tag) => `<span class="chip ink">${escapeHtml(tag)}</span>`).join('')}
+          </div>
+          <h3>${escapeHtml(project.title)}</h3>
+          <p>${escapeHtml(project.tagline)}</p>
+          <footer><a class="text-link" href="/project/?id=${encodeURIComponent(project.id)}">View project</a></footer>
         </div>
-        <h3>${escapeHtml(project.title)}</h3>
-        <footer><a class="text-link" href="/projects/detail.html?id=${encodeURIComponent(project.id)}">View project</a></footer>
       </article>
     `;
   }
@@ -59,7 +36,9 @@
     }
 
     if (projects.length === 0) {
-      grid.innerHTML = '<p class="section-copy">No projects in this category yet.</p>';
+      grid.innerHTML = allProjects.length === 0
+        ? '<p class="section-copy">Project pages will appear here as they are published.</p>'
+        : '<p class="section-copy">No projects in this category yet.</p>';
       return;
     }
 

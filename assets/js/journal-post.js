@@ -1,4 +1,4 @@
-/* Single journal post page: reads ?id= from the URL and renders the post. */
+/* Single devlog entry page: reads ?id= from the URL and renders the post. */
 (function () {
   function escapeHtml(str) {
     const div = document.createElement('div');
@@ -36,10 +36,10 @@
       <section class="page-hero">
         <div class="shell">
           <div class="hero-copy">
-            <div class="eyebrow">Journal</div>
-            <h1>Post not found.</h1>
-            <p class="page-lead">This post may have been removed, unpublished, or the link is incorrect.</p>
-            <div class="hero-actions"><a class="button" href="/journal.html">Back to the Journal</a></div>
+            <div class="eyebrow">Devlog</div>
+            <h1>Entry not found.</h1>
+            <p class="page-lead">This entry may have been removed, unpublished, or the link is incorrect.</p>
+            <div class="hero-actions"><a class="button" href="/devlog/">Back to the Devlog</a></div>
           </div>
         </div>
       </section>
@@ -65,14 +65,14 @@
       </section>
       <section class="section">
         <div class="shell">
-          <img src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" style="width:100%;max-height:26rem;object-fit:cover;border:1px solid var(--line);margin-bottom:2rem;" />
+          <img class="post-hero-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" />
           <div class="article-layout">
             <article class="panel article-body reveal">${bodyHtml}</article>
             <aside class="article-side">
               <div class="panel reveal">
-                <h2 class="mini-title">Back to the Journal</h2>
+                <h2 class="mini-title">Back to the Devlog</h2>
                 <p>More studio notes, project decisions, and behind-the-build writing.</p>
-                <a class="text-link" href="/journal.html">All posts</a>
+                <a class="text-link" href="/devlog/">All entries</a>
               </div>
             </aside>
           </div>
@@ -90,13 +90,16 @@
     const grid = document.getElementById('relatedPosts');
     grid.innerHTML = related.map((p) => `
       <article class="card article-card reveal">
-        <div class="meta">
-          <span class="chip">Journal</span>
-          <span class="chip ink">${escapeHtml(p.category)}</span>
+        <img class="card-media" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" />
+        <div class="card-body">
+          <div class="meta">
+            <span class="chip">Devlog</span>
+            <span class="chip ink">${escapeHtml(p.category)}</span>
+          </div>
+          <h3>${escapeHtml(p.title)}</h3>
+          <p>${escapeHtml(p.excerpt)}</p>
+          <footer><a class="text-link" href="/post/?id=${encodeURIComponent(p.id)}">Read entry</a></footer>
         </div>
-        <h3>${escapeHtml(p.title)}</h3>
-        <p>${escapeHtml(p.excerpt)}</p>
-        <footer><a class="text-link" href="/journal/post.html?id=${encodeURIComponent(p.id)}">Read post</a></footer>
       </article>
     `).join('');
     window.ScrollReveal.scan(grid);

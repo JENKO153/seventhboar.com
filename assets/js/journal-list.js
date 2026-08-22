@@ -1,4 +1,4 @@
-/* Journal listing page: category filter pills + live search over all posts. */
+/* Devlog listing page: category filter pills + live search over all entries. */
 (function () {
   const grid = document.getElementById('postsGrid');
   const filterTagsContainer = document.getElementById('filterTags');
@@ -52,23 +52,26 @@
 
     if (posts.length === 0) {
       grid.innerHTML = allPosts.length === 0
-        ? '<p class="section-copy">No posts published yet — check back soon.</p>'
-        : '<p class="section-copy">No posts match that search yet.</p>';
+        ? '<p class="section-copy">No entries published yet — check back soon.</p>'
+        : '<p class="section-copy">No entries match that search yet.</p>';
       return;
     }
 
     grid.innerHTML = posts.map((post) => `
       <article class="card article-card reveal">
-        <div class="meta">
-          <span class="chip">Journal</span>
-          <span class="chip ink">${escapeHtml(post.category)}</span>
+        <img class="card-media" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" />
+        <div class="card-body">
+          <div class="meta">
+            <span class="chip">Devlog</span>
+            <span class="chip ink">${escapeHtml(post.category)}</span>
+          </div>
+          <h3>${escapeHtml(post.title)}</h3>
+          <p>${escapeHtml(post.excerpt)}</p>
+          <footer>
+            <p class="microcopy">Published ${formatDate(post.date)}</p>
+            <a class="text-link" href="/post/?id=${encodeURIComponent(post.id)}">Read entry</a>
+          </footer>
         </div>
-        <h3>${escapeHtml(post.title)}</h3>
-        <p>${escapeHtml(post.excerpt)}</p>
-        <footer>
-          <p class="microcopy">Published ${formatDate(post.date)}</p>
-          <a class="text-link" href="/journal/post.html?id=${encodeURIComponent(post.id)}">Read post</a>
-        </footer>
       </article>
     `).join('');
 

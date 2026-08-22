@@ -30,7 +30,7 @@
             <div class="eyebrow">Work</div>
             <h1>Project not found.</h1>
             <p class="page-lead">This project may have been removed, unpublished, or the link is incorrect.</p>
-            <div class="hero-actions"><a class="button" href="/work.html">Back to Work</a></div>
+            <div class="hero-actions"><a class="button" href="/work/">Back to Work</a></div>
           </div>
         </div>
       </section>

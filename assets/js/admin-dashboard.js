@@ -42,18 +42,17 @@
   function renderClientCardHtml(project) {
     if (!project.clientLogo && !(project.clientLinks || []).length) return '';
     const links = (project.clientLinks || []).map((l) => `
-      <a class="client-social-link" href="${escapeHtml(l.url)}" target="_blank" rel="noopener">
-        ${socialIconSvg(l.platform)}<span>${escapeHtml(l.label)}</span>
+      <a class="client-social-link" href="${escapeHtml(l.url)}" target="_blank" rel="noopener" title="${escapeHtml(l.label)}" aria-label="${escapeHtml(l.label)}">
+        ${socialIconSvg(l.platform)}
       </a>
     `).join('');
     const logoHtml = project.clientLogo
-      ? `<img src="${escapeHtml(project.clientLogo)}" alt="${escapeHtml(project.client || 'Client')} logo" />`
+      ? `<div class="app-icon-frame app-icon-frame--client"><img src="${escapeHtml(project.clientLogo)}" alt="${escapeHtml(project.client || 'Client')} logo" /></div>`
       : '';
     return `
       <div class="client-card">
-        <div class="client-card-logo">${logoHtml}</div>
+        ${logoHtml}
         <div class="client-card-body">
-          <div class="client-card-label">Built For</div>
           <div class="client-card-name">${escapeHtml(project.client || 'Client')}</div>
           ${links ? `<div class="client-card-links">${links}</div>` : ''}
         </div>
@@ -578,11 +577,11 @@
       const imageHtml = journalImageDataUrl ? `<img class="post-hero-img" src="${journalImageDataUrl}" alt="">` : '';
       const readingMinutes = blocks.length ? estimateReadingMinutes(blocks) : 1;
       html = `
-        <span class="chip ink">${escapeHtml(category || 'Category')}</span>
+        <div class="eyebrow">${escapeHtml(category || 'Category')}</div>
         <h1>${escapeHtml(title || 'Your Post Title')}</h1>
-        <div class="post-meta">${formatDate(new Date().toISOString())} &middot; ${readingMinutes} min read</div>
+        <p class="article-lead">${formatDate(new Date().toISOString())} &middot; ${readingMinutes} min read</p>
         ${imageHtml}
-        <div>${bodyHtml}</div>
+        <div class="article-body">${bodyHtml}</div>
       `;
     } else {
       const title = document.getElementById('pTitle').value.trim();
@@ -600,10 +599,10 @@
       });
       html = `
         <h1>${escapeHtml(title || 'Project Title')}</h1>
-        <div class="project-meta">${escapeHtml(tagline || 'Tagline goes here')}${client ? ' &middot; for ' + escapeHtml(client) : ''}</div>
+        <p class="page-lead">${escapeHtml(tagline || 'Tagline goes here')}${client ? ' &middot; for ' + escapeHtml(client) : ''}</p>
         ${imageHtml}
         ${clientCardHtml}
-        <div>${bodyHtml}</div>
+        <div class="case-block">${bodyHtml}</div>
       `;
     }
 

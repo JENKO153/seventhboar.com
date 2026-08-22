@@ -19,19 +19,17 @@
   function renderClientCard(project) {
     if (!project.clientLogo && !(project.clientLinks || []).length) return '';
     const links = (project.clientLinks || []).map((l) => `
-      <a class="client-social-link" href="${escapeHtml(l.url)}" target="_blank" rel="noopener">
+      <a class="client-social-link" href="${escapeHtml(l.url)}" target="_blank" rel="noopener" title="${escapeHtml(l.label)}" aria-label="${escapeHtml(l.label)}">
         <svg viewBox="0 0 24 24"><path d="${SOCIAL_ICON_PATHS[l.platform] || ''}"/></svg>
-        <span>${escapeHtml(l.label)}</span>
       </a>
     `).join('');
     const logoHtml = project.clientLogo
-      ? `<img src="${escapeHtml(project.clientLogo)}" alt="${escapeHtml(project.client || 'Client')} logo" />`
+      ? `<div class="app-icon-frame app-icon-frame--client"><img src="${escapeHtml(project.clientLogo)}" alt="${escapeHtml(project.client || 'Client')} logo" /></div>`
       : '';
     return `
       <div class="client-card reveal">
-        <div class="client-card-logo">${logoHtml}</div>
+        ${logoHtml}
         <div class="client-card-body">
-          <div class="client-card-label">Built For</div>
           <div class="client-card-name">${escapeHtml(project.client || 'Client')}</div>
           ${links ? `<div class="client-card-links">${links}</div>` : ''}
         </div>

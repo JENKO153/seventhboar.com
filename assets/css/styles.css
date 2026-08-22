@@ -840,47 +840,26 @@ h3 {
 
 .client-card {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.8rem;
   border-radius: var(--radius);
-  background: var(--surface);
+  background: linear-gradient(160deg, var(--ink), #2c1416 120%);
   box-shadow: var(--shadow);
-  overflow: hidden;
-}
-
-.client-card-logo {
-  flex: 0 0 11rem;
-  display: grid;
-  place-items: center;
-  padding: 1.6rem;
-  background: var(--bg-soft);
-}
-
-.client-card-logo img {
-  width: 100%;
-  max-height: 6rem;
-  object-fit: contain;
 }
 
 .client-card-body {
-  flex: 1 1 220px;
-  padding: 1.6rem;
+  flex: 1 1 auto;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   gap: 0.7rem;
-}
-
-.client-card-label {
-  font-family: var(--heading-font);
-  font-size: 0.78rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--maroon);
 }
 
 .client-card-name {
   font-family: var(--heading-font);
-  font-size: 1.25rem;
+  font-size: 1.3rem;
+  color: #fff;
 }
 
 .client-card-links {
@@ -892,32 +871,37 @@ h3 {
 .client-social-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.9rem;
-  border-radius: 999px;
-  border: 1.5px solid var(--line-strong);
-  color: var(--ink-soft);
-  font-size: 0.85rem;
-  font-weight: 600;
-  transition: background 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease;
+  justify-content: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
 
 .client-social-link svg {
-  width: 1rem;
-  height: 1rem;
+  width: 1.05rem;
+  height: 1.05rem;
   fill: currentColor;
 }
 
 .client-social-link:hover {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: #fff;
+  background: var(--maroon);
+  border-color: var(--maroon);
   transform: translateY(-2px);
 }
 
 @media (max-width: 560px) {
-  .client-card-logo {
-    flex-basis: 100%;
+  .client-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .client-card-links {
+    justify-content: center;
   }
 }
 
@@ -1283,6 +1267,11 @@ h3 {
   margin-bottom: 1.5rem;
 }
 
+.app-icon-frame--client {
+  flex-shrink: 0;
+  width: 6rem;
+}
+
 /* ---------- Project banner ---------- */
 
 .project-banner {
@@ -1636,6 +1625,11 @@ textarea {
   transition: background 180ms ease, color 180ms ease;
 }
 
+.type-toggle-option:hover:not(.is-active) {
+  background: var(--bg-soft);
+  color: var(--ink);
+}
+
 .type-toggle-option.is-active {
   background: var(--ink);
   color: #fff;
@@ -1872,7 +1866,7 @@ textarea {
 
 .dashboard {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  grid-template-columns: 1fr 1.2fr;
   gap: 2rem;
   align-items: start;
 }
@@ -1897,12 +1891,19 @@ textarea {
   align-items: center;
   justify-content: space-between;
   gap: 0.85rem;
-  padding: 0.9rem 0;
+  margin: 0 -0.75rem;
+  padding: 0.9rem 0.75rem;
   border-top: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  transition: background 160ms ease;
 }
 
 .post-row:first-child {
   border-top: 0;
+}
+
+.post-row:hover {
+  background: var(--bg-soft);
 }
 
 .post-row-title {
@@ -1979,13 +1980,13 @@ textarea {
 }
 
 .preview-scroll {
-  max-height: 32rem;
+  max-height: 40rem;
   overflow-y: auto;
   background: var(--bg);
 }
 
 .preview-content {
-  padding: 1.5rem;
+  padding: 2.25rem 2rem;
   transition: opacity 220ms ease;
 }
 
@@ -1994,39 +1995,64 @@ textarea {
 }
 
 .preview-content h1 {
-  font-size: 1.35rem;
+  font-size: 1.9rem;
+  max-width: 16ch;
+}
+
+.preview-content .eyebrow {
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(151, 41, 42, 0.08);
+  font-size: 0.72rem;
+  letter-spacing: 0.13em;
+  margin-bottom: 1rem;
+}
+
+.preview-content .eyebrow::before {
+  display: none;
 }
 
 .preview-content .post-meta,
-.preview-content .project-meta {
-  font-size: 0.82rem;
-  color: var(--ink-soft);
-  margin-top: 0.5rem;
+.preview-content .project-meta,
+.preview-content .article-lead,
+.preview-content .page-lead {
+  font-size: 0.98rem;
+  margin: 0.6rem 0 0;
 }
 
 .preview-content .post-hero-img {
   width: 100%;
-  max-height: 11rem;
+  max-height: 15rem;
   object-fit: cover;
-  margin: 1rem 0;
+  margin: 1.4rem 0;
   box-shadow: none;
 }
 
 .preview-content .post-block-photo img {
-  max-height: 11rem;
+  max-height: 15rem;
   object-fit: cover;
   box-shadow: none;
 }
 
 .preview-content .client-card {
-  margin: 1rem 0;
+  margin: 1.4rem 0;
+  padding: 1.2rem;
   box-shadow: none;
-  border: 1px solid var(--line);
 }
 
-.preview-content .client-card-logo {
-  flex-basis: 6rem;
-  padding: 0.8rem;
+.preview-content .app-icon-frame--client {
+  width: 4rem;
+}
+
+.preview-content .article-body,
+.preview-content .case-block {
+  padding: 0;
+}
+
+.preview-content .article-body h2:not(:first-child),
+.preview-content .case-block h2:not(:first-child) {
+  margin-top: 2rem;
+  padding-top: 1.6rem;
 }
 
 .preview-placeholder {
@@ -2038,7 +2064,9 @@ textarea {
 @media (prefers-reduced-motion: reduce) {
   .preview-content,
   .schedule-panel,
-  .live-dot {
+  .live-dot,
+  .modal-overlay,
+  .modal-card {
     transition: none;
     animation: none;
   }
@@ -2063,6 +2091,7 @@ textarea {
   justify-content: center;
   padding: 1.25rem;
   background: rgba(20, 25, 30, 0.55);
+  animation: modalFadeIn 200ms ease;
 }
 
 .modal-card {
@@ -2072,6 +2101,17 @@ textarea {
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: var(--shadow-lift);
+  animation: modalPopIn 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalPopIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to { opacity: 1; transform: none; }
 }
 
 .modal-card h3 {

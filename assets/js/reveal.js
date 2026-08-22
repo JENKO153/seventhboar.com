@@ -8,12 +8,18 @@ window.ScrollReveal = (function () {
 
   const observer = prefersReduced ? null : new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
-      }
+      if (entry.isIntersecting) reveal(entry.target);
     });
-  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+  }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+
+  function reveal(el) {
+    el.classList.add('is-visible');
+    if (observer) observer.unobserve(el);
+    if (el.__revealFallback) {
+      clearTimeout(el.__revealFallback);
+      el.__revealFallback = null;
+    }
+  }
 
   function observe(el) {
     if (!el) return;
@@ -23,6 +29,11 @@ window.ScrollReveal = (function () {
     }
     el.classList.remove('is-visible');
     observer.observe(el);
+    // Safety net: mobile browsers occasionally fail to fire the intersection
+    // callback for content inserted after the initial page load (the devlog
+    // and work grids populate from the CMS on a delay) — never leave a card
+    // stuck invisible if that happens.
+    el.__revealFallback = setTimeout(() => reveal(el), 1500);
   }
 
   function scan(root) {

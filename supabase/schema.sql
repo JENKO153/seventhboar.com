@@ -43,8 +43,14 @@ create table if not exists projects (
   brief jsonb not null default '[]'::jsonb,
   featured boolean not null default false,
   published_at timestamptz not null default now(),
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  client_logo_url text,
+  client_links jsonb not null default '[]'::jsonb
 );
+
+-- Adds the client-card columns to a projects table created before they existed.
+alter table projects add column if not exists client_logo_url text;
+alter table projects add column if not exists client_links jsonb not null default '[]'::jsonb;
 
 alter table projects enable row level security;
 

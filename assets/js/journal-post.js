@@ -99,7 +99,7 @@
     document.getElementById('relatedSection').style.display = '';
     const grid = document.getElementById('relatedPosts');
     grid.innerHTML = related.map((p) => `
-      <article class="card article-card reveal">
+      <a class="card article-card reveal" href="/post/?id=${encodeURIComponent(p.id)}">
         <img class="card-media" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" />
         <div class="card-body">
           <div class="meta">
@@ -108,9 +108,9 @@
           </div>
           <h3>${escapeHtml(p.title)}</h3>
           <p>${escapeHtml(p.excerpt)}</p>
-          <footer><a class="text-link" href="/post/?id=${encodeURIComponent(p.id)}">Read entry</a></footer>
+          <footer><span class="text-link">Read entry</span></footer>
         </div>
-      </article>
+      </a>
     `).join('');
     window.ScrollReveal.scan(grid);
   }

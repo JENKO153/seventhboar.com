@@ -94,6 +94,20 @@
     return rowToPost(data);
   }
 
+  async function updatePost(slug, post) {
+    const row = {
+      title: post.title,
+      category: post.category,
+      excerpt: post.excerpt,
+      image_url: post.image,
+      content: post.content,
+      published_at: post.publishAt || new Date().toISOString()
+    };
+    const { data, error } = await requireClient().from('journal_posts').update(row).eq('slug', slug).select().single();
+    if (error) throw error;
+    return rowToPost(data);
+  }
+
   async function deletePost(slug) {
     const { error } = await requireClient().from('journal_posts').delete().eq('slug', slug);
     if (error) throw error;
@@ -112,7 +126,9 @@
       banner: row.banner_url,
       brief: row.brief,
       featured: row.featured,
-      date: row.published_at
+      date: row.published_at,
+      clientLogo: row.client_logo_url,
+      clientLinks: row.client_links || []
     };
   }
 
@@ -153,9 +169,31 @@
       banner_url: project.banner,
       brief: project.brief,
       featured: !!project.featured,
-      published_at: project.publishAt || new Date().toISOString()
+      published_at: project.publishAt || new Date().toISOString(),
+      client_logo_url: project.clientLogo || null,
+      client_links: project.clientLinks || []
     };
     const { data, error } = await requireClient().from('projects').insert(row).select().single();
+    if (error) throw error;
+    return rowToProject(data);
+  }
+
+  async function updateProject(slug, project) {
+    const row = {
+      title: project.title,
+      categories: project.categories || [],
+      platforms: project.platforms || [],
+      client: project.client || null,
+      tagline: project.tagline,
+      icon_url: project.icon || null,
+      banner_url: project.banner,
+      brief: project.brief,
+      featured: !!project.featured,
+      published_at: project.publishAt || new Date().toISOString(),
+      client_logo_url: project.clientLogo || null,
+      client_links: project.clientLinks || []
+    };
+    const { data, error } = await requireClient().from('projects').update(row).eq('slug', slug).select().single();
     if (error) throw error;
     return rowToProject(data);
   }
@@ -245,8 +283,8 @@
     return data.session;
   }
 
-  window.JournalData = { getPosts, getPostById, addPost, deletePost };
-  window.ProjectData = { getProjects, getProjectById, addProject, deleteProject };
+  window.JournalData = { getPosts, getPostById, addPost, updatePost, deletePost };
+  window.ProjectData = { getProjects, getProjectById, addProject, updateProject, deleteProject };
   window.CmsImages = { uploadImage, uploadImageFromDataUrl, resizeImageToDataUrl };
   window.CmsAuth = { login, logout, getSession, isConfigured: () => configured };
 })(window);

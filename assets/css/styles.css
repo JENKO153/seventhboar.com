@@ -796,7 +796,7 @@ h3 {
 
 .project-card:hover,
 .article-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px) scale(1.02);
   box-shadow: var(--shadow-lift);
 }
 
@@ -828,11 +828,97 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  margin-bottom: 0.9rem;
 }
 
 .microcopy {
   color: var(--ink-soft);
   font-size: 0.88rem;
+}
+
+/* ---------- Client card ---------- */
+
+.client-card {
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.client-card-logo {
+  flex: 0 0 11rem;
+  display: grid;
+  place-items: center;
+  padding: 1.6rem;
+  background: var(--bg-soft);
+}
+
+.client-card-logo img {
+  width: 100%;
+  max-height: 6rem;
+  object-fit: contain;
+}
+
+.client-card-body {
+  flex: 1 1 220px;
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.7rem;
+}
+
+.client-card-label {
+  font-family: var(--heading-font);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--maroon);
+}
+
+.client-card-name {
+  font-family: var(--heading-font);
+  font-size: 1.25rem;
+}
+
+.client-card-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.client-social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--line-strong);
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.client-social-link svg {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+}
+
+.client-social-link:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 560px) {
+  .client-card-logo {
+    flex-basis: 100%;
+  }
 }
 
 /* ---------- Overview strip ---------- */
@@ -1720,6 +1806,37 @@ textarea {
   font-size: 0.85rem;
 }
 
+.client-link-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.client-link-row:last-child {
+  border-bottom: none;
+}
+
+.client-link-row .checkbox-label {
+  flex: 0 0 9rem;
+}
+
+.client-link-row .client-link-url {
+  flex: 1;
+  padding: 0.5rem 0.7rem;
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-family: var(--ui-font);
+  font-size: 0.85rem;
+}
+
+.client-link-row .client-link-url:disabled {
+  background: var(--bg-soft);
+  color: var(--ink-soft);
+}
+
 .icon-btn {
   background: none;
   border: 0;
@@ -1899,6 +2016,17 @@ textarea {
   max-height: 11rem;
   object-fit: cover;
   box-shadow: none;
+}
+
+.preview-content .client-card {
+  margin: 1rem 0;
+  box-shadow: none;
+  border: 1px solid var(--line);
+}
+
+.preview-content .client-card-logo {
+  flex-basis: 6rem;
+  padding: 0.8rem;
 }
 
 .preview-placeholder {

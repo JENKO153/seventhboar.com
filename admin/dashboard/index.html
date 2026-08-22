@@ -43,6 +43,7 @@
             <div class="dashboard-panel">
               <div class="dashboard-header">
                 <h2 class="mini-title" id="formTitle">Write a Devlog Entry</h2>
+                <button type="button" id="cancelEditBtn" class="icon-btn" style="display: none">Cancel edit</button>
               </div>
 
               <div class="form-success" id="formSuccess"></div>
@@ -138,6 +139,17 @@
                   <p class="form-hint">A photo and a short write-up of what it is — build it block by block same as an entry.</p>
                   <div id="projectBlocks"></div>
                   <button type="button" id="pAddBlockBtn" class="button-ghost">+ Add Block</button>
+                </div>
+                <div class="form-group">
+                  <label for="pClientLogo">Client Logo (optional)</label>
+                  <p class="form-hint">Adds a client card to the project page with their logo and social links.</p>
+                  <input type="file" id="pClientLogo" accept="image/*" />
+                  <img id="pClientLogoPreview" class="image-preview" alt="" style="max-height: 6rem; object-fit: contain; background: var(--bg-soft)" />
+                </div>
+                <div class="form-group" id="clientLinksGroup">
+                  <label>Client Social Links</label>
+                  <p class="form-hint">Tick a platform to show it on the client card and paste their link.</p>
+                  <div id="clientLinksEditor"></div>
                 </div>
                 <div class="form-group">
                   <label class="checkbox-label">

@@ -14,6 +14,53 @@
     { value: 'photo', label: 'Photo' }
   ];
 
+  const CLIENT_LINK_PLATFORMS = [
+    { value: 'website', label: 'Website' },
+    { value: 'instagram', label: 'Instagram' },
+    { value: 'twitter', label: 'Twitter / X' },
+    { value: 'facebook', label: 'Facebook' },
+    { value: 'tiktok', label: 'TikTok' },
+    { value: 'youtube', label: 'YouTube' },
+    { value: 'linkedin', label: 'LinkedIn' }
+  ];
+
+  const SOCIAL_ICON_PATHS = {
+    website: 'M12 2a10 10 0 100 20 10 10 0 000-20zm7.94 9h-3.05a15.9 15.9 0 00-1.14-5.26A8.03 8.03 0 0119.94 11zM12 4c.9 1.02 1.94 3 2.25 7H9.75C10.06 7 11.1 5.02 12 4zM4.06 11a8.03 8.03 0 015.19-6.26A15.9 15.9 0 008.11 11H4.06zm0 2h4.05a15.9 15.9 0 001.14 5.26A8.03 8.03 0 014.06 13zM12 20c-.9-1.02-1.94-3-2.25-7h4.5c-.31 4-1.35 5.98-2.25 7zm2.81-1.26A15.9 15.9 0 0015.95 13h4.05a8.03 8.03 0 01-5.19 6.26z',
+    instagram: 'M12 2c2.7 0 3.06.01 4.12.06 1.06.05 1.79.22 2.43.47.66.26 1.21.6 1.76 1.15.55.55.89 1.1 1.15 1.76.25.64.42 1.37.47 2.43.05 1.06.06 1.42.06 4.12s-.01 3.06-.06 4.12c-.05 1.06-.22 1.79-.47 2.43a4.9 4.9 0 0 1-1.15 1.76 4.9 4.9 0 0 1-1.76 1.15c-.64.25-1.37.42-2.43.47-1.06.05-1.42.06-4.12.06s-3.06-.01-4.12-.06c-1.06-.05-1.79-.22-2.43-.47a4.9 4.9 0 0 1-1.76-1.15 4.9 4.9 0 0 1-1.15-1.76c-.25-.64-.42-1.37-.47-2.43C2.01 15.06 2 14.7 2 12s.01-3.06.06-4.12c.05-1.06.22-1.79.47-2.43.26-.66.6-1.21 1.15-1.76A4.9 4.9 0 0 1 5.44 2.53c.64-.25 1.37-.42 2.43-.47C8.94 2.01 9.3 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm5.25-3.5a1.17 1.17 0 1 0 0 2.33 1.17 1.17 0 0 0 0-2.33z',
+    twitter: 'M18.9 2H22l-7.6 8.7L23 22h-6.8l-5.3-6.9L4.8 22H2l8.1-9.3L1.5 2h7l4.8 6.3L18.9 2zm-1.2 18h1.9L7.4 4H5.4l12.3 16z',
+    facebook: 'M13.5 22v-8.4h2.8l.4-3.3h-3.2V8.1c0-.96.27-1.62 1.65-1.62H17V3.5A22 22 0 0014.5 3.3c-2.5 0-4.2 1.53-4.2 4.34v2.63H7.5v3.3h2.8V22h3.2z',
+    tiktok: 'M16.6 5.82c-.9-.83-1.4-2-1.4-3.32h-3.13v13.4c0 1.6-1.3 2.9-2.9 2.9s-2.9-1.3-2.9-2.9 1.3-2.9 2.9-2.9c.3 0 .58.05.85.13V9.9a6.1 6.1 0 0 0-.85-.06 6.1 6.1 0 1 0 6.1 6.1V9.03a8.2 8.2 0 0 0 4.83 1.55V7.45c-1.2 0-2.3-.4-3.5-1.63z',
+    youtube: 'M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 00.5 6.2 31 31 0 000 12a31 31 0 00.5 5.8 3 3 0 002.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 002.1-2.1A31 31 0 0024 12a31 31 0 00-.5-5.8zM9.6 15.5v-7l6.3 3.5-6.3 3.5z',
+    linkedin: 'M4.98 3.5a2.5 2.5 0 11-.02 5.01A2.5 2.5 0 014.98 3.5zM.5 21.5h4.4V8.9H.5v12.6zM8.3 8.9h4.2v1.72h.06c.59-1.1 2.02-2.26 4.16-2.26 4.44 0 5.26 2.92 5.26 6.72v6.42h-4.4v-5.69c0-1.36-.02-3.1-1.9-3.1-1.9 0-2.19 1.48-2.19 3v5.79H8.3V8.9z'
+  };
+
+  function socialIconSvg(platform) {
+    const path = SOCIAL_ICON_PATHS[platform];
+    return path ? `<svg viewBox="0 0 24 24"><path d="${path}"/></svg>` : '';
+  }
+
+  function renderClientCardHtml(project) {
+    if (!project.clientLogo && !(project.clientLinks || []).length) return '';
+    const links = (project.clientLinks || []).map((l) => `
+      <a class="client-social-link" href="${escapeHtml(l.url)}" target="_blank" rel="noopener">
+        ${socialIconSvg(l.platform)}<span>${escapeHtml(l.label)}</span>
+      </a>
+    `).join('');
+    const logoHtml = project.clientLogo
+      ? `<img src="${escapeHtml(project.clientLogo)}" alt="${escapeHtml(project.client || 'Client')} logo" />`
+      : '';
+    return `
+      <div class="client-card">
+        <div class="client-card-logo">${logoHtml}</div>
+        <div class="client-card-body">
+          <div class="client-card-label">Built For</div>
+          <div class="client-card-name">${escapeHtml(project.client || 'Client')}</div>
+          ${links ? `<div class="client-card-links">${links}</div>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
   let activeType = 'journal';
 
   function escapeHtml(str) {
@@ -33,8 +80,8 @@
     return `${date} at ${time}`;
   }
 
-  function nowForInput() {
-    const d = new Date();
+  function nowForInput(date) {
+    const d = date ? new Date(date) : new Date();
     d.setSeconds(0, 0);
     const tzOffsetMs = d.getTimezoneOffset() * 60000;
     return new Date(d.getTime() - tzOffsetMs).toISOString().slice(0, 16);
@@ -73,20 +120,38 @@
   const projectForm = document.getElementById('projectForm');
   const formTitle = document.getElementById('formTitle');
   const previewUrl = document.getElementById('previewUrl');
+  const cancelEditBtn = document.getElementById('cancelEditBtn');
+
+  let editingJournalId = null;
+  let editingJournalOriginalDate = null;
+  let editingProjectId = null;
+  let editingProjectOriginalDate = null;
+
+  function setActiveType(type) {
+    activeType = type;
+    document.querySelectorAll('.type-toggle-option').forEach((b) => b.classList.toggle('is-active', b.dataset.type === type));
+    journalForm.style.display = type === 'journal' ? '' : 'none';
+    projectForm.style.display = type === 'project' ? '' : 'none';
+    if (type === 'journal') {
+      formTitle.textContent = editingJournalId ? 'Edit Devlog Entry' : 'Write a Devlog Entry';
+      cancelEditBtn.style.display = editingJournalId ? '' : 'none';
+    } else {
+      formTitle.textContent = editingProjectId ? 'Edit Project' : 'Add a Project';
+      cancelEditBtn.style.display = editingProjectId ? '' : 'none';
+    }
+    previewUrl.textContent = type === 'journal'
+      ? 'seventhboar.com/post/'
+      : 'seventhboar.com/project/';
+    document.getElementById('draftRestored').classList.remove('show');
+    updatePreview();
+  }
 
   document.querySelectorAll('.type-toggle-option').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      activeType = btn.dataset.type;
-      document.querySelectorAll('.type-toggle-option').forEach((b) => b.classList.toggle('is-active', b === btn));
-      journalForm.style.display = activeType === 'journal' ? '' : 'none';
-      projectForm.style.display = activeType === 'project' ? '' : 'none';
-      formTitle.textContent = activeType === 'journal' ? 'Write a Devlog Entry' : 'Add a Project';
-      previewUrl.textContent = activeType === 'journal'
-        ? 'seventhboar.com/post/'
-        : 'seventhboar.com/project/';
-      document.getElementById('draftRestored').classList.remove('show');
-      updatePreview();
-    });
+    btn.addEventListener('click', () => setActiveType(btn.dataset.type));
+  });
+
+  cancelEditBtn.addEventListener('click', () => {
+    if (activeType === 'journal') exitJournalEditMode(); else exitProjectEditMode();
   });
 
   // ---------- Block editor (shared factory for journal + project) ----------
@@ -217,9 +282,11 @@
         if (style === 'photo') {
           const file = row.querySelector('.block-photo-file').files[0];
           const preview = row.querySelector('.block-photo-preview');
-          const existingDataUrl = preview.classList.contains('show') ? preview.src : null;
-          if (!file && !existingDataUrl) continue;
-          const image = file ? await CmsImages.uploadImage(file) : await CmsImages.uploadImageFromDataUrl(existingDataUrl);
+          const existingSrc = preview.classList.contains('show') ? preview.src : null;
+          if (!file && !existingSrc) continue;
+          const image = file
+            ? await CmsImages.uploadImage(file)
+            : (existingSrc.startsWith('data:') ? await CmsImages.uploadImageFromDataUrl(existingSrc) : existingSrc);
           const caption = row.querySelector('.block-photo-caption').value.trim();
           result.push({ style: 'photo', text: caption, image });
         } else {
@@ -326,11 +393,18 @@
             <div class="post-row-meta">${escapeHtml(post.category)} &middot; ${meta}</div>
           </div>
           <div class="post-row-actions">
+            <button class="icon-btn" data-edit-post="${escapeHtml(post.id)}">Edit</button>
             <a class="icon-btn" href="/post/?id=${encodeURIComponent(post.id)}">View</a>
             <button class="icon-btn danger" data-delete-post="${escapeHtml(post.id)}">Delete</button>
           </div>
         </div>`;
     }).join('');
+    list.querySelectorAll('[data-edit-post]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const post = await JournalData.getPostById(btn.getAttribute('data-edit-post'));
+        if (post) enterJournalEditMode(post);
+      });
+    });
     list.querySelectorAll('[data-delete-post]').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const ok = await confirmWithPassword('delete this post');
@@ -359,11 +433,18 @@
             <div class="post-row-meta">${escapeHtml((project.categories || []).join(', '))} &middot; ${meta}</div>
           </div>
           <div class="post-row-actions">
+            <button class="icon-btn" data-edit-project="${escapeHtml(project.id)}">Edit</button>
             <a class="icon-btn" href="/project/?id=${encodeURIComponent(project.id)}">View</a>
             <button class="icon-btn danger" data-delete-project="${escapeHtml(project.id)}">Delete</button>
           </div>
         </div>`;
     }).join('');
+    list.querySelectorAll('[data-edit-project]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const project = await ProjectData.getProjectById(btn.getAttribute('data-edit-project'));
+        if (project) enterProjectEditMode(project);
+      });
+    });
     list.querySelectorAll('[data-delete-project]').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const ok = await confirmWithPassword('delete this project');
@@ -375,9 +456,12 @@
   }
 
   // ---------- Cover images ----------
+  // Each of these holds either null, a fresh "data:" URL pending upload, or
+  // (when editing a published item) the already-hosted https:// URL as-is.
   let journalImageDataUrl = null;
   let projectBannerDataUrl = null;
   let projectIconDataUrl = null;
+  let projectClientLogoDataUrl = null;
 
   function wireImageInput(inputId, previewId, onSet) {
     const input = document.getElementById(inputId);
@@ -401,6 +485,60 @@
   wireImageInput('jImage', 'jImagePreview', (v) => { journalImageDataUrl = v; });
   wireImageInput('pBanner', 'pBannerPreview', (v) => { projectBannerDataUrl = v; });
   wireImageInput('pIcon', 'pIconPreview', (v) => { projectIconDataUrl = v; });
+  wireImageInput('pClientLogo', 'pClientLogoPreview', (v) => { projectClientLogoDataUrl = v; });
+
+  // Resolves one of the image-tracking vars above into a final URL to save:
+  // uploads a freshly-picked file or data URL, or passes an existing hosted
+  // URL straight through untouched.
+  async function resolveImageForSave(fileInputId, currentValue) {
+    const file = document.getElementById(fileInputId).files[0];
+    if (file) return CmsImages.uploadImage(file);
+    if (!currentValue) return null;
+    return currentValue.startsWith('data:') ? CmsImages.uploadImageFromDataUrl(currentValue) : currentValue;
+  }
+
+  // ---------- Client social links ----------
+  const clientLinksEditor = document.getElementById('clientLinksEditor');
+  clientLinksEditor.innerHTML = CLIENT_LINK_PLATFORMS.map((p) => `
+    <div class="client-link-row" data-platform="${p.value}">
+      <label class="checkbox-label"><input type="checkbox" class="client-link-toggle" /> ${p.label}</label>
+      <input type="url" class="client-link-url" placeholder="https://..." disabled />
+    </div>
+  `).join('');
+
+  clientLinksEditor.addEventListener('change', (e) => {
+    if (!e.target.classList.contains('client-link-toggle')) return;
+    const row = e.target.closest('.client-link-row');
+    const urlInput = row.querySelector('.client-link-url');
+    urlInput.disabled = !e.target.checked;
+    if (e.target.checked) urlInput.focus();
+  });
+
+  function collectClientLinks() {
+    return Array.from(clientLinksEditor.querySelectorAll('.client-link-row'))
+      .map((row) => {
+        const platform = row.dataset.platform;
+        const label = CLIENT_LINK_PLATFORMS.find((p) => p.value === platform).label;
+        const checked = row.querySelector('.client-link-toggle').checked;
+        const url = row.querySelector('.client-link-url').value.trim();
+        return { platform, label, url, checked };
+      })
+      .filter((l) => l.checked && l.url)
+      .map(({ platform, label, url }) => ({ platform, label, url }));
+  }
+
+  function restoreClientLinks(links) {
+    const byPlatform = {};
+    (links || []).forEach((l) => { byPlatform[l.platform] = l.url; });
+    clientLinksEditor.querySelectorAll('.client-link-row').forEach((row) => {
+      const toggle = row.querySelector('.client-link-toggle');
+      const urlInput = row.querySelector('.client-link-url');
+      const url = byPlatform[row.dataset.platform];
+      toggle.checked = !!url;
+      urlInput.disabled = !url;
+      urlInput.value = url || '';
+    });
+  }
 
   // ---------- Schedule toggles ----------
   function wireSchedule(toggleId, panelId, inputId) {
@@ -455,10 +593,16 @@
         ? blocks.map(renderBlockHtml).join('')
         : '<p class="preview-placeholder">Start writing the brief to see it come together here...</p>';
       const imageHtml = projectBannerDataUrl ? `<img class="post-hero-img" src="${projectBannerDataUrl}" alt="">` : '';
+      const clientCardHtml = renderClientCardHtml({
+        client,
+        clientLogo: projectClientLogoDataUrl,
+        clientLinks: collectClientLinks()
+      });
       html = `
         <h1>${escapeHtml(title || 'Project Title')}</h1>
         <div class="project-meta">${escapeHtml(tagline || 'Tagline goes here')}${client ? ' &middot; for ' + escapeHtml(client) : ''}</div>
         ${imageHtml}
+        ${clientCardHtml}
         <div>${bodyHtml}</div>
       `;
     }
@@ -495,13 +639,23 @@
         publishAt: document.getElementById('pPublishAt').value,
         blocks: projectBlocks.collectRaw(),
         bannerDataUrl: projectBannerDataUrl,
-        iconDataUrl: projectIconDataUrl
+        iconDataUrl: projectIconDataUrl,
+        clientLogoDataUrl: projectClientLogoDataUrl,
+        clientLinks: collectClientLinks()
       };
       localStorage.setItem(DRAFT_KEYS.project, JSON.stringify(draft));
     }
   }
 
+  // Editing an existing published item is never autosaved as a "draft" —
+  // that would risk restoring it as a fresh create-new item (and publishing
+  // a duplicate) after a reload, since the editing state itself is in-memory
+  // only. The live preview still updates as normal.
   function handleFormChange() {
+    if ((activeType === 'journal' && editingJournalId) || (activeType === 'project' && editingProjectId)) {
+      updatePreview();
+      return;
+    }
     saveDraft();
     updatePreview();
   }
@@ -558,6 +712,13 @@
       preview.src = draft.iconDataUrl;
       preview.classList.add('show');
     }
+    if (draft.clientLogoDataUrl) {
+      projectClientLogoDataUrl = draft.clientLogoDataUrl;
+      const preview = document.getElementById('pClientLogoPreview');
+      preview.src = draft.clientLogoDataUrl;
+      preview.classList.add('show');
+    }
+    restoreClientLinks(draft.clientLinks);
   }
 
   function draftHasContent(draft) {
@@ -581,14 +742,103 @@
     document.getElementById('projectForm').reset();
     projectBannerDataUrl = null;
     projectIconDataUrl = null;
-    ['pBannerPreview', 'pIconPreview'].forEach((id) => {
+    projectClientLogoDataUrl = null;
+    ['pBannerPreview', 'pIconPreview', 'pClientLogoPreview'].forEach((id) => {
       const preview = document.getElementById(id);
       preview.classList.remove('show');
       preview.src = '';
     });
+    restoreClientLinks([]);
     projectBlocks.reset();
     document.getElementById('pSchedulePanel').classList.remove('open');
     document.getElementById('pPublishAt').value = '';
+  }
+
+  // ---------- Edit mode (loads a published entry/project back into its form) ----------
+  function enterJournalEditMode(post) {
+    clearDraft('journal');
+    editingJournalId = post.id;
+    editingJournalOriginalDate = post.date;
+
+    document.getElementById('jTitle').value = post.title;
+    document.getElementById('jCategory').value = post.category;
+    document.getElementById('jExcerpt').value = post.excerpt;
+
+    journalImageDataUrl = post.image;
+    const preview = document.getElementById('jImagePreview');
+    preview.src = post.image;
+    preview.classList.add('show');
+
+    journalBlocks.restore(post.content);
+
+    const isScheduled = new Date(post.date) > new Date();
+    document.getElementById('jScheduleToggle').checked = isScheduled;
+    document.getElementById('jSchedulePanel').classList.toggle('open', isScheduled);
+    document.getElementById('jPublishAt').value = isScheduled ? nowForInput(post.date) : '';
+
+    setActiveType('journal');
+    document.getElementById('jSubmitBtn').textContent = 'Save Changes';
+    window.scrollTo({ top: journalForm.getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' });
+  }
+
+  function exitJournalEditMode() {
+    editingJournalId = null;
+    editingJournalOriginalDate = null;
+    resetJournalForm();
+    document.getElementById('jSubmitBtn').textContent = 'Publish Entry';
+    setActiveType('journal');
+  }
+
+  function enterProjectEditMode(project) {
+    clearDraft('project');
+    editingProjectId = project.id;
+    editingProjectOriginalDate = project.date;
+
+    document.getElementById('pTitle').value = project.title;
+    document.querySelectorAll('.pCategory').forEach((c) => { c.checked = (project.categories || []).includes(c.value); });
+    document.getElementById('pPlatforms').value = (project.platforms || []).join(', ');
+    document.getElementById('pClient').value = project.client || '';
+    document.getElementById('pTagline').value = project.tagline;
+    document.getElementById('pFeatured').checked = !!project.featured;
+
+    projectBannerDataUrl = project.banner;
+    const bannerPreview = document.getElementById('pBannerPreview');
+    bannerPreview.src = project.banner;
+    bannerPreview.classList.add('show');
+
+    if (project.icon) {
+      projectIconDataUrl = project.icon;
+      const iconPreview = document.getElementById('pIconPreview');
+      iconPreview.src = project.icon;
+      iconPreview.classList.add('show');
+    }
+
+    if (project.clientLogo) {
+      projectClientLogoDataUrl = project.clientLogo;
+      const logoPreview = document.getElementById('pClientLogoPreview');
+      logoPreview.src = project.clientLogo;
+      logoPreview.classList.add('show');
+    }
+    restoreClientLinks(project.clientLinks);
+
+    projectBlocks.restore(project.brief);
+
+    const isScheduled = new Date(project.date) > new Date();
+    document.getElementById('pScheduleToggle').checked = isScheduled;
+    document.getElementById('pSchedulePanel').classList.toggle('open', isScheduled);
+    document.getElementById('pPublishAt').value = isScheduled ? nowForInput(project.date) : '';
+
+    setActiveType('project');
+    document.getElementById('pSubmitBtn').textContent = 'Save Changes';
+    window.scrollTo({ top: projectForm.getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' });
+  }
+
+  function exitProjectEditMode() {
+    editingProjectId = null;
+    editingProjectOriginalDate = null;
+    resetProjectForm();
+    document.getElementById('pSubmitBtn').textContent = 'Publish Project';
+    setActiveType('project');
   }
 
   journalForm.addEventListener('input', handleFormChangeDebounced);
@@ -616,45 +866,48 @@
       return;
     }
 
+    const isEditing = !!editingJournalId;
     const publishAtDate = (document.getElementById('jScheduleToggle').checked && document.getElementById('jPublishAt').value)
       ? new Date(document.getElementById('jPublishAt').value)
-      : new Date();
+      : (isEditing ? new Date(editingJournalOriginalDate) : new Date());
     const isScheduled = publishAtDate.getTime() > Date.now();
-    const actionLabel = isScheduled ? `schedule this post for ${formatDateTime(publishAtDate.toISOString())}` : 'publish this post';
+    const actionLabel = isEditing
+      ? 'save changes to this entry'
+      : (isScheduled ? `schedule this post for ${formatDateTime(publishAtDate.toISOString())}` : 'publish this post');
 
     const ok = await confirmWithPassword(actionLabel);
     if (!ok) return;
 
     const submitBtn = document.getElementById('jSubmitBtn');
     submitBtn.disabled = true;
-    submitBtn.textContent = isScheduled ? 'Scheduling...' : 'Publishing...';
+    submitBtn.textContent = isEditing ? 'Saving...' : (isScheduled ? 'Scheduling...' : 'Publishing...');
 
     try {
-      const image = imageFile
-        ? await CmsImages.uploadImage(imageFile)
-        : await CmsImages.uploadImageFromDataUrl(journalImageDataUrl);
+      const image = await resolveImageForSave('jImage', journalImageDataUrl);
       const content = await journalBlocks.collectForPublish();
-
-      await JournalData.addPost({
+      const payload = {
         title: document.getElementById('jTitle').value.trim(),
         category: document.getElementById('jCategory').value.trim(),
         excerpt: document.getElementById('jExcerpt').value.trim(),
         image,
         content,
         publishAt: publishAtDate.toISOString()
-      });
+      };
+
+      if (isEditing) await JournalData.updatePost(editingJournalId, payload);
+      else await JournalData.addPost(payload);
 
       clearDraft('journal');
-      resetJournalForm();
+      exitJournalEditMode();
       updatePreview();
       document.getElementById('draftRestored').classList.remove('show');
-      showSuccess(isScheduled ? `Post scheduled for ${formatDateTime(publishAtDate.toISOString())}!` : 'Post published!');
+      showSuccess(isEditing ? 'Entry updated!' : (isScheduled ? `Post scheduled for ${formatDateTime(publishAtDate.toISOString())}!` : 'Post published!'));
       renderJournalList();
     } catch (err) {
-      alert('Something went wrong publishing this post: ' + err.message);
+      alert('Something went wrong saving this post: ' + err.message);
+      submitBtn.textContent = isEditing ? 'Save Changes' : 'Publish Entry';
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Publish Post';
     }
   });
 
@@ -676,33 +929,33 @@
       return;
     }
 
+    const isEditing = !!editingProjectId;
     const publishAtDate = (document.getElementById('pScheduleToggle').checked && document.getElementById('pPublishAt').value)
       ? new Date(document.getElementById('pPublishAt').value)
-      : new Date();
+      : (isEditing ? new Date(editingProjectOriginalDate) : new Date());
     const isScheduled = publishAtDate.getTime() > Date.now();
-    const actionLabel = isScheduled ? `schedule this project for ${formatDateTime(publishAtDate.toISOString())}` : 'publish this project';
+    const actionLabel = isEditing
+      ? 'save changes to this project'
+      : (isScheduled ? `schedule this project for ${formatDateTime(publishAtDate.toISOString())}` : 'publish this project');
 
     const ok = await confirmWithPassword(actionLabel);
     if (!ok) return;
 
     const submitBtn = document.getElementById('pSubmitBtn');
     submitBtn.disabled = true;
-    submitBtn.textContent = isScheduled ? 'Scheduling...' : 'Publishing...';
+    submitBtn.textContent = isEditing ? 'Saving...' : (isScheduled ? 'Scheduling...' : 'Publishing...');
 
     try {
-      const banner = bannerFile
-        ? await CmsImages.uploadImage(bannerFile)
-        : await CmsImages.uploadImageFromDataUrl(projectBannerDataUrl);
-      const iconFile = document.getElementById('pIcon').files[0];
-      const icon = iconFile
-        ? await CmsImages.uploadImage(iconFile)
-        : (projectIconDataUrl ? await CmsImages.uploadImageFromDataUrl(projectIconDataUrl) : null);
+      const banner = await resolveImageForSave('pBanner', projectBannerDataUrl);
+      const icon = await resolveImageForSave('pIcon', projectIconDataUrl);
+      const clientLogo = await resolveImageForSave('pClientLogo', projectClientLogoDataUrl);
 
       const platforms = document.getElementById('pPlatforms').value
         .split(',').map((s) => s.trim()).filter(Boolean);
       const brief = await projectBlocks.collectForPublish();
+      const clientLinks = collectClientLinks();
 
-      await ProjectData.addProject({
+      const payload = {
         title: document.getElementById('pTitle').value.trim(),
         categories,
         platforms,
@@ -712,20 +965,25 @@
         icon,
         brief,
         featured: document.getElementById('pFeatured').checked,
-        publishAt: publishAtDate.toISOString()
-      });
+        publishAt: publishAtDate.toISOString(),
+        clientLogo,
+        clientLinks
+      };
+
+      if (isEditing) await ProjectData.updateProject(editingProjectId, payload);
+      else await ProjectData.addProject(payload);
 
       clearDraft('project');
-      resetProjectForm();
+      exitProjectEditMode();
       updatePreview();
       document.getElementById('draftRestored').classList.remove('show');
-      showSuccess(isScheduled ? `Project scheduled for ${formatDateTime(publishAtDate.toISOString())}!` : 'Project published!');
+      showSuccess(isEditing ? 'Project updated!' : (isScheduled ? `Project scheduled for ${formatDateTime(publishAtDate.toISOString())}!` : 'Project published!'));
       renderProjectList();
     } catch (err) {
-      alert('Something went wrong publishing this project: ' + err.message);
+      alert('Something went wrong saving this project: ' + err.message);
+      submitBtn.textContent = isEditing ? 'Save Changes' : 'Publish Project';
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Publish Project';
     }
   });
 

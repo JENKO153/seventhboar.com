@@ -26,7 +26,7 @@
 
   function projectCardMarkup(project) {
     return `
-      <article class="card project-card reveal">
+      <a class="card project-card reveal" href="/project/?id=${encodeURIComponent(project.id)}">
         <img class="card-media" src="${escapeHtml(project.banner)}" alt="${escapeHtml(project.title)}" />
         <div class="card-body">
           <div class="meta">
@@ -34,15 +34,15 @@
           </div>
           <h3>${escapeHtml(project.title)}</h3>
           <p>${escapeHtml(project.tagline)}</p>
-          <footer><a class="text-link" href="/project/?id=${encodeURIComponent(project.id)}">View project</a></footer>
+          <footer><span class="text-link">View project</span></footer>
         </div>
-      </article>
+      </a>
     `;
   }
 
   function postCardMarkup(post) {
     return `
-      <article class="card article-card reveal">
+      <a class="card article-card reveal" href="/post/?id=${encodeURIComponent(post.id)}">
         <img class="card-media" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" />
         <div class="card-body">
           <div class="meta">
@@ -53,10 +53,10 @@
           <p>${escapeHtml(post.excerpt)}</p>
           <footer>
             <p class="microcopy">Published ${formatDate(post.date)}</p>
-            <a class="text-link" href="/post/?id=${encodeURIComponent(post.id)}">Read entry</a>
+            <span class="text-link">Read entry</span>
           </footer>
         </div>
-      </article>
+      </a>
     `;
   }
 

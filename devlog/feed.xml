@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Seventh Boar Development — Devlog</title>
+    <link>https://seventhboar.com/devlog/</link>
+    <description>Devlog entries, development notes, and studio writing from Seventh Boar Development.</description>
+    <language>en-au</language>
+    <lastBuildDate>Tue, 08 Sep 2026 10:42:17 +0000</lastBuildDate>
+    <item>
+      <title>Where We Return DEVLOG #003 - Fire, Ghosts, and One Very Stubborn Shader</title>
+      <link>https://seventhboar.com/post/?id=where-we-return-devlog-003-fire-ghosts-and-one-very-stubborn-shader-mtsig7qh</link>
+      <guid isPermaLink="true">https://seventhboar.com/post/?id=where-we-return-devlog-003-fire-ghosts-and-one-very-stubborn-shader-mtsig7qh</guid>
+      <pubDate>Tue, 08 Sep 2026 10:12:06 +0000</pubDate>
+      <author>Seventh Boar</author>
+      <category>Devlog</category>
+      <description>"The most frustrating placement ghost bug"</description>
+    </item>
+    <item>
+      <title>Where We Return DEVLOG #002 - Polish is Key</title>
+      <link>https://seventhboar.com/post/?id=where-we-return-devlog-002-polish-is-key-mtp7rf9k</link>
+      <guid isPermaLink="true">https://seventhboar.com/post/?id=where-we-return-devlog-002-polish-is-key-mtp7rf9k</guid>
+      <pubDate>Sun, 06 Sep 2026 02:49:38 +0000</pubDate>
+      <author>Seventh Boar</author>
+      <category>Devlog</category>
+      <description>Polish is the main objective</description>
+    </item>
+    <item>
+      <title>Where We Return DEVLOG #001 - Main Menu</title>
+      <link>https://seventhboar.com/post/?id=where-we-return-devlog-001-main-menu-mt49l0c7</link>
+      <guid isPermaLink="true">https://seventhboar.com/post/?id=where-we-return-devlog-001-main-menu-mt49l0c7</guid>
+      <pubDate>Sat, 22 Aug 2026 10:57:29 +0000</pubDate>
+      <author>Seventh Boar</author>
+      <category>Devlog</category>
+      <description>"Turns out the hardest boss fight in this game so far wasn't a monster — it was a dropdown menu."</description>
+    </item>
+  </channel>
+</rss>

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title id="pageTitle">Devlog | Seventh Boar Development</title>
     <meta name="description" content="A devlog entry from Seventh Boar Development, an independent Australian studio building apps and games." />
+    <link rel="alternate" type="application/rss+xml" title="Seventh Boar Development — Devlog" href="/devlog/feed.xml" />
     <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark.png" />
     <link rel="stylesheet" href="/assets/css/styles.css" />
   </head>
@@ -45,6 +46,32 @@
           <h2 class="section-title">Related entries.</h2>
         </div>
         <div class="article-grid" id="relatedPosts"></div>
+      </div>
+    </section>
+
+    <section class="section comments-section" id="commentsSection" style="display: none">
+      <div class="shell" style="max-width: 46rem; margin: 0 auto">
+        <div class="section-header">
+          <div class="eyebrow">Discussion</div>
+          <h2 class="section-title">Comments</h2>
+        </div>
+        <p class="comments-count" id="commentsCount"></p>
+        <div class="comment-list" id="commentList"></div>
+        <div class="panel">
+          <h3 class="mini-title">Leave a comment</h3>
+          <form id="commentForm" class="comment-form">
+            <div class="field-full" style="margin-bottom: 1rem">
+              <label for="commentAuthor">Name</label>
+              <input type="text" id="commentAuthor" required maxlength="60" placeholder="Your name" />
+            </div>
+            <div class="field-full" style="margin-bottom: 1rem">
+              <label for="commentBody">Comment</label>
+              <textarea id="commentBody" required maxlength="1000" placeholder="Share your thoughts..."></textarea>
+            </div>
+            <button type="submit" class="button">Post Comment</button>
+            <div class="comment-form-status" id="commentFormStatus"></div>
+          </form>
+        </div>
       </div>
     </section>
 

@@ -1,0 +1,26 @@
+name: Update devlog RSS feed
+
+on:
+  schedule:
+    - cron: "0 * * * *" # every hour
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update-feed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Regenerate devlog/feed.xml from Supabase
+        run: python3 scripts/generate_feed.py
+
+      - name: Commit and push if the feed changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add devlog/feed.xml
+          git diff --cached --quiet || git commit -m "Update devlog RSS feed"
+          git push

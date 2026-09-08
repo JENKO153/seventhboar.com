@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Comments | Seventh Boar Development</title>
+    <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark.png" />
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+  </head>
+  <body class="site-frame">
+    <header class="site-header">
+      <div class="shell nav-shell">
+        <a class="brand" href="/" aria-label="Seventh Boar Development home">
+          <img src="/assets/images/seventh-boar-mark.png" alt="" />
+          <span>
+            <strong>Seventh Boar</strong>
+            <em>Development</em>
+          </span>
+        </a>
+        <nav class="admin-nav">
+          <a href="/admin/dashboard/">Dashboard</a>
+          <a href="/">View Site</a>
+          <button class="button-ghost" id="logoutBtn" type="button">Log Out</button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="section" style="padding-bottom: 0">
+        <div class="shell">
+          <div class="welcome-banner">Devlog comments — approve, or clear out the spam.</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="shell">
+          <div class="dashboard-panel">
+            <div class="dashboard-header">
+              <h2 class="mini-title">Pending Approval</h2>
+            </div>
+            <div id="pendingList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="shell">
+          <div class="dashboard-panel">
+            <div class="dashboard-header">
+              <h2 class="mini-title">Approved Comments</h2>
+            </div>
+            <div id="approvedList"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="modal-overlay" id="confirmModal" style="display: none">
+      <div class="modal-card">
+        <h3>Confirm It's You</h3>
+        <p class="lead" id="confirmMessage">Enter your password to continue.</p>
+        <div class="form-error" id="confirmError">Incorrect password. Try again.</div>
+        <div class="form-group">
+          <label for="confirmPassword">Password</label>
+          <input type="password" id="confirmPassword" autocomplete="current-password" />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="button-ghost" id="confirmCancelBtn">Cancel</button>
+          <button type="button" class="button" id="confirmSubmitBtn">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/assets/js/cms.js"></script>
+    <script src="/assets/js/admin-comments.js"></script>
+  </body>
+</html>

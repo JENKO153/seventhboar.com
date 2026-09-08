@@ -9,6 +9,7 @@
       content="Devlog entries, development notes, and studio writing from Seventh Boar Development."
     />
     <link rel="canonical" href="https://seventhboar.com/devlog/" />
+    <link rel="alternate" type="application/rss+xml" title="Seventh Boar Development — Devlog" href="/devlog/feed.xml" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Seventh Boar Development" />
     <meta property="og:title" content="Devlog | Seventh Boar Development" />
@@ -67,8 +68,11 @@
           <div class="filter-row" id="filterTags">
             <button class="filter-pill is-active" type="button" data-category="all">All entries</button>
           </div>
-          <div style="margin-top: 1rem">
+          <div style="margin-top: 1rem; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap">
             <input type="search" id="searchInput" placeholder="Search the devlog..." style="max-width: 22rem" />
+            <a class="text-link" href="/devlog/feed.xml" style="font-size: 0.85rem">
+              <svg viewBox="0 0 24 24" width="16" height="16" style="fill: currentColor; margin-right: 0.3rem; vertical-align: -2px"><path d="M6.18 17.82a2.18 2.18 0 100 4.36 2.18 2.18 0 000-4.36zM3 3v4c9.4 0 17 7.6 17 17h4C24 12.4 14.6 3 3 3zm0 8v4a10 10 0 0110 10h4A14 14 0 003 11z"/></svg>Subscribe via RSS
+            </a>
           </div>
         </div>
       </section>

@@ -209,6 +209,74 @@
     if (error) throw error;
   }
 
+  // ---------- Comments ----------
+  function rowToComment(row) {
+    return {
+      id: row.id,
+      postSlug: row.post_slug,
+      author: row.author_name,
+      body: row.body,
+      likes: row.likes,
+      approved: row.approved,
+      date: row.created_at
+    };
+  }
+
+  // Public: approved comments for one devlog post, oldest first.
+  async function getApprovedComments(postSlug) {
+    if (!configured) return [];
+    const { data, error } = await requireClient()
+      .from('comments')
+      .select('*')
+      .eq('post_slug', postSlug)
+      .eq('approved', true)
+      .order('created_at', { ascending: true });
+    if (error) {
+      console.error('Could not load comments', error);
+      return [];
+    }
+    return data.map(rowToComment);
+  }
+
+  // Public: always lands unapproved — nothing here can publish straight to
+  // the site (see the comments_public_insert RLS policy).
+  async function submitComment(postSlug, authorName, body) {
+    const row = { post_slug: postSlug, author_name: authorName, body, approved: false, likes: 0 };
+    const { error } = await requireClient().from('comments').insert(row);
+    if (error) throw error;
+  }
+
+  // Public: can only ever add exactly one like, via the increment_comment_like
+  // function — never an arbitrary value (see supabase/schema.sql).
+  async function likeComment(commentId) {
+    const { error } = await requireClient().rpc('increment_comment_like', { comment_id: commentId });
+    if (error) throw error;
+  }
+
+  // Studio account only (RLS restricts these to authenticated).
+  async function getAllComments() {
+    if (!configured) return [];
+    const { data, error } = await requireClient()
+      .from('comments')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) {
+      console.error('Could not load comments', error);
+      return [];
+    }
+    return data.map(rowToComment);
+  }
+
+  async function approveComment(id) {
+    const { error } = await requireClient().from('comments').update({ approved: true }).eq('id', id);
+    if (error) throw error;
+  }
+
+  async function deleteComment(id) {
+    const { error } = await requireClient().from('comments').delete().eq('id', id);
+    if (error) throw error;
+  }
+
   // ---------- Images ----------
   // Shrinks an uploaded image to a max dimension and returns it as a <canvas>.
   function scaleImageToCanvas(file, maxDim = 1600) {
@@ -291,6 +359,10 @@
 
   window.JournalData = { getPosts, getPostById, addPost, updatePost, deletePost };
   window.ProjectData = { getProjects, getProjectById, addProject, updateProject, deleteProject };
+  window.CommentsData = {
+    getApprovedComments, submitComment, likeComment,
+    getAllComments, approveComment, deleteComment
+  };
   window.CmsImages = { uploadImage, uploadImageFromDataUrl, resizeImageToDataUrl };
   window.CmsAuth = { login, logout, getSession, isConfigured: () => configured };
 })(window);

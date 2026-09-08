@@ -74,6 +74,70 @@ create policy "projects_auth_write"
   using (true)
   with check (true);
 
+-- ---------- comments ----------
+create table if not exists comments (
+  id uuid primary key default gen_random_uuid(),
+  post_slug text not null references journal_posts(slug) on delete cascade,
+  author_name text not null,
+  body text not null,
+  likes integer not null default 0,
+  approved boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists comments_post_slug_idx on comments (post_slug);
+
+alter table comments enable row level security;
+
+-- Visitors only ever see approved comments.
+drop policy if exists "comments_public_read_approved" on comments;
+create policy "comments_public_read_approved"
+  on comments for select
+  to anon
+  using (approved = true);
+
+-- The logged-in studio account (moderation page) sees everything, pending included.
+drop policy if exists "comments_auth_read_all" on comments;
+create policy "comments_auth_read_all"
+  on comments for select
+  to authenticated
+  using (true);
+
+-- Anyone can submit a comment, but it always lands unapproved — no one can
+-- publish straight to public via the API, only the studio account can flip it.
+drop policy if exists "comments_public_insert" on comments;
+create policy "comments_public_insert"
+  on comments for insert
+  to anon, authenticated
+  with check (approved = false and likes = 0);
+
+drop policy if exists "comments_auth_update" on comments;
+create policy "comments_auth_update"
+  on comments for update
+  to authenticated
+  using (true)
+  with check (true);
+
+drop policy if exists "comments_auth_delete" on comments;
+create policy "comments_auth_delete"
+  on comments for delete
+  to authenticated
+  using (true);
+
+-- Likes go through this function instead of a direct column update, so a
+-- visitor can only ever increment by exactly one — never set an arbitrary
+-- value, decrement, or edit anything else on the row.
+create or replace function increment_comment_like(comment_id uuid)
+returns void
+language sql
+security definer
+set search_path = public
+as $$
+  update comments set likes = likes + 1 where id = comment_id and approved = true;
+$$;
+
+grant execute on function increment_comment_like(uuid) to anon, authenticated;
+
 -- ---------- storage ----------
 -- Run this part too — creates a public-read bucket for cover/icon images.
 insert into storage.buckets (id, name, public)

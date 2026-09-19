@@ -400,19 +400,19 @@ h3 {
 
 .hero {
   position: relative;
-  min-height: max(78vh, calc(46vw + 11rem));
+  min-height: max(70vh, calc(40vw + 9rem));
   background: #0a0d0a;
   display: flex;
   align-items: flex-end;
   overflow: hidden;
-  padding-bottom: 4rem;
+  padding-bottom: 2.5rem;
   color: #fff;
 }
 
 .hero-bg {
   position: absolute;
   inset: -4% 0 0;
-  background: url("../images/Home_Page_Banner.jpg") center top / cover no-repeat;
+  background: url("../images/Home_Page_Banner.jpg") center bottom / cover no-repeat;
   will-change: transform;
 }
 
@@ -479,6 +479,7 @@ h3 {
   }
 
   .hero-bg {
+    background-position: center top;
     background-size: 240% auto;
   }
 

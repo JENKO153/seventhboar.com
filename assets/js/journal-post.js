@@ -141,20 +141,18 @@
     `;
   }
 
-  async function renderComments(post) {
+  function renderComments(post) {
     const section = document.getElementById('commentsSection');
     const listEl = document.getElementById('commentList');
     const countEl = document.getElementById('commentsCount');
+    const form = document.getElementById('commentForm');
+    const statusEl = document.getElementById('commentFormStatus');
     section.style.display = '';
 
-    const comments = await CommentsData.getApprovedComments(post.id);
-    const likedIds = getLikedCommentIds();
-
-    countEl.textContent = comments.length
-      ? `${comments.length} ${comments.length === 1 ? 'comment' : 'comments'}`
-      : 'Be the first to comment.';
-    listEl.innerHTML = comments.map((c) => commentItemHtml(c, likedIds)).join('');
-
+    // Wire the form + like-button delegation up front, synchronously — if
+    // these waited on the comments fetch below, a visitor who submits (or
+    // clicks a like) before that fetch resolves would fall through to a
+    // plain, unhandled HTML form submit/no-op instead of the real handler.
     listEl.addEventListener('click', async (e) => {
       const btn = e.target.closest('[data-like-btn]');
       if (!btn || btn.disabled) return;
@@ -171,8 +169,6 @@
       }
     });
 
-    const form = document.getElementById('commentForm');
-    const statusEl = document.getElementById('commentFormStatus');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const nameInput = document.getElementById('commentAuthor');
@@ -196,6 +192,21 @@
         submitBtn.disabled = false;
       }
     });
+
+    (async () => {
+      countEl.textContent = 'Loading comments...';
+      try {
+        const comments = await CommentsData.getApprovedComments(post.id);
+        const likedIds = getLikedCommentIds();
+        countEl.textContent = comments.length
+          ? `${comments.length} ${comments.length === 1 ? 'comment' : 'comments'}`
+          : 'Be the first to comment.';
+        listEl.innerHTML = comments.map((c) => commentItemHtml(c, likedIds)).join('');
+      } catch (err) {
+        countEl.textContent = '';
+        listEl.innerHTML = '<p class="comment-empty">Comments couldn\'t be loaded. Try refreshing the page.</p>';
+      }
+    })();
   }
 
   function renderRelated(post, allPosts) {

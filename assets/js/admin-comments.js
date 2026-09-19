@@ -83,16 +83,35 @@
       </div>`;
   }
 
+  function withTimeout(promise, ms, label) {
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} timed out`)), ms))
+    ]);
+  }
+
   async function renderComments() {
     const pendingList = document.getElementById('pendingList');
     const approvedList = document.getElementById('approvedList');
     pendingList.innerHTML = '<p style="color:var(--ink-soft)">Loading...</p>';
     approvedList.innerHTML = '<p style="color:var(--ink-soft)">Loading...</p>';
 
-    const [comments, posts] = await Promise.all([
-      CommentsData.getAllComments(),
-      JournalData.getPosts()
-    ]);
+    let comments;
+    let posts;
+    try {
+      [comments, posts] = await withTimeout(
+        Promise.all([CommentsData.getAllComments(), JournalData.getPosts()]),
+        15000,
+        'Loading comments'
+      );
+    } catch (err) {
+      const message = `<p style="color: var(--maroon-deep)">Couldn't load comments (${escapeHtml(err.message)}). <button type="button" class="icon-btn" id="retryCommentsBtn">Retry</button></p>`;
+      pendingList.innerHTML = message;
+      approvedList.innerHTML = '';
+      const retryBtn = document.getElementById('retryCommentsBtn');
+      if (retryBtn) retryBtn.addEventListener('click', renderComments);
+      return;
+    }
     postTitles = {};
     posts.forEach((p) => { postTitles[p.id] = p.title; });
 

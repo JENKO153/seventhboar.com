@@ -400,7 +400,8 @@ h3 {
 
 .hero {
   position: relative;
-  min-height: 78vh;
+  min-height: max(78vh, calc(46vw + 11rem));
+  background: #0a0d0a;
   display: flex;
   align-items: flex-end;
   overflow: hidden;
@@ -410,15 +411,15 @@ h3 {
 
 .hero-bg {
   position: absolute;
-  inset: -10% 0;
-  background: url("../images/Home_Page_Banner.png") center 30% / cover no-repeat;
+  inset: -4% 0 0;
+  background: url("../images/Home_Page_Banner.jpg") center top / cover no-repeat;
   will-change: transform;
 }
 
 .hero-scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(15, 19, 15, 0.02) 0%, rgba(15, 19, 15, 0.05) 50%, rgba(10, 13, 10, 0.88) 100%);
+  background: linear-gradient(180deg, rgba(10, 13, 10, 0) 0%, rgba(10, 13, 10, 0) 62%, rgba(10, 13, 10, 0.85) 100%);
 }
 
 .hero-content {
@@ -473,12 +474,16 @@ h3 {
 
 @media (max-width: 640px) {
   .hero {
-    min-height: 72vh;
+    min-height: 38rem;
     padding-bottom: 2.5rem;
   }
 
+  .hero-bg {
+    background-size: 240% auto;
+  }
+
   .hero-scrim {
-    background: linear-gradient(180deg, rgba(15, 19, 15, 0.02) 0%, rgba(15, 19, 15, 0.15) 45%, rgba(8, 10, 8, 0.97) 82%, rgba(8, 10, 8, 0.97) 100%);
+    background: linear-gradient(180deg, rgba(10, 13, 10, 0) 0%, rgba(10, 13, 10, 0) 52%, #0a0d0a 80%, #0a0d0a 100%);
   }
 }
 

@@ -25,39 +25,11 @@
   }
 
   function projectCardMarkup(project) {
-    return `
-      <a class="card project-card reveal" href="/project/?id=${encodeURIComponent(project.id)}">
-        <img class="card-media" src="${escapeHtml(project.cardBanner || project.banner)}" alt="${escapeHtml(project.title)}" />
-        <div class="card-body">
-          <div class="meta">
-            ${(project.platforms || []).map((tag) => `<span class="chip ink">${escapeHtml(tag)}</span>`).join('')}
-          </div>
-          <h3>${escapeHtml(project.title)}</h3>
-          <p>${escapeHtml(project.tagline)}</p>
-          <footer><span class="text-link">View project</span></footer>
-        </div>
-      </a>
-    `;
+    return CardUi.project(project);
   }
 
   function postCardMarkup(post) {
-    return `
-      <a class="card article-card reveal" href="/post/?id=${encodeURIComponent(post.id)}">
-        <img class="card-media" src="${escapeHtml(post.cardImage || post.image)}" alt="${escapeHtml(post.title)}" />
-        <div class="card-body">
-          <div class="meta">
-            <span class="chip">Devlog</span>
-            <span class="chip ink">${escapeHtml(post.category)}</span>
-          </div>
-          <h3>${escapeHtml(post.title)}</h3>
-          <p>${escapeHtml(post.excerpt)}</p>
-          <footer>
-            <p class="microcopy">Published ${formatDate(post.date)}</p>
-            <span class="text-link">Read entry</span>
-          </footer>
-        </div>
-      </a>
-    `;
+    return CardUi.article(post);
   }
 
   (async function init() {

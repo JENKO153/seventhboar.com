@@ -13,20 +13,7 @@
   }
 
   function projectCardMarkup(project) {
-    return `
-      <a class="card project-card reveal" href="/project/?id=${encodeURIComponent(project.id)}">
-        <img class="card-media" src="${escapeHtml(project.cardBanner || project.banner)}" alt="${escapeHtml(project.title)}" />
-        <div class="card-body">
-          <div class="meta">
-            ${(project.categories || []).map((cat) => `<span class="chip">${escapeHtml(cat)}</span>`).join('')}
-            ${(project.platforms || []).map((tag) => `<span class="chip ink">${escapeHtml(tag)}</span>`).join('')}
-          </div>
-          <h3>${escapeHtml(project.title)}</h3>
-          <p>${escapeHtml(project.tagline)}</p>
-          <footer><span class="text-link">View project</span></footer>
-        </div>
-      </a>
-    `;
+    return CardUi.project(project);
   }
 
   function renderProjects() {

@@ -97,7 +97,7 @@
       </section>
       <section class="section">
         <div class="shell">
-          <img class="post-hero-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" />
+          <div class="frame-corners"><img class="post-hero-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" /></div>
           <article class="panel article-body article-body--full reveal">${bodyHtml}</article>
         </div>
       </section>
@@ -215,20 +215,7 @@
 
     document.getElementById('relatedSection').style.display = '';
     const grid = document.getElementById('relatedPosts');
-    grid.innerHTML = related.map((p) => `
-      <a class="card article-card reveal" href="/post/?id=${encodeURIComponent(p.id)}">
-        <img class="card-media" src="${escapeHtml(p.cardImage || p.image)}" alt="${escapeHtml(p.title)}" />
-        <div class="card-body">
-          <div class="meta">
-            <span class="chip">Devlog</span>
-            <span class="chip ink">${escapeHtml(p.category)}</span>
-          </div>
-          <h3>${escapeHtml(p.title)}</h3>
-          <p>${escapeHtml(p.excerpt)}</p>
-          <footer><span class="text-link">Read entry</span></footer>
-        </div>
-      </a>
-    `).join('');
+    grid.innerHTML = related.map((p) => CardUi.article(p)).join('');
     window.ScrollReveal.scan(grid);
   }
 

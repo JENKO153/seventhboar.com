@@ -57,23 +57,7 @@
       return;
     }
 
-    grid.innerHTML = posts.map((post) => `
-      <a class="card article-card reveal" href="/post/?id=${encodeURIComponent(post.id)}">
-        <img class="card-media" src="${escapeHtml(post.cardImage || post.image)}" alt="${escapeHtml(post.title)}" />
-        <div class="card-body">
-          <div class="meta">
-            <span class="chip">Devlog</span>
-            <span class="chip ink">${escapeHtml(post.category)}</span>
-          </div>
-          <h3>${escapeHtml(post.title)}</h3>
-          <p>${escapeHtml(post.excerpt)}</p>
-          <footer>
-            <p class="microcopy">Published ${formatDate(post.date)}</p>
-            <span class="text-link">Read entry</span>
-          </footer>
-        </div>
-      </a>
-    `).join('');
+    grid.innerHTML = posts.map((post) => CardUi.article(post)).join('');
 
     window.ScrollReveal.scan(grid);
   }

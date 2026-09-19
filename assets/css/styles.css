@@ -10,8 +10,9 @@
   --maroon-deep: #6f1a21;
   --shadow: 0 10px 30px rgba(20, 25, 30, 0.08);
   --shadow-lift: 0 18px 40px rgba(20, 25, 30, 0.14);
-  --radius: 16px;
-  --radius-sm: 10px;
+  --radius: 4px;
+  --radius-sm: 3px;
+  --mono: "SF Mono", "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
   --shell: min(1100px, calc(100% - 2.5rem));
   --heading-font: "Avenir Next Condensed", "Futura Condensed Extra Bold",
     "Arial Narrow", sans-serif;
@@ -400,7 +401,7 @@ h3 {
 
 .hero {
   position: relative;
-  min-height: max(70vh, calc(40vw + 9rem));
+  min-height: max(62vh, calc(33vw + 13rem));
   background: #0a0d0a;
   display: flex;
   align-items: flex-end;
@@ -412,14 +413,16 @@ h3 {
 .hero-bg {
   position: absolute;
   inset: -4% 0 0;
-  background: url("../images/Home_Page_Banner.jpg") center bottom / cover no-repeat;
+  background: url("../images/Home_Page_Banner.jpg") center 3rem / 76% auto no-repeat;
   will-change: transform;
 }
 
 .hero-scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(10, 13, 10, 0) 0%, rgba(10, 13, 10, 0) 62%, rgba(10, 13, 10, 0.85) 100%);
+  background:
+    linear-gradient(90deg, #0a0d0a 12%, rgba(10, 13, 10, 0) 30%, rgba(10, 13, 10, 0) 70%, #0a0d0a 88%),
+    linear-gradient(180deg, #0a0d0a 0%, rgba(10, 13, 10, 0) 16%, rgba(10, 13, 10, 0) 70%, rgba(10, 13, 10, 0.85) 100%);
 }
 
 .hero-content {
@@ -480,11 +483,18 @@ h3 {
 
   .hero-bg {
     background-position: center top;
-    background-size: 240% auto;
+    background-size: 190% auto;
   }
 
   .hero-scrim {
-    background: linear-gradient(180deg, rgba(10, 13, 10, 0) 0%, rgba(10, 13, 10, 0) 52%, #0a0d0a 80%, #0a0d0a 100%);
+    background: linear-gradient(180deg, rgba(10, 13, 10, 0) 0%, rgba(10, 13, 10, 0) 46%, #0a0d0a 60%, #0a0d0a 100%);
+  }
+
+  .hero span.stamp {
+    top: 1rem;
+    right: 3.4rem;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.45rem 0.2rem;
   }
 }
 
@@ -2538,5 +2548,230 @@ textarea {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* =========================================================
+   Sharper card language (inspired by the SPXTR build):
+   flat bordered cards, mono labels, corner brackets on hover,
+   rubber-stamp badges. Colours stay cream / ink / maroon.
+   ========================================================= */
+
+/* static brackets on photo heroes + framed images */
+.hero::after,
+.page-hero-photo::after,
+.frame-corners::after,
+.project-banner--photo::after {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  z-index: 1;
+  pointer-events: none;
+  --c: rgba(255, 255, 255, 0.85);
+  --l: 26px;
+  --w: 2px;
+  background:
+    linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l) no-repeat;
+}
+
+.frame-corners {
+  position: relative;
+  margin-bottom: 1.75rem;
+}
+
+.frame-corners .post-hero-img {
+  margin-bottom: 0;
+}
+
+/* rubber stamp */
+.stamp,
+.card-stamp {
+  display: inline-block;
+  font-family: var(--heading-font);
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--maroon);
+  border: 2px solid currentColor;
+  padding: 0.32rem 0.6rem 0.26rem;
+  transform: rotate(-6deg);
+  background: rgba(251, 249, 246, 0.94);
+}
+
+.card-stamp {
+  position: absolute;
+  right: 0.9rem;
+  top: 0.9rem;
+  z-index: 3;
+}
+
+.hero .stamp {
+  position: absolute;
+  z-index: 2;
+  right: clamp(1.5rem, 7vw, 6rem);
+  top: clamp(2.5rem, 12vh, 6rem);
+  font-size: 1.05rem;
+  color: #fff;
+  background: rgba(10, 13, 10, 0.55);
+  transform: rotate(7deg);
+}
+
+/* flat, bordered surfaces */
+.panel,
+.form-shell,
+.hero-panel,
+.client-card {
+  box-shadow: none;
+  border: 1px solid var(--line);
+}
+
+.panel,
+.form-shell,
+.hero-panel {
+  border-top: 3px solid var(--maroon);
+}
+
+.project-card,
+.article-card {
+  position: relative;
+  border: 1px solid var(--line);
+  box-shadow: none;
+  transition: transform 260ms cubic-bezier(0.2, 0.7, 0.2, 1), border-color 200ms ease, box-shadow 260ms ease;
+}
+
+.project-card:hover,
+.article-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--ink);
+  box-shadow: 0 18px 36px rgba(20, 25, 30, 0.12);
+}
+
+.card-media-frame {
+  position: relative;
+  height: 12rem;
+  overflow: hidden;
+  background: var(--bg-soft);
+}
+
+.card-media-frame .card-media {
+  width: 100%;
+  height: 100%;
+  filter: saturate(0.92);
+  transition: transform 900ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.card:hover .card-media-frame .card-media {
+  transform: scale(1.06);
+}
+
+.card-media-frame::after {
+  content: "";
+  position: absolute;
+  inset: 20px;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 250ms ease, inset 300ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  --c: #fff;
+  --l: 20px;
+  --w: 2px;
+  background:
+    linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l) no-repeat;
+}
+
+.card:hover .card-media-frame::after {
+  opacity: 1;
+  inset: 12px;
+}
+
+.card-badge {
+  position: absolute;
+  left: 0.8rem;
+  top: 0.8rem;
+  z-index: 3;
+  max-width: calc(100% - 6.5rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0.38rem 0.55rem;
+  background: var(--ink);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.project-card .card-body,
+.article-card .card-body {
+  padding: 1.25rem 1.4rem 1.5rem;
+  border-top: 3px solid var(--maroon);
+}
+
+.card-code {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.card-code span:first-child {
+  color: var(--maroon);
+  flex-shrink: 0;
+}
+
+.card-code span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.project-card h3,
+.article-card h3 {
+  font-size: 1.45rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  line-height: 1.05;
+}
+
+.chip,
+.filter-pill {
+  border-radius: 2px;
+}
+
+.filter-pill {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-media-frame .card-media,
+  .card-media-frame::after {
+    transition: none;
   }
 }

@@ -1,129 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title id="pageTitle">Devlog | Seventh Boar Development</title>
-    <meta name="description" content="A devlog entry from Seventh Boar Development, an independent Australian studio building apps and games." />
-    <link rel="alternate" type="application/rss+xml" title="Seventh Boar Development — Devlog" href="/devlog/feed.xml" />
-    <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark.png" />
-    <link rel="stylesheet" href="/assets/css/styles.css" />
-  </head>
-  <body class="site-frame" data-nav="devlog">
-    <header class="site-header">
-      <div class="shell nav-shell">
-        <a class="brand" href="/" aria-label="Seventh Boar Development home">
-          <img src="/assets/images/seventh-boar-mark.png" alt="" />
-          <span>
-            <strong>Seventh Boar</strong>
-            <em>Development</em>
-          </span>
-        </a>
-        <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-menu" aria-label="Open navigation">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7" />
-          </svg>
-        </button>
-        <nav class="site-nav" id="site-menu" data-nav-panel>
-          <a href="/" data-page="home">Home</a>
-          <a href="/work/" data-page="work">Work</a>
-          <a href="/services/" data-page="services">Services</a>
-          <a href="/devlog/" data-page="devlog">Devlog</a>
-          <a href="/about/" data-page="about">About</a>
-          <a href="/contact/" data-page="contact">Contact</a>
-        </nav>
-      </div>
-    </header>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0A0A0A">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co; frame-src 'self'; base-uri 'none'; object-src 'none'">
+  <title>Devlog | Seventh Boar Development</title>
+  <meta name="description" content="A devlog entry from Seventh Boar Development, an independent Australian studio building apps and games.">
+  <link rel="alternate" type="application/rss+xml" title="Seventh Boar Development — Devlog" href="/devlog/feed.xml">
+  <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark.png" media="(prefers-color-scheme: light)">
+  <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark-inverted.png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="/assets/images/seventh-boar-mark.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800;900&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <script src="/assets/js/accent.js"></script>
+</head>
+<body data-page="devlog">
+  <div id="chrome-top"></div>
 
-    <main id="postContainer">
-      <div class="shell" style="padding: 4rem 0; text-align: center; color: var(--ink-soft)">Loading...</div>
-    </main>
+  <main id="main">
+    <div id="postContainer"><div class="wrap muted" style="padding:120px 0;text-align:center">Loading…</div></div>
 
-    <section class="section" id="relatedSection" style="display: none">
-      <div class="shell">
-        <div class="section-header">
-          <div class="eyebrow">More From The Devlog</div>
-          <h2 class="section-title">Related entries.</h2>
-        </div>
-        <div class="article-grid" id="relatedPosts"></div>
-      </div>
-    </section>
-
-    <section class="section comments-section" id="commentsSection" style="display: none">
-      <div class="shell" style="max-width: 46rem; margin: 0 auto">
-        <div class="section-header">
-          <div class="eyebrow">Discussion</div>
-          <h2 class="section-title">Comments</h2>
-        </div>
+    <section class="comments" id="commentsSection" hidden>
+      <div class="article">
+        <span class="eyebrow">Discussion</span>
+        <h2>Comments</h2>
         <p class="comments-count" id="commentsCount"></p>
         <div class="comment-list" id="commentList"></div>
         <div class="panel">
-          <h3 class="mini-title">Leave a comment</h3>
-          <form id="commentForm" class="comment-form">
-            <div class="field-full" style="margin-bottom: 1rem">
-              <label for="commentAuthor">Name</label>
-              <input type="text" id="commentAuthor" required maxlength="60" placeholder="Your name" />
+          <h3>Leave a comment</h3>
+          <form id="commentForm" class="form">
+            <div style="display:grid;gap:16px;margin-bottom:20px">
+              <label>Name<input type="text" id="commentAuthor" required maxlength="60" placeholder="Your name"></label>
+              <label>Comment<textarea id="commentBody" required maxlength="1000" placeholder="Share your thoughts…"></textarea></label>
             </div>
-            <div class="field-full" style="margin-bottom: 1rem">
-              <label for="commentBody">Comment</label>
-              <textarea id="commentBody" required maxlength="1000" placeholder="Share your thoughts..."></textarea>
-            </div>
-            <button type="submit" class="button">Post Comment</button>
-            <div class="comment-form-status" id="commentFormStatus"></div>
+            <button type="submit" class="btn">Post comment</button>
+            <div class="form-status" id="commentFormStatus"></div>
+            <p class="form-note">Comments are checked before they appear.</p>
           </form>
         </div>
       </div>
     </section>
 
-    <footer class="site-footer">
-      <div class="shell footer-panel">
-        <div class="footer-grid">
-          <div>
-            <div class="brand">
-              <img src="/assets/images/seventh-boar-mark.png" alt="" />
-              <span>
-                <strong>Seventh Boar</strong>
-                <em>Development</em>
-              </span>
-            </div>
-            <p>Development posts, updates, and studio writing from Seventh Boar Development.</p>
-          </div>
-          <div>
-            <h3>Explore</h3>
-            <ul>
-              <li><a href="/work/">Work</a></li>
-              <li><a href="/about/">About</a></li>
-              <li><a href="/privacy/">Privacy</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3>Contact</h3>
-            <ul>
-              <li><a href="/contact/">Contact</a></li>
-              <li><a href="mailto:Admin@seventhboar.com">Admin@seventhboar.com</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3>Social</h3>
-            <ul>
-              <li><a href="https://instagram.com/seventhboardevelopment">Instagram</a></li>
-              <li><a href="https://www.tiktok.com/@seventhboardevelopment">TikTok</a></li>
-            </ul>
-          </div>
+    <section class="section" id="relatedSection" hidden>
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow">More from the devlog</span><h2 class="display">Related entries</h2></div>
         </div>
-        <div class="footer-bar">
-          <span>&copy; <span data-year></span> Seventh Boar Development</span>
-          <span>Development writing from the studio.</span>
-        </div>
+        <div class="cards" id="relatedPosts"></div>
       </div>
-    </footer>
+    </section>
+  </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/assets/js/cms.js"></script>
-    <script src="/assets/js/seo.js"></script>
-    <script src="/assets/js/reveal.js"></script>
-    <script src="/assets/js/cards.js"></script>
-    <script src="/assets/js/journal-post.js"></script>
-    <script src="/assets/js/site.js"></script>
-  </body>
+  <div id="chrome-bottom"></div>
+
+  <script src="/assets/vendor/supabase-2.116.0.js"></script>
+  <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/data.js"></script>
+  <script src="/assets/js/cms.js"></script>
+  <script src="/assets/js/reveal.js"></script>
+  <script src="/assets/js/site.js"></script>
+  <script src="/assets/js/seo.js"></script>
+  <script src="/assets/js/blocks.js"></script>
+  <script src="/assets/js/post.js"></script>
+</body>
 </html>

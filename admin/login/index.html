@@ -1,57 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="noindex, nofollow" />
-    <title>Admin Login | Seventh Boar Development</title>
-    <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark.png" />
-    <link rel="stylesheet" href="/assets/css/styles.css" />
-  </head>
-  <body class="site-frame">
-    <header class="site-header">
-      <div class="shell nav-shell">
-        <a class="brand" href="/" aria-label="Seventh Boar Development home">
-          <img src="/assets/images/seventh-boar-mark.png" alt="" />
-          <span>
-            <strong>Seventh Boar</strong>
-            <em>Development</em>
-          </span>
-        </a>
-      </div>
-    </header>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0A0A0A">
+  <!-- Security policy in the page itself, for hosts that ignore a headers file (e.g. GitHub Pages) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co; frame-src 'self' https://challenges.cloudflare.com; base-uri 'none'; form-action 'self'; object-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Admin login — Seventh Boar</title>
+  <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark.png" media="(prefers-color-scheme: light)">
+  <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark-inverted.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@800;900&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/admin.css">
+  <script src="/assets/js/accent.js"></script>
+</head>
+<body class="auth-page">
+  <main class="auth">
+    <div class="auth__brand">
+      <img src="/assets/images/seventh-boar-mark-inverted.png" alt="" class="auth__mark">
+      <div class="auth__word">Seventh Boar<small>Development</small></div>
+      <span class="auth__tag">Admin</span>
+    </div>
 
-    <main>
-      <div class="shell">
-        <div class="auth-wrap">
-          <div class="auth-card">
-            <h1>Studio Login</h1>
-            <p class="lead">Sign in to write a devlog entry or add a project.</p>
+    <div class="auth__card">
+      <div class="notice notice--demo" id="demoNotice" hidden></div>
+      <div class="notice notice--error" id="formError" role="alert" hidden></div>
 
-            <div class="form-error" id="formError">Incorrect email or password. Try again.</div>
+      <!-- Step 1: email + password -->
+      <form id="loginForm" class="auth__step" autocomplete="on">
+        <h1>Sign in</h1>
+        <p class="muted">Studio owner access only.</p>
+        <label>Email<input type="email" id="email" required autocomplete="username" maxlength="200" spellcheck="false"></label>
+        <label>Password<input type="password" id="password" required autocomplete="current-password" maxlength="200"></label>
+        <div id="captcha"></div>
+        <button type="submit" class="btn btn--block">Sign in</button>
+      </form>
 
-            <form id="loginForm">
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required autocomplete="username" />
-              </div>
-              <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required autocomplete="current-password" />
-              </div>
-              <button type="submit" class="button" style="width: 100%">Log In</button>
-            </form>
+      <!-- Step 2: authenticator code -->
+      <form id="mfaForm" class="auth__step" hidden>
+        <h1>Enter your code</h1>
+        <p class="muted">Open your authenticator app and type the 6-digit code for Seventh Boar.</p>
+        <label>6-digit code<input id="mfaCode" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required class="code-input"></label>
+        <button type="submit" class="btn btn--block">Verify</button>
+        <button type="button" class="link" data-cancel>Use a different account</button>
+      </form>
 
-            <p style="margin-top: 1.5rem">
-              <a href="/" style="font-size: 0.9rem; color: var(--ink-soft)">&larr; Back to the site</a>
-            </p>
-          </div>
-        </div>
-      </div>
-    </main>
+      <!-- Step 3: first-time authenticator setup -->
+      <form id="enrollForm" class="auth__step" hidden>
+        <h1>Protect this account</h1>
+        <p class="muted">Admin access needs an authenticator app (Google Authenticator, 1Password, Authy…). Scan this code, then enter the 6 digits it shows.</p>
+        <div class="qr"><img id="qrImg" alt="Authenticator QR code"></div>
+        <p class="secret">Can't scan? Enter this key: <code id="qrSecret"></code></p>
+        <label>6-digit code<input id="enrollCode" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required class="code-input"></label>
+        <button type="submit" class="btn btn--block">Turn on and continue</button>
+        <button type="button" class="link" data-cancel>Cancel</button>
+      </form>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/assets/js/cms.js"></script>
-    <script src="/assets/js/admin-login.js"></script>
-  </body>
+      <p class="auth__back"><a href="/">&larr; Back to the site</a></p>
+    </div>
+    <p class="auth__fine">Protected by row-level security, password confirmation on every change, and two-factor authentication.</p>
+  </main>
+
+  <script src="/assets/vendor/supabase-2.116.0.js"></script>
+  <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/data.js"></script>
+  <script src="/assets/js/cms.js"></script>
+  <script src="/assets/js/admin-login.js"></script>
+</body>
 </html>

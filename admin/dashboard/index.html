@@ -1,254 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="noindex, nofollow" />
-    <title>Studio Dashboard | Seventh Boar Development</title>
-    <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark.png" />
-    <link rel="stylesheet" href="/assets/css/styles.css" />
-  </head>
-  <body class="site-frame">
-    <header class="site-header">
-      <div class="shell nav-shell">
-        <a class="brand" href="/" aria-label="Seventh Boar Development home">
-          <img src="/assets/images/seventh-boar-mark.png" alt="" />
-          <span>
-            <strong>Seventh Boar</strong>
-            <em>Development</em>
-          </span>
-        </a>
-        <nav class="admin-nav">
-          <a href="/admin/comments/">Comments</a>
-          <a href="/">View Site</a>
-          <button class="button-ghost" id="logoutBtn" type="button">Log Out</button>
-        </nav>
-      </div>
-    </header>
-
-    <main>
-      <section class="section" style="padding-bottom: 0">
-        <div class="shell">
-          <div class="welcome-banner">Welcome back — let's get something published.</div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="shell">
-          <div class="type-toggle" role="tablist" aria-label="Content type">
-            <button type="button" class="type-toggle-option is-active" data-type="journal">Devlog Entry</button>
-            <button type="button" class="type-toggle-option" data-type="project">Project</button>
-          </div>
-
-          <div class="dashboard">
-            <div class="dashboard-panel">
-              <div class="dashboard-header">
-                <h2 class="mini-title" id="formTitle">Write a Devlog Entry</h2>
-                <button type="button" id="cancelEditBtn" class="icon-btn" style="display: none">Cancel edit</button>
-              </div>
-
-              <div class="form-success" id="formSuccess"></div>
-              <div class="form-success" id="draftRestored" style="background: var(--bg-soft); color: var(--ink)">
-                Draft restored from your last session.
-                <button type="button" id="discardDraftBtn" class="icon-btn" style="text-decoration: underline">Discard it and start blank</button>
-              </div>
-
-              <!-- ---------- Devlog form ---------- -->
-              <form id="journalForm">
-                <div class="form-group">
-                  <label for="jTitle">Title</label>
-                  <input type="text" id="jTitle" required placeholder="e.g. Building Not Another Monday" />
-                </div>
-                <div class="form-group">
-                  <label for="jCategory">Category</label>
-                  <select id="jCategory" required>
-                    <option value="">Select a category</option>
-                    <option>Devlog</option>
-                    <option>Game Design</option>
-                    <option>App Development</option>
-                    <option>Behind The Scenes</option>
-                    <option>Release Notes</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="jImage">Cover Image</label>
-                  <input type="file" id="jImage" accept="image/*" />
-                  <div class="crop-editor" id="jImageCropEditor">
-                    <div class="crop-editor-label">Drag to reposition, use the slider to zoom — this is exactly what cards will show.</div>
-                    <div class="crop-frame" id="jImageCropFrame">
-                      <img id="jImageCropImg" alt="" draggable="false" />
-                    </div>
-                    <div class="crop-zoom-row">
-                      <span>Zoom</span>
-                      <input type="range" id="jImageCropZoom" min="100" max="300" value="100" step="1" />
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="jExcerpt">Short Excerpt</label>
-                  <input type="text" id="jExcerpt" required maxlength="200" placeholder="One or two sentences shown on post cards" />
-                </div>
-                <div class="form-group">
-                  <label>Entry Content</label>
-                  <p class="form-hint">Build the entry block by block — titles and subtitles break up the story, paragraphs come in three sizes.</p>
-                  <div id="journalBlocks"></div>
-                  <button type="button" id="jAddBlockBtn" class="button-ghost">+ Add Block</button>
-                </div>
-                <div class="form-group">
-                  <label class="checkbox-label">
-                    <input type="checkbox" id="jScheduleToggle" />
-                    Schedule this for later
-                  </label>
-                  <div class="schedule-panel" id="jSchedulePanel">
-                    <label for="jPublishAt">Publish Date &amp; Time</label>
-                    <input type="datetime-local" id="jPublishAt" />
-                  </div>
-                </div>
-                <button type="submit" class="button" id="jSubmitBtn" style="width: 100%">Publish Entry</button>
-              </form>
-
-              <!-- ---------- Project form ---------- -->
-              <form id="projectForm" style="display: none">
-                <div class="form-group">
-                  <label for="pTitle">Title</label>
-                  <input type="text" id="pTitle" required placeholder="e.g. Not Another Monday" />
-                </div>
-                <div class="form-group">
-                  <label>Type</label>
-                  <div class="field-row">
-                    <label class="checkbox-label"><input type="checkbox" value="game" class="pCategory" /> Game</label>
-                    <label class="checkbox-label"><input type="checkbox" value="app" class="pCategory" /> App</label>
-                    <label class="checkbox-label"><input type="checkbox" value="prototype" class="pCategory" /> Prototype</label>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="pPlatforms">Tags</label>
-                  <input type="text" id="pPlatforms" placeholder="iOS + Android, Wellness UX, Cross-Platform" />
-                  <p class="form-hint">Comma-separated — shown as small tags on the project.</p>
-                </div>
-                <div class="form-group">
-                  <label for="pClient">Client (optional)</label>
-                  <input type="text" id="pClient" placeholder="Leave blank for an owned/internal project" />
-                </div>
-                <div class="form-group">
-                  <label for="pTagline">Tagline</label>
-                  <input type="text" id="pTagline" required maxlength="120" placeholder="e.g. Consistent action. Better you." />
-                </div>
-                <div class="form-group">
-                  <label for="pBanner">Cover / Banner Photo</label>
-                  <input type="file" id="pBanner" accept="image/*" />
-                  <div class="crop-editor" id="pBannerCropEditor">
-                    <div class="crop-editor-label">Drag to reposition, use the slider to zoom — this is exactly what cards will show.</div>
-                    <div class="crop-frame" id="pBannerCropFrame">
-                      <img id="pBannerCropImg" alt="" draggable="false" />
-                    </div>
-                    <div class="crop-zoom-row">
-                      <span>Zoom</span>
-                      <input type="range" id="pBannerCropZoom" min="100" max="300" value="100" step="1" />
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="pIcon">Icon (optional)</label>
-                  <input type="file" id="pIcon" accept="image/*" />
-                  <img id="pIconPreview" class="image-preview" alt="" style="max-height: 6rem; max-width: 6rem" />
-                </div>
-                <div class="form-group">
-                  <label>The Brief</label>
-                  <p class="form-hint">A photo and a short write-up of what it is — build it block by block same as an entry.</p>
-                  <div id="projectBlocks"></div>
-                  <button type="button" id="pAddBlockBtn" class="button-ghost">+ Add Block</button>
-                </div>
-                <div class="form-group">
-                  <label for="pClientLogo">Client Logo (optional)</label>
-                  <p class="form-hint">Adds a client card to the project page with their logo and social links.</p>
-                  <input type="file" id="pClientLogo" accept="image/*" />
-                  <img id="pClientLogoPreview" class="image-preview" alt="" style="max-height: 6rem; object-fit: contain; background: var(--bg-soft)" />
-                </div>
-                <div class="form-group" id="clientLinksGroup">
-                  <label>Client Social Links</label>
-                  <p class="form-hint">Tick a platform to show it on the client card and paste their link.</p>
-                  <div id="clientLinksEditor"></div>
-                </div>
-                <div class="form-group">
-                  <label class="checkbox-label">
-                    <input type="checkbox" id="pFeatured" />
-                    Feature on homepage &amp; Work page
-                  </label>
-                </div>
-                <div class="form-group">
-                  <label class="checkbox-label">
-                    <input type="checkbox" id="pScheduleToggle" />
-                    Schedule this for later
-                  </label>
-                  <div class="schedule-panel" id="pSchedulePanel">
-                    <label for="pPublishAt">Publish Date &amp; Time</label>
-                    <input type="datetime-local" id="pPublishAt" />
-                  </div>
-                </div>
-                <button type="submit" class="button" id="pSubmitBtn" style="width: 100%">Publish Project</button>
-              </form>
-            </div>
-
-            <div class="dashboard-panel preview-panel">
-              <div class="dashboard-header">
-                <h2 class="mini-title"><span class="live-dot"></span>Live Preview</h2>
-              </div>
-              <div class="preview-frame">
-                <div class="preview-chrome">
-                  <span class="preview-dot"></span><span class="preview-dot"></span><span class="preview-dot"></span>
-                  <span class="preview-url" id="previewUrl">seventhboar.com/post/</span>
-                </div>
-                <div class="preview-scroll">
-                  <div class="preview-content" id="previewContent"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="shell">
-          <div class="dashboard-panel">
-            <div class="dashboard-header">
-              <h2 class="mini-title">Published Devlog Entries</h2>
-            </div>
-            <div id="journalList"></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="shell">
-          <div class="dashboard-panel">
-            <div class="dashboard-header">
-              <h2 class="mini-title">Published Projects</h2>
-            </div>
-            <div id="projectList"></div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <div class="modal-overlay" id="confirmModal" style="display: none">
-      <div class="modal-card">
-        <h3>Confirm It's You</h3>
-        <p class="lead" id="confirmMessage">Enter your password to continue.</p>
-        <div class="form-error" id="confirmError">Incorrect password. Try again.</div>
-        <div class="form-group">
-          <label for="confirmPassword">Password</label>
-          <input type="password" id="confirmPassword" autocomplete="current-password" />
-        </div>
-        <div class="modal-actions">
-          <button type="button" class="button-ghost" id="confirmCancelBtn">Cancel</button>
-          <button type="button" class="button" id="confirmSubmitBtn">Confirm</button>
-        </div>
-      </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0A0A0A">
+  <!-- Security policy in the page itself, for hosts that ignore a headers file (e.g. GitHub Pages) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co; frame-src 'self' https://challenges.cloudflare.com; base-uri 'none'; form-action 'self'; object-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Dashboard — Seventh Boar Admin</title>
+  <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark.png" media="(prefers-color-scheme: light)">
+  <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark-inverted.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@800;900&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/admin.css">
+  <script src="/assets/js/accent.js"></script>
+</head>
+<body class="dash" hidden>
+  <aside class="side" id="side">
+    <a class="side__brand" href="./">
+      <img src="/assets/images/seventh-boar-mark-inverted.png" alt="" class="side__mark">
+      <span class="side__word">Seventh Boar<small>Development</small></span>
+    </a>
+    <nav class="side__nav" id="nav">
+      <a href="#overview" data-route="overview"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4zM14 20h6v-9h-6zM4 20h6v-3H4zM14 7h6V4h-6z"/></svg>Overview</a>
+      <a href="#projects" data-route="projects"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg>Projects</a>
+      <a href="#devlog" data-route="devlog"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5zM8 10h8M8 14h8M8 18h5"/></svg>Devlog</a>
+      <a href="#comments" data-route="comments"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>Comments<span class="nav-count" id="cmCount" hidden></span></a>
+      <a href="#subscribers" data-route="subscribers"><svg viewBox="0 0 24 24"><path d="M3 6h18v12H3zM3 7l9 7 9-7"/></svg>Subscribers</a>
+      <a href="#team" data-route="team"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 21a8 8 0 0 1 16 0"/></svg>Team &amp; clients</a>
+      <a href="#settings" data-route="settings"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Homepage &amp; settings</a>
+      <a href="#customise" data-route="customise"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18c1.5 0 2-1 2-2s-1-1.5-1-2.5S14 15 15.5 15H18a3 3 0 0 0 3-3 9 9 0 0 0-9-9Z"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16" cy="10" r="1"/></svg>Customise</a>
+      <a href="#security" data-route="security"><svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3Z"/></svg>Security &amp; activity</a>
+      <div class="side__label">Site</div>
+      <a href="/" id="viewSite" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/></svg>View site</a>
+    </nav>
+    <div class="side__foot">
+      <button type="button" class="side__user" id="profileBtn" title="Your name and account">
+        <span id="userEmail"></span><small id="modeLabel"></small></button>
+      <button class="btn btn--ghost btn--sm" id="logout">Log out</button>
     </div>
+  </aside>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/assets/js/cms.js"></script>
-    <script src="/assets/js/admin-dashboard.js"></script>
-  </body>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h18"/></svg></button>
+      <h1 id="viewTitle">Overview</h1>
+      <span class="spacer"></span>
+      <span class="chip chip--demo" id="demoChip" hidden>Demo mode</span>
+      <button class="chip chip--soon" id="soonChip" hidden title="The site is closed to the public"><svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3Z"/></svg>Coming soon is on</button>
+      <span class="chip" id="lockChip" title="Every change asks for your password"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Changes need password</span>
+    </header>
+    <div class="content" id="view"></div>
+  </div>
+
+  <!-- Your account: the name shown in the activity log -->
+  <div class="modal" id="profileModal" hidden>
+    <form class="modal__card" id="profileForm">
+      <h2>Your account</h2>
+      <p class="muted">Signed in as <b id="profileEmail"></b></p>
+      <label style="text-align:left">Name in the activity log
+        <input type="text" id="nickname" maxlength="40" autocomplete="nickname" placeholder="e.g. Kurt">
+        <span class="hint">Leave it empty to go back to showing your email.</span>
+      </label>
+      <div class="notice notice--error" id="profileError" hidden></div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" id="profileCancel">Cancel</button>
+        <button type="submit" class="btn">Save name</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Password confirmation (every change) -->
+  <div class="modal" id="confirmModal" hidden>
+    <form class="modal__card" id="confirmForm">
+      <div class="modal__icon"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+      <h2>Confirm it's you</h2>
+      <p class="muted" id="confirmText">Enter your admin password to save this change.</p>
+      <input type="password" id="confirmPassword" autocomplete="current-password" maxlength="200" required aria-label="Admin password">
+      <div class="notice notice--error" id="confirmError" hidden></div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" id="confirmCancel">Cancel</button>
+        <button type="submit" class="btn" id="confirmSubmit">Confirm &amp; save</button>
+      </div>
+      <div class="lps" aria-label="Seventh Boar Protection">
+        <span class="lps__badge"><svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>Seventh Boar Protection</span>
+        <span class="lps__joke">Checked by the database, not just this screen.</span>
+      </div>
+    </form>
+  </div>
+
+  <input type="file" id="picker" accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,.heic,.heif" hidden>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="/assets/vendor/supabase-2.116.0.js"></script>
+  <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/data.js"></script>
+  <script src="/assets/js/cms.js"></script>
+  <script src="/assets/js/blocks.js"></script>
+  <script src="/assets/js/admin-core.js"></script>
+  <script src="/assets/js/admin-editors.js"></script>
+  <script src="/assets/js/admin-pages.js"></script>
+  <script src="/assets/js/admin-settings.js"></script>
+  <script src="/assets/js/admin-main.js"></script>
+</body>
 </html>

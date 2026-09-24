@@ -1,71 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Page Not Found | Seventh Boar Development</title>
-    <meta
-      name="description"
-      content="The page you were looking for could not be found."
-    />
-    <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark.png" />
-    <link rel="stylesheet" href="/assets/css/styles.css" />
-  </head>
-  <body class="site-frame" data-nav="none">
-    <header class="site-header">
-      <div class="shell nav-shell">
-        <a class="brand" href="/" aria-label="Seventh Boar Development home">
-          <img src="/assets/images/seventh-boar-mark.png" alt="" />
-          <span>
-            <strong>Seventh Boar</strong>
-            <em>Development</em>
-          </span>
-        </a>
-        <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-menu" aria-label="Open navigation">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7" />
-          </svg>
-        </button>
-        <nav class="site-nav" id="site-menu" data-nav-panel>
-          <a href="/" data-page="home">Home</a>
-          <a href="/work/" data-page="work">Work</a>
-          <a href="/services/" data-page="services">Services</a>
-          <a href="/devlog/" data-page="devlog">Devlog</a>
-          <a href="/about/" data-page="about">About</a>
-          <a href="/contact/" data-page="contact">Contact</a>
-        </nav>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0A0A0A">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co; frame-src 'self'; base-uri 'none'; object-src 'none'">
+  <title>Page Not Found | Seventh Boar Development</title>
+  <meta name="description" content="The page you were looking for could not be found.">
+  <link rel="alternate" type="application/rss+xml" title="Seventh Boar Development — Devlog" href="/devlog/feed.xml">
+  <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark.png" media="(prefers-color-scheme: light)">
+  <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark-inverted.png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="/assets/images/seventh-boar-mark.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800;900&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <script src="/assets/js/accent.js"></script>
+</head>
+<body data-page="none">
+  <div id="chrome-top"></div>
+
+  <main id="main">
+    <div class="page-head">
+      <div class="page-head__bg" style="background-image:url('/assets/images/Generic_Banner.png');background-position:center"></div>
+      <span class="corners"></span>
+      <div class="wrap">
+        <div class="crumbs"><a href="/">Home</a> // <span>404</span></div>
+        <h1 class="display">The trail ends here.</h1>
+        <p class="lead">The page you requested is not available, but the rest of the studio is still very much open.</p>
+        <div class="page-head__actions"><a class="btn" href="/">Back to home</a><a class="btn btn--ghost" href="/work/">Browse the work</a></div>
       </div>
-    </header>
+    </div>
+  </main>
 
-    <main>
-      <section class="page-hero">
-        <div class="shell">
-          <div class="hero-copy reveal">
-            <div class="eyebrow">404</div>
-            <h1>The trail ends here.</h1>
-            <p class="page-lead">
-              The page you requested is not available, but the rest of the studio is still very
-              much open.
-            </p>
-            <div class="hero-actions">
-              <a class="button" href="/">Back to Home</a>
-              <a class="button-ghost" href="/work/">Browse the Work</a>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
+  <div id="chrome-bottom"></div>
 
-    <footer class="site-footer">
-      <div class="shell footer-panel">
-        <div class="footer-bar">
-          <span>&copy; <span data-year></span> Seventh Boar Development</span>
-          <span>The trail ends here.</span>
-        </div>
-      </div>
-    </footer>
-
-    <script src="/assets/js/reveal.js"></script>
-    <script src="/assets/js/site.js"></script>
-  </body>
+  <script src="/assets/vendor/supabase-2.116.0.js"></script>
+  <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/data.js"></script>
+  <script src="/assets/js/cms.js"></script>
+  <script src="/assets/js/reveal.js"></script>
+  <script src="/assets/js/site.js"></script>
+  <script src="/assets/js/page.js"></script>
+</body>
 </html>

@@ -78,8 +78,6 @@ const DEFAULT_SETTINGS = {
     { label: 'TikTok', url: 'https://www.tiktok.com/@seventhboardevelopment' },
     { label: 'X', url: 'https://x.com/seventhboar' },
   ],
-  announcements: ['Independent Australian game & app studio', 'Built with purpose. Made with bite', 'Follow the devlog', 'Made in Australia'],
-  marquee: ['Games', 'Apps', 'Built with purpose', 'Made with bite', 'Ship it'],
   hero: {
     eyebrow: 'Independent // Australia',
     line1: 'Built with purpose.',

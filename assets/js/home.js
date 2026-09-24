@@ -70,9 +70,6 @@
     bar.style.setProperty('--count', Math.max(1, promises.length));
     bar.hidden = !promises.length;
 
-    App.fillTicker($('#marquee'), (s.marquee || []).filter(Boolean).map(w => `<span>${esc(w)}</span>`).join(''));
-    App.fillTicker.redraw = () => { App.renderChrome(); renderHome(); };
-
     renderTypes(projects);
     renderLatest(projects);
     renderTeam();

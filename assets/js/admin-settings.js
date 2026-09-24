@@ -200,8 +200,7 @@
           </div>
 
           <div class="section">
-            <h3>Announcement bar <small>One message per line, up to 8</small></h3>
-            <textarea name="announcements" rows="5" maxlength="700">${esc(s.announcements.join('\n'))}</textarea>
+            <h3>Header</h3>
             <label>Status chip <span class="hint">The small tag in the header. Leave empty to hide it.</span><input name="status" maxlength="40" value="${esc(s.status)}"></label>
           </div>
 
@@ -224,11 +223,6 @@
           <div class="section">
             <h3>Under the hero <small>Four short points, one per line</small></h3>
             <textarea name="heroBar" rows="4" maxlength="300">${esc((s.hero.bar || []).join('\n'))}</textarea>
-          </div>
-
-          <div class="section">
-            <h3>Scrolling ticker <small>The moving strip under the hero, one word or phrase per line</small></h3>
-            <textarea name="marquee" rows="5" maxlength="400">${esc((s.marquee || []).join('\n'))}</textarea>
           </div>
 
           <div class="section">
@@ -386,10 +380,8 @@
 
     const read = () => {
       const f = form;
-      s.announcements = lines(f.announcements.value, 8, 80);
       s.status = f.status.value.trim();
       s.hero.bar = lines(f.heroBar.value, 4, 60);
-      s.marquee = lines(f.marquee.value, 8, 30);
       Object.assign(s.typesSection, { eyebrow: f.tyEyebrow.value, title: f.tyTitle.value, link: f.tyLink.value });
       Object.assign(s.latestSection, { eyebrow: f.ltEyebrow.value, title: f.ltTitle.value, intro: f.ltIntro.value });
       Object.assign(s.devlogSection, { eyebrow: f.dvEyebrow.value, title: f.dvTitle.value });
@@ -453,7 +445,7 @@
       <div class="editor">
         <form class="editor__form" id="tform" novalidate>
           <div class="section">
-            <h3>Accent colour <small>The colour of the announcement bar, buttons, ticker and highlights</small></h3>
+            <h3>Accent colour <small>The colour of buttons, badges and highlights across the site</small></h3>
             <div class="swatches" id="swatches"></div>
           </div>
           <div class="section">

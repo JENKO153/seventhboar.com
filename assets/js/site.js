@@ -49,34 +49,16 @@ const App = (() => {
     <img class="logo__mark" src="${SITE.brand.mark}" alt="" width="44" height="44">
     <span><span class="logo__text">${esc(SITE.short)}</span><span class="logo__sub">Development</span></span></a>`;
 
-  // Tickers scroll by sliding one half of their content out of view, so the strip is only full
-  // when one half is at least as wide as the window. On big screens a handful of words would
-  // otherwise sit in a clump on the left, so the words are repeated until they reach across.
-  function fillTicker(track, html) {
-    if (!track || !html) { if (track) track.innerHTML = ''; return; }
-    const half = () => { track.innerHTML = html; return track.scrollWidth; };
-    let width = half(), copies = 1;
-    while (width && width < window.innerWidth && copies < 12) { track.insertAdjacentHTML('beforeend', html); width = track.scrollWidth; copies++; }
-    track.innerHTML = track.innerHTML + track.innerHTML;     // two identical halves = seamless loop
-    if (!fillTicker.watching) {                              // redo it when the window is resized
-      fillTicker.watching = true;
-      let t;
-      window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => fillTicker.redraw?.(), 200); });
-    }
-  }
-
   function renderChrome(active = document.body.dataset.page || '') {
     const s = SETTINGS;
-    const sig = JSON.stringify([s.announcements, s.status, s.footer, s.socials, active]);
+    const sig = JSON.stringify([s.status, s.footer, s.socials, active]);
     if (sig === chromeSig) return;
     chromeSig = sig;
-    const ann = s.announcements.filter(Boolean);
     const socials = (s.socials || []).filter(x => x.label && safeLink(x.url));
     const nav = NAV.map(([h, l, k]) => `<a href="${h}" class="${k === active ? 'active' : ''}"${k === active ? ' aria-current="page"' : ''}>${l}</a>`).join('');
 
     $('#chrome-top').innerHTML = `
       <a class="skip" href="#main">Skip to content</a>
-      <div class="announce" aria-label="Announcements"><div class="announce__track"></div></div>
       <header class="header">
         <div class="wrap header__row">
           <div style="display:flex;align-items:center;gap:6px">
@@ -118,8 +100,6 @@ const App = (() => {
 
     // Brand accent from Admin -> Customise
     window.sbAccent?.apply(s.theme?.accent);
-    fillTicker($('.announce__track'), ann.map(a => `<span>${esc(a)}</span>`).join(''));
-    fillTicker.redraw ||= () => { chromeSig = ''; renderChrome(); };
     if (!renderChrome.wired) {
       renderChrome.wired = true;
       document.addEventListener('click', onDocumentClick);
@@ -302,5 +282,5 @@ const App = (() => {
     new BroadcastChannel('sb-site').onmessage = e => { if (e.data?.type === 'content-changed') location.reload(); };
   }
 
-  return { boot, renderChrome, toast, Cards, onPreview, previewBar, fillTicker };
+  return { boot, renderChrome, toast, Cards, onPreview, previewBar };
 })();

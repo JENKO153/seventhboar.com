@@ -80,12 +80,6 @@ input, select, textarea { font: inherit; color: inherit; }
 .link-arrow svg { transition: transform .25s var(--ease); }
 .link-arrow:hover svg { transform: translateX(4px); }
 
-/* ---------- announcement ---------- */
-.announce { background: var(--hot); color: var(--on-hot); font: 500 12px/36px var(--mono); letter-spacing: .06em; text-transform: uppercase; overflow: hidden; white-space: nowrap; }
-.announce__track { display: inline-flex; animation: marquee 50s linear infinite; }
-.announce__track span { padding: 0 24px; }
-.announce__track span::before { content: '★'; margin-right: 24px; }
-
 /* ---------- header ---------- */
 #chrome-top, #chrome-bottom { display: contents; }
 .header { position: sticky; top: 0; z-index: 40; background: color-mix(in srgb, var(--bg) 94%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
@@ -127,13 +121,6 @@ input, select, textarea { font: inherit; color: inherit; }
 .hero__bar div { padding: 20px 20px 4px 0; font: 600 16px/1.25 var(--cond); letter-spacing: .06em; text-transform: uppercase; color: var(--bone); }
 .hero__bar div + div { padding-left: 20px; border-left: 1px solid var(--line-2); }
 .hero__bar small { display: block; font: 500 11px var(--mono); color: var(--hot-text); letter-spacing: .1em; margin-bottom: 6px; }
-
-/* ---------- ticker ---------- */
-.marquee { background: var(--hot); color: var(--on-hot); overflow: hidden; white-space: nowrap; padding: 16px 0; transform: rotate(-1.2deg) scale(1.02); margin: 18px 0; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
-.marquee__track { display: inline-flex; animation: marquee 45s linear infinite; }
-.marquee__track span { font: 800 30px/1 var(--stencil); text-transform: uppercase; letter-spacing: .04em; padding-right: 40px; display: inline-flex; align-items: center; gap: 40px; }
-.marquee__track span::after { content: '✕'; font-size: 20px; }
-@keyframes marquee { to { transform: translateX(-50%); } }
 
 /* ---------- section heads ---------- */
 .section { padding: clamp(72px, 10vw, 136px) 0; position: relative; }
@@ -282,12 +269,12 @@ input, select, textarea { font: inherit; color: inherit; }
 .hp { position: absolute !important; left: -9999px !important; width: 1px !important; height: 1px !important; opacity: 0; }
 
 /* ---------- footer ---------- */
-.footer { background: #0A0B08; color: var(--muted); padding: 80px 0 32px; font-size: 15px; border-top: 1px solid var(--line); overflow: hidden; }
+.footer { background: #0A0B08; color: var(--muted); padding: 80px 0 40px; font-size: 15px; border-top: 1px solid var(--line); overflow: hidden; }
 .footer__grid { display: grid; grid-template-columns: 1.8fr repeat(3, 1fr); gap: 40px; padding-bottom: 60px; }
 .footer .logo__mark { width: 56px; height: 56px; }
 .footer .logo__text { font-size: 30px; }
 /* Giant footer logo: the transparent boar artwork used as a stencil, so it takes this colour */
-.footer__giant { width: min(100% - 2 * var(--gutter), 460px); aspect-ratio: 1; margin: 20px auto -150px; background: var(--surface-2);
+.footer__giant { width: min(100% - 2 * var(--gutter), 460px); aspect-ratio: 1; margin: 24px auto 0; background: var(--surface-2);
   -webkit-mask-position: center; mask-position: center; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
 .footer h5 { color: var(--hot-text); margin: 0 0 18px; font: 500 12px var(--mono); letter-spacing: .12em; text-transform: uppercase; }
 .footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font: 600 16px var(--cond); letter-spacing: .08em; text-transform: uppercase; }
@@ -464,8 +451,7 @@ body.soon { display: grid; place-items: center; min-height: 100vh; min-height: 1
 /* ---------- big screens ---------- */
 @media (min-width: 1700px) {
   :root { --max: 1640px; --gutter: clamp(48px, 5vw, 96px); }
-  .marquee__track span { font-size: 36px; }
-}
+  }
 @media (min-width: 2200px) {
   :root { --max: 1900px; }
   body { font-size: 17px; }
@@ -530,7 +516,6 @@ body.soon { display: grid; place-items: center; min-height: 100vh; min-height: 1
   .form-grid { grid-template-columns: 1fr; }
   .article-head { padding-top: 40px; }
   .prose { font-size: 17px; }
-  .marquee__track span { font-size: 24px; }
   .toolbar select { margin-left: 0; }
 }
 @media (prefers-reduced-motion: reduce) {

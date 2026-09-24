@@ -29,7 +29,7 @@
           <div class="panel"><div class="panel__head"><h2>Quick actions</h2></div><div class="panel__body quick">
             <a href="#post/new"><b>+ New entry</b><small>Write a devlog entry with photos and a live preview</small></a>
             <a href="#project/new"><b>+ New project</b><small>Add work to the portfolio, with a client card</small></a>
-            <a href="#settings"><b>Edit homepage</b><small>Hero, ticker, sections and the footer</small></a>
+            <a href="#settings"><b>Edit homepage</b><small>Hero, sections and the footer</small></a>
           </div></div>
           <div class="panel"><div class="panel__head"><h2>Needs attention</h2></div><div class="panel__body">${attention(pending, scheduled)}</div></div>
         </div>

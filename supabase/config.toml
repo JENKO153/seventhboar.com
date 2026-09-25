@@ -1,0 +1,11 @@
+# Supabase CLI settings used when deploying the Edge Functions (see SETUP.md, "Emails").
+# Neither function uses the gateway's token check:
+#   subscribe      is called by visitors, who aren't logged in (spam-checked inside the function)
+#   notify-posts   checks the admin's session and password window itself, or the hourly job's secret
+project_id = "seventhboar"
+
+[functions.subscribe]
+verify_jwt = false
+
+[functions.notify-posts]
+verify_jwt = false

@@ -24,3 +24,18 @@ jobs:
           git add devlog/feed.xml
           git diff --cached --quiet || git commit -m "Update devlog RSS feed"
           git push
+
+      # Optional: emails subscribers about entries that went live since the last run (this is how
+      # scheduled entries get announced). Needs the NOTIFY_URL and CRON_SECRET repository secrets;
+      # skipped when they aren't set. See SETUP.md, "Emails".
+      - name: Email subscribers about new entries
+        continue-on-error: true
+        env:
+          NOTIFY_URL: ${{ secrets.NOTIFY_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -n "$NOTIFY_URL" ] && [ -n "$CRON_SECRET" ]; then
+            curl -fsS -X POST "$NOTIFY_URL" -H "x-cron-secret: $CRON_SECRET" -H "Content-Type: application/json" -d '{}'
+          else
+            echo "NOTIFY_URL / CRON_SECRET not set: skipping"
+          fi

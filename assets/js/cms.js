@@ -117,6 +117,7 @@
   const toPost = r => ({
     id: r.slug, title: r.title, category: r.category, excerpt: r.excerpt, image: r.image_url, cardImage: r.card_image_url || null,
     date: r.published_at, author: r.author || 'Seventh Boar', content: r.content || [], status: r.status || 'published',
+    emailSubscribers: !!r.email_subscribers, emailedAt: r.emailed_at || null,
   });
   const toProject = r => ({
     id: r.slug, title: r.title, categories: r.categories || [], platforms: r.platforms || [], client: r.client || null, tagline: r.tagline,
@@ -127,6 +128,9 @@
   const postRow = p => ({
     slug: p.id, title: p.title, category: p.category, excerpt: p.excerpt, image_url: p.image, card_image_url: p.cardImage || null,
     content: p.content || [], author: p.author || 'Seventh Boar', published_at: p.date, status: p.status || 'published',
+    email_subscribers: !!p.emailSubscribers,
+    // only ever passed back once set: the notify-posts function owns this column
+    ...(p.emailedAt ? { emailed_at: p.emailedAt } : {}),
   });
   const projectRow = p => ({
     slug: p.id, title: p.title, categories: p.categories || [], platforms: p.platforms || [], client: p.client || null, tagline: p.tagline,
@@ -247,11 +251,38 @@
         if (error) throw error;
       },
 
-      // Newsletter sign-up: insert-only for visitors (they can add an address but never read the list).
-      async subscribe(email) {
-        const { error } = await pub().from('subscribers').insert({ email });
-        if (error && error.code !== '23505') throw new Error(missingTable(error) ? 'Sign-ups are not switched on yet.' : 'Couldn\'t add you just now. Please try again in a minute.');
-        return { ok: true };
+      // Newsletter sign-up goes through the subscribe Edge Function: it rate-limits, saves the address and
+      // sends the welcome email. Visitors can add an address but never read the list.
+      async subscribe(email, website = '') {
+        let res, body;
+        try {
+          res = await fetch(`${cfg.supabaseUrl}/functions/v1/subscribe`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', apikey: cfg.supabaseKey },
+            body: JSON.stringify({ email, website }),
+          });
+          body = await res.json().catch(() => ({}));
+        } catch { throw new Error('Couldn\'t reach the sign-up service. Check your connection and try again.'); }
+        if (res.status === 404) throw new Error('Sign-ups are not switched on yet.');
+        if (!res.ok) throw new Error(body?.error || 'Couldn\'t add you just now. Please try again in a minute.');
+        return body || { ok: true };
+      },
+      // Emails the mailing list about one entry that has just gone live. Runs inside the password window,
+      // as the signed-in admin; the function checks that itself.
+      async notifyPosts(slug) {
+        const { data: { session } } = await admin().auth.getSession();
+        let res, body;
+        try {
+          res = await fetch(`${cfg.supabaseUrl}/functions/v1/notify-posts`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', apikey: cfg.supabaseKey, Authorization: `Bearer ${session?.access_token || cfg.supabaseKey}` },
+            body: JSON.stringify({ slug }),
+          });
+          body = await res.json().catch(() => ({}));
+        } catch { throw new Error('Couldn\'t reach the email service.'); }
+        if (res.status === 404) throw new Error('The email function isn\'t deployed yet (see SETUP.md, Emails).');
+        if (!res.ok) throw new Error(body?.error || 'The emails could not be sent.');
+        return body;
       },
 
       /* ---- auth ---- */
@@ -479,6 +510,15 @@
         saveComments([...comments(), { id: 'c-' + Date.now().toString(36), postSlug, author, body, likes: 0, approved: false, date: new Date().toISOString() }]);
       },
       async likeComment(id) { saveComments(comments().map(c => (c.id === id && c.approved ? { ...c, likes: c.likes + 1 } : c))); },
+      async notifyPosts(slug) {
+        guard();
+        const list = read('posts', DEMO_SEED.posts);
+        const row = list.find(x => x.slug === slug);
+        if (row) { row.emailed_at = new Date().toISOString(); write('posts', list); }
+        const sent = read('subscribers', DEMO_SEED.subscribers).length;
+        log('update', 'email', `Emailed ${sent} subscriber${sent === 1 ? '' : 's'} (demo: nothing was really sent)`);
+        return { ok: true, posts: 1, sent, demo: true };
+      },
       async subscribe(email) {
         await wait(300);
         const list = read('subscribers', DEMO_SEED.subscribers);

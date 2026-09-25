@@ -34,14 +34,50 @@ database needs its upgrade**.
 | Projects | Add/edit portfolio projects: types, tags, photos with a card crop, app icon, client card, brief builder |
 | Devlog | Write/edit entries with the block builder (titles, paragraphs, bullets, photos), draft / live / scheduled |
 | Comments | Approve or delete visitors' comments |
-| Subscribers | Newsletter sign-ups (download CSV) |
+| Subscribers | Newsletter sign-ups (download CSV); they get a welcome email and new-entry emails (see Emails) |
 | Team & clients | People, client quotes, photo strip, social links |
-| Homepage & settings | Hero, ticker, section wording, spec table, call-to-action, footer, countdown, **Coming soon mode** |
+| Homepage & settings | Hero, **services**, section wording, spec table, call-to-action, footer, countdown, **Coming soon mode** |
 | Customise | The accent colour for the whole site |
 | Security & activity | Your account, sign out everywhere, the change log |
 
 Every change asks for your password (checked by the database, not just the page), and every
 editor has a **live preview**: the real page, showing your unsaved edits.
+
+## Emails (Resend): welcome email + "new devlog entry" emails
+
+Subscribers get a welcome email when they sign up, and an email whenever you publish a devlog entry
+(if "Email subscribers when this goes live" is ticked on it, which is the default for new entries).
+Every email carries an unsubscribe link. Emails go out through [Resend](https://resend.com) using two
+Supabase Edge Functions (`supabase/functions/subscribe` and `supabase/functions/notify-posts`).
+Until this is set up, sign-ups say "not switched on yet" and nothing is emailed; the rest of the site is unaffected.
+
+1. **Resend:** sign up (free: 3,000 emails a month, 100 a day). **Domains → Add domain** → `seventhboar.com`,
+   add the DNS records it shows at your domain registrar, and wait for **Verified**. Create an **API key** (Sending access).
+2. **Supabase CLI** (once): install it, then in this folder run
+   ```bash
+   supabase login
+   supabase link --project-ref jkougveywojjypwcjbmi
+   ```
+3. **Secrets** (use your own key and sending address):
+   ```bash
+   supabase secrets set RESEND_API_KEY=re_xxx "EMAIL_FROM=Seventh Boar <news@seventhboar.com>" REPLY_TO=Admin@seventhboar.com SITE_URL=https://seventhboar.com
+   supabase secrets set ALLOWED_ORIGINS=https://www.seventhboar.com   # only if the site is also served on www
+   ```
+4. **Deploy the functions:**
+   ```bash
+   supabase functions deploy subscribe --no-verify-jwt
+   supabase functions deploy notify-posts --no-verify-jwt
+   ```
+5. **Re-run `supabase/schema.sql`** in the SQL Editor (it adds the unsubscribe and email columns).
+6. Test: sign up on the homepage with your own address, then save a Live devlog entry and check the
+   Subscribers page and the activity log ("Emailed N subscribers…"). `tools/email-preview.html` shows both emails.
+
+**Scheduled entries:** an entry scheduled for later is emailed at its publish time by the hourly GitHub Action.
+To switch that on, add two repository secrets (GitHub → Settings → Secrets and variables → Actions):
+`NOTIFY_URL` = `https://jkougveywojjypwcjbmi.supabase.co/functions/v1/notify-posts` and `CRON_SECRET` = a long random
+string, and set the same string in Supabase: `supabase secrets set CRON_SECRET=that-string`.
+
+An entry is only ever emailed once, and entries written before this was set up are never emailed.
 
 ## Trying the admin without touching the database
 

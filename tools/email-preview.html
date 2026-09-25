@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Email preview — Seventh Boar</title>
+  <style>
+    body { margin: 0; background: #222; color: #ddd; font: 14px/1.5 system-ui, sans-serif; }
+    header { padding: 16px 24px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; border-bottom: 1px solid #333; }
+    label { display: flex; gap: 8px; align-items: center; }
+    input { font: inherit; padding: 6px 8px; width: 110px; }
+    main { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 24px; padding: 24px; }
+    h2 { margin: 0 0 8px; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; }
+    iframe { width: 100%; height: 780px; border: 0; background: #0A0A0A; }
+    small { color: #999; }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>Email preview</strong>
+    <label>Accent <input id="accent" value="#97292A"></label>
+    <label>Site <input id="site" value="" style="width:260px" placeholder="defaults to this site"></label>
+    <small>Exactly what subscribers receive: this page loads the same template file the email function uses.</small>
+  </header>
+  <main>
+    <section><h2 id="t1"></h2><iframe id="f1"></iframe></section>
+    <section><h2 id="t2"></h2><iframe id="f2"></iframe></section>
+  </main>
+  <script type="module">
+    import { welcomeEmail, newPostEmail } from '../supabase/functions/_shared/templates.js';
+    const post = {
+      slug: 'where-we-return-devlog-004', category: 'Devlog', title: 'Where We Return DEVLOG #004: The Night Shift',
+      excerpt: 'Enemies that only come out after dark, a lantern that runs low, and the sound design finally clicking into place.',
+      image_url: '/assets/images/Devlog_Page_Banner.png',
+    };
+    const draw = () => {
+      const site = document.getElementById('site').value.trim() || location.origin;
+      const accent = document.getElementById('accent').value.trim();
+      const unsubUrl = 'https://example.supabase.co/functions/v1/subscribe?unsub=0123456789abcdef0123456789abcdef';
+      const a = welcomeEmail({ site, unsubUrl, accent }), b = newPostEmail({ site, unsubUrl, accent, post });
+      document.getElementById('t1').textContent = 'Subject: ' + a.subject; document.getElementById('f1').srcdoc = a.html;
+      document.getElementById('t2').textContent = 'Subject: ' + b.subject; document.getElementById('f2').srcdoc = b.html;
+    };
+    document.getElementById('accent').addEventListener('input', draw);
+    document.getElementById('site').addEventListener('change', draw);
+    draw();
+  </script>
+</body>
+</html>

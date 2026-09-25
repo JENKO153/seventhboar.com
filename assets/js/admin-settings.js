@@ -171,6 +171,8 @@
     const buildImgs = (s.build.images || []).map(u => ({ ph: u ? { url: u } : null }));
     const specs = s.build.specs.map(r => ({ specLabel: r.label, specValue: r.value }));
     const evImg = [AD.withPhoto(ev)];
+    const services = (s.servicesSection.items || []).map(x => ({ ...x, bulletsText: (x.bullets || []).join('\n') }));
+    const foldService = ({ bulletsText, ...x }) => ({ ...x, bullets: lines(bulletsText || '', 6, 80) });
     const A = AD.ADMIN;
 
     view.innerHTML = `
@@ -214,10 +216,25 @@
             <label>Intro<textarea name="subtitle" rows="3" maxlength="280">${esc(s.hero.subtitle)}</textarea></label>
             <div class="field-row">
               <label>Button text<input name="cta" maxlength="30" value="${esc(s.hero.cta)}"></label>
+              <label>Button address<input name="ctaUrl" maxlength="300" placeholder="/contact/" value="${esc(s.hero.ctaUrl || '')}"></label>
+            </div>
+            <div class="field-row">
               <label>Second button <span class="hint">Leave empty to hide</span><input name="cta2" maxlength="30" value="${esc(s.hero.cta2)}"></label>
+              <label>Second button address<input name="cta2Url" maxlength="300" placeholder="/work/" value="${esc(s.hero.cta2Url || '')}"></label>
             </div>
             <label>Banner image <span class="hint">Wide, at least 1600px across. Your logo can be part of the picture.</span></label>
             <div id="heroField"></div>
+          </div>
+
+          <div class="section">
+            <h3>Services <small>What you sell. Shown on the homepage and the Services page.</small></h3>
+            <label class="toggle"><input type="checkbox" name="svShow" ${s.servicesSection.show ? 'checked' : ''}>Show this section on the homepage</label>
+            <div class="field-row">
+              <label>Small text above<input name="svEyebrow" maxlength="60" value="${esc(s.servicesSection.eyebrow)}"></label>
+              <label>Heading<input name="svTitle" maxlength="60" value="${esc(s.servicesSection.title)}"></label>
+            </div>
+            <label>Intro<input name="svIntro" maxlength="200" value="${esc(s.servicesSection.intro)}"></label>
+            <div class="items" id="serviceList"></div>
           </div>
 
           <div class="section">
@@ -374,6 +391,7 @@
       ...s,
       hero: { ...s.hero, image: hero.get() ? AD.photoDraft(hero.get()) : '' },
       release: { ...s.release, image: evImg[0].ph ? AD.photoDraft(evImg[0].ph) : '' },
+      servicesSection: { ...s.servicesSection, items: services.map(foldService) },
       build: { ...s.build, images: buildImgs.map(x => (x.ph ? AD.photoDraft(x.ph) : '')).filter(Boolean), specs: specs.map(r => ({ label: r.specLabel, value: r.specValue })) },
     } }));
     const changed = () => { AD.markDirty(); send(); };
@@ -382,6 +400,7 @@
       const f = form;
       s.status = f.status.value.trim();
       s.hero.bar = lines(f.heroBar.value, 4, 60);
+      Object.assign(s.servicesSection, { show: f.svShow.checked, eyebrow: f.svEyebrow.value, title: f.svTitle.value, intro: f.svIntro.value });
       Object.assign(s.typesSection, { eyebrow: f.tyEyebrow.value, title: f.tyTitle.value, link: f.tyLink.value });
       Object.assign(s.latestSection, { eyebrow: f.ltEyebrow.value, title: f.ltTitle.value, intro: f.ltIntro.value });
       Object.assign(s.devlogSection, { eyebrow: f.dvEyebrow.value, title: f.dvTitle.value });
@@ -389,7 +408,7 @@
       Object.assign(s.cta, { show: f.ctShow.checked, title: f.ctTitle.value, text: f.ctText.value, ctaText: f.ctCta.value, ctaUrl: f.ctUrl.value.trim() });
       Object.assign(s.newsletter, { show: f.nlShow.checked, eyebrow: f.nlEyebrow.value, title: f.nlTitle.value, text: f.nlText.value, fine: f.nlFine.value, thanks: f.nlThanks.value });
       Object.assign(s.footer, { tagline: f.ftTagline.value, email: f.ftEmail.value.trim(), blurb: f.ftBlurb.value });
-      Object.assign(s.hero, { line1: f.line1.value.trim(), line2: f.line2.value.trim(), eyebrow: f.eyebrow.value.trim(), subtitle: f.subtitle.value.trim(), cta: f.cta.value.trim(), cta2: f.cta2.value.trim() });
+      Object.assign(s.hero, { line1: f.line1.value.trim(), line2: f.line2.value.trim(), eyebrow: f.eyebrow.value.trim(), subtitle: f.subtitle.value.trim(), cta: f.cta.value.trim(), ctaUrl: f.ctaUrl.value.trim(), cta2: f.cta2.value.trim(), cta2Url: f.cta2Url.value.trim() });
       Object.assign(s.comingSoon, { eyebrow: f.csEyebrow.value.trim(), title: f.csTitle.value.trim(), text: f.csText.value.trim(), showEmail: f.csEmail.checked });
       Object.assign(s.release, { show: f.evShow.checked, kind: f.evKind.value === 'event' ? 'event' : 'release', name: f.evName.value.trim(), round: f.evRound.value.trim(),
         place: f.evPlace.value.trim(), date: f.evDate.value, blurb: f.evBlurb.value.trim(), ctaText: f.evCta.value.trim(), ctaUrl: f.evUrl.value.trim() });
@@ -397,6 +416,19 @@
     form.addEventListener('input', e => { if (e.target.closest('.items')) return; read(); changed(); });
     form.addEventListener('change', e => { if (e.target.closest('.items')) return; read(); changed(); });
 
+    AD.listSection({ host: $('#serviceList'), list: services, max: 4, photo: false, onChange: changed,
+      blank: { tag: '', title: '', text: '', bulletsText: '', ctaText: '', ctaUrl: '' }, label: (x, i) => x.title || `Service ${i + 1}`,
+      row: x => `
+        <div class="field-row">
+          <label>Title<input name="title" maxlength="40" value="${esc(x.title)}" placeholder="Websites"></label>
+          <label>Small tag <span class="hint">e.g. Main service</span><input name="tag" maxlength="30" value="${esc(x.tag || '')}"></label>
+        </div>
+        <label>Description<textarea name="text" rows="3" maxlength="300" style="min-height:80px">${esc(x.text || '')}</textarea></label>
+        <label>Bullet points <span class="hint">One per line, up to 6</span><textarea name="bulletsText" rows="4" maxlength="500" style="min-height:90px">${esc(x.bulletsText || '')}</textarea></label>
+        <div class="field-row">
+          <label>Button text<input name="ctaText" maxlength="30" value="${esc(x.ctaText || '')}" placeholder="Start a website"></label>
+          <label>Button address<input name="ctaUrl" maxlength="300" value="${esc(x.ctaUrl || '')}" placeholder="/contact/"></label>
+        </div>` });
     AD.listSection({ host: $('#buildImgs'), list: buildImgs, max: 3, aspect: '3/4', onChange: changed, blank: { ph: null }, label: (x, i) => `Photo ${i + 1}`, row: () => '' });
     AD.listSection({ host: $('#specList'), list: specs, max: 8, photo: false, onChange: changed, blank: { specLabel: '', specValue: '' }, label: r => r.specLabel || 'Row',
       row: r => `<div class="field-row">
@@ -418,6 +450,7 @@
           ...s,
           hero: { ...s.hero, image: img },
           release: { ...s.release, image: evSaved[0].image },
+          servicesSection: { ...s.servicesSection, items: services.map(foldService).filter(x => x.title) },
           build: { ...s.build, images: buildSaved.map(x => x.image).filter(Boolean), specs: specs.map(r => ({ label: r.specLabel, value: r.specValue })).filter(r => r.label || r.value) },
         };
         await CMS.saveSettings(next);

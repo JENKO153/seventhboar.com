@@ -282,5 +282,20 @@ const App = (() => {
     new BroadcastChannel('sb-site').onmessage = e => { if (e.data?.type === 'content-changed') location.reload(); };
   }
 
-  return { boot, renderChrome, toast, Cards, onPreview, previewBar };
+  // The service cards (Websites, Apps...) shown on the homepage and the Services page.
+  function servicesHtml(items) {
+    return (items || []).filter(x => x.title).map((s, i) => {
+      const link = safeLink(s.ctaUrl);
+      const bullets = (s.bullets || []).filter(Boolean);
+      return `<article class="service${i === 0 ? ' service--main' : ''} reveal">
+        <span class="code">${esc(s.tag)}</span>
+        <h3 class="display">${esc(s.title)}</h3>
+        <p>${esc(s.text)}</p>
+        ${bullets.length ? `<ul class="feature-list">${bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
+        ${link && s.ctaText ? `<a class="btn${i ? ' btn--ghost' : ''}" href="${esc(link)}">${esc(s.ctaText)}</a>` : ''}
+      </article>`;
+    }).join('');
+  }
+
+  return { boot, renderChrome, toast, Cards, onPreview, previewBar, servicesHtml };
 })();

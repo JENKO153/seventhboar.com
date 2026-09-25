@@ -129,6 +129,15 @@ input, select, textarea { font: inherit; color: inherit; }
 .section-head h2 { font-size: clamp(48px, 6.4vw, 96px); margin: 12px 0 0; }
 .section-head p { margin: 14px 0 0; color: var(--muted); max-width: 520px; }
 
+/* ---------- services ---------- */
+.services { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; align-items: stretch; }
+.service { background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--hot); padding: clamp(24px, 3vw, 40px); display: flex; flex-direction: column; gap: 14px; }
+.service--main { background: linear-gradient(180deg, color-mix(in srgb, var(--hot) 16%, var(--surface)), var(--surface) 60%); }
+.service h3 { font-size: clamp(44px, 5vw, 76px); margin: 0; }
+.service p { margin: 0; color: var(--text); font-size: 17px; max-width: 56ch; }
+.service .feature-list { margin: 4px 0 8px; }
+.service .btn { align-self: flex-start; margin-top: auto; }
+
 /* ---------- project types (slanted tiles) ---------- */
 .disc { display: grid; grid-template-columns: repeat(var(--tiles, 3), 1fr); gap: 8px; height: clamp(380px, 52vh, 580px); }
 .disc a { position: relative; overflow: hidden; clip-path: polygon(14% 0, 100% 0, 86% 100%, 0 100%); margin: 0 -4%; background: var(--surface); }
@@ -498,7 +507,7 @@ body.soon { display: grid; place-items: center; min-height: 100vh; min-height: 1
   .filters.open { display: block; margin-bottom: 24px; }
   .filter-toggle { display: inline-flex; }
   .pdp__info { position: static; }
-  .split, .strip3 { grid-template-columns: 1fr; }
+  .split, .strip3, .services { grid-template-columns: 1fr; }
   .page-head { padding: 64px 0 44px; }
 }
 @media (max-width: 540px) {

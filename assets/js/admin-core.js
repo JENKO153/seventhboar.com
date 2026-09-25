@@ -138,7 +138,7 @@ window.AD = (function () {
   AD.who = who;
   const ACTION = { insert: 'created', update: 'updated', delete: 'deleted' };
   const ENTITY = { journal_posts: 'devlog entry', projects: 'project', site_settings: 'homepage & settings', comments: 'comment', subscribers: 'subscriber',
-                   security_settings: 'site settings', admins: 'account' };
+                   security_settings: 'site settings', admins: 'account', email: 'email' };
   AD.activityText = a => `${ACTION[a.action] || esc(a.action)} ${ENTITY[a.entity] || esc(a.entity)}`;
   AD.activityItem = a => `<li><time>${AD.fmtDate(a.at)}</time><span>${esc(who(a))} ${AD.activityText(a)}${a.summary && a.entity !== 'site_settings' ? ` <b>${esc(a.summary)}</b>` : ''}</span></li>`;
 

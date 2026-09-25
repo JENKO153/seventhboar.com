@@ -60,9 +60,8 @@
     txt('#hero-eyebrow', h.eyebrow);
     $('#hero-title').innerHTML = `${esc(h.line1)}${h.line2 ? `<br><em>${esc(h.line2)}</em>` : ''}`;
     txt('#hero-sub', h.subtitle);
-    txt('#hero-cta', h.cta);
-    txt('#hero-cta2', h.cta2);
-    $('#hero-cta2').hidden = !h.cta2;
+    linkTo('#hero-cta', h.cta, h.ctaUrl || '/contact/');
+    linkTo('#hero-cta2', h.cta2, h.cta2Url || '/work/');
     const promises = (h.bar || []).filter(Boolean);
     const bar = $('#hero-bar');
     bar.innerHTML = promises.map((t, i) => `<div><small>0${i + 1} //</small>${esc(t)}</div>`).join('');
@@ -70,6 +69,7 @@
     bar.style.setProperty('--count', Math.max(1, promises.length));
     bar.hidden = !promises.length;
 
+    renderServices();
     renderTypes(projects);
     renderLatest(projects);
     renderTeam();
@@ -97,7 +97,17 @@
     window.ScrollReveal?.scan();
   }
 
-  // Sec. 01: one slanted tile per kind of project that has something published.
+  // Sec. 01: what the studio sells.
+  function renderServices() {
+    const sv = SETTINGS.servicesSection;
+    $('#services').hidden = !sv.show;
+    txt('#services-eyebrow', sv.eyebrow);
+    txt('#services-title', sv.title);
+    txt('#services-intro', sv.intro);
+    $('#services-grid').innerHTML = App.servicesHtml(sv.items);
+  }
+
+  // Sec. 02: one slanted tile per kind of project that has something published.
   function renderTypes(projects) {
     const t = SETTINGS.typesSection;
     const tiles = PROJECT_TYPES.map(type => {
@@ -162,7 +172,7 @@
     $('#event-img').src = safeUrl(ev.image) || '/assets/images/Home_Page_Banner.jpg';
     linkTo('#event-cta', ev.ctaText, ev.ctaUrl);
     const d = new Date(ev.date), valid = !!ev.date && !isNaN(d);
-    txt('#event-eyebrow', `Sec. 04 // ${event ? 'Next event' : 'Next release'}`);
+    txt('#event-eyebrow', `Sec. 05 // ${event ? 'Next event' : 'Next release'}`);
     $('#event-title').innerHTML = `${esc(ev.name)}${ev.round ? `<br><em>${esc(ev.round)}</em>` : ''}`;
     txt('#event-blurb', ev.blurb);
     $('#event-meta').innerHTML = [

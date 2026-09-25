@@ -187,7 +187,7 @@
       label: 'devlog entry', title: 'Devlog entry', list: 'posts', route: '#devlog', folder: 'posts',
       cover: 'image', card: 'cardImage', body: 'content', draftKey: 'sb_draft_post',
       prefix: '/post/?id=', preview: '/post/?preview=1', siteUrl: id => `/post/?id=${encodeURIComponent(id)}`,
-      blank: () => ({ id: null, title: '', category: 'Devlog', excerpt: '', author: 'Seventh Boar', image: '', cardImage: null, content: [], status: 'draft', date: now() }),
+      blank: () => ({ id: null, title: '', category: 'Devlog', excerpt: '', author: 'Seventh Boar', image: '', cardImage: null, content: [], status: 'draft', date: now(), emailSubscribers: true, emailedAt: null }),
       save: (p, isNew) => CMS.savePost(p, isNew), del: p => CMS.deletePost(p),
       fields: p => `
         <div class="field-row">
@@ -196,8 +196,12 @@
           <label>Author<input name="author" maxlength="60" value="${esc(p.author)}"></label>
         </div>
         <label>Excerpt <span class="hint">Shown on the cards and in search results</span><textarea name="excerpt" rows="3" maxlength="300" style="min-height:80px">${esc(p.excerpt)}</textarea></label>
-        <div class="counter" id="excerptCount"></div>`,
-      read: (f, p) => { p.category = f.category.value.trim(); p.author = f.author.value.trim() || 'Seventh Boar'; p.excerpt = f.excerpt.value.trim(); $('#excerptCount').textContent = `${p.excerpt.length} / 300`; },
+        <div class="counter" id="excerptCount"></div>
+        <div>
+          <label class="toggle"><input type="checkbox" name="emailSubscribers" ${p.emailSubscribers || p.emailedAt ? 'checked' : ''} ${p.emailedAt ? 'disabled' : ''}>Email subscribers when this goes live</label>
+          <span class="hint" id="emailHint">${p.emailedAt ? `Subscribers were emailed on ${esc(AD.fmtDay(p.emailedAt))}.` : 'Sent once, the moment it goes live (a scheduled entry goes out at its publish time).'}</span>
+        </div>`,
+      read: (f, p) => { if (f.emailSubscribers && !p.emailedAt) p.emailSubscribers = f.emailSubscribers.checked; p.category = f.category.value.trim(); p.author = f.author.value.trim() || 'Seventh Boar'; p.excerpt = f.excerpt.value.trim(); $('#excerptCount').textContent = `${p.excerpt.length} / 300`; },
       validate: (p, ctx) => {
         if (!p.category) return 'Give the entry a category';
         if (p.status === 'published' && !p.excerpt) return 'Add a short excerpt before putting it live';
@@ -205,6 +209,16 @@
       },
       previewData: (p, ctx) => ({ post: { id: p.id || 'draft', title: p.title, category: p.category, excerpt: p.excerpt, author: p.author, date: p.date,
         image: ctx.cover.get() ? AD.photoDraft(ctx.cover.get()) : '', content: AD.blocksDraft(ctx.blocks) } }),
+      // Right after saving a live entry with "Email subscribers" ticked, send it (inside the password window).
+      // A scheduled entry is picked up by the hourly job at its publish time instead.
+      afterSave: async (saved, { scheduled }) => {
+        if (saved.status !== 'published' || scheduled || !saved.emailSubscribers || saved.emailedAt) return null;
+        try {
+          const r = await CMS.notifyPosts(saved.id);
+          saved.emailedAt = new Date().toISOString();
+          return r.sent === 1 ? 'Emailed 1 subscriber.' : `Emailed ${r.sent} subscribers.`;
+        } catch (err) { return { error: `Saved, but the email didn't go out: ${err.message}` }; }
+      },
       extraSections: () => '', wireExtra: () => ({}), collectExtra: async () => ({}), extraImages: () => [],
     },
     project: {
@@ -217,7 +231,7 @@
         <div><label style="margin-bottom:8px">Type</label>
           <div class="checks">${PROJECT_TYPES.map(t => `<label><input type="checkbox" name="categories" value="${t.key}" ${p.categories.includes(t.key) ? 'checked' : ''}>${t.one}</label>`).join('')}</div></div>
         <label>Tagline<input name="tagline" maxlength="160" required value="${esc(p.tagline)}" placeholder="One line on what it is"></label>
-        <label>Tags <span class="hint">Comma separated, e.g. iOS, Android or Survival, Settlement builder</span><input name="platforms" maxlength="160" value="${esc((p.platforms || []).join(', '))}"></label>
+        <label>Tags <span class="hint">Comma separated, e.g. Custom build, Booking system or iOS, Android</span><input name="platforms" maxlength="160" value="${esc((p.platforms || []).join(', '))}"></label>
         <label class="toggle"><input type="checkbox" name="featured" ${p.featured ? 'checked' : ''}>Featured (shows first, with a Featured stamp)</label>`,
       read: (f, p) => {
         p.categories = [...f.querySelectorAll('[name=categories]:checked')].map(c => c.value);
@@ -450,7 +464,7 @@
       if (isLive() && !AD.blocksDraft(blocks).some(b => b.text.trim() || b.image)) return AD.toast('Add some content before putting it live', true);
       const scheduled = isLive() && new Date(p.date) > new Date();
       const verb = !isLive() ? 'save this draft' : scheduled ? `schedule this for ${AD.fmtDate(p.date)}` : existing ? `save changes to "${p.title}"` : 'publish this';
-      let saved;
+      let saved, emailNote = null;
       const ok = await AD.withWrite(`Enter your admin password to ${verb}.`, async () => {
         const cover = ctx.cover.get() ? await AD.uploadOne(ctx.cover.get(), K.folder) : '';
         let card = null;
@@ -463,6 +477,7 @@
         const { slug: _s, slugTouched: _t, ...model } = p;
         saved = { ...model, id: slug, [K.cover]: cover, [K.card]: card, [K.body]: body, ...extra, date: p.date };
         await K.save(saved, isNew);
+        emailNote = K.afterSave ? await K.afterSave(saved, { scheduled }) : null;
         // photos that are no longer used come out of storage
         const before = [original?.[K.cover], original?.[K.card], ...(original?.[K.body] || []).map(b => b.image), ...(original ? K.extraImages(original) : [])].filter(Boolean);
         const after = [saved[K.cover], saved[K.card], ...saved[K.body].map(b => b.image), ...K.extraImages(saved)].filter(Boolean);
@@ -471,7 +486,8 @@
       if (!ok) return;
       AD.dirty = false;
       if (isNew) { try { localStorage.removeItem(K.draftKey); } catch { /* ignore */ } }
-      AD.toast(!isLive() ? 'Saved as a draft' : scheduled ? 'Scheduled' : "Saved. It's live on the site");
+      if (emailNote?.error) AD.toast(emailNote.error, true);
+      else AD.toast(`${!isLive() ? 'Saved as a draft' : scheduled ? 'Scheduled' : "Saved. It's live on the site"}${emailNote ? ' ' + emailNote : ''}`);
       const list = AD.DATA[K.list], at = list.findIndex(x => x.id === saved.id);
       at === -1 ? list.unshift(saved) : (list[at] = saved);
       if (isNew) { AD.ignoreHash = true; location.hash = `#${kind}/${saved.id}`; AD.lastHash = location.hash; }

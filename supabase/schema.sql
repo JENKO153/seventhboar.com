@@ -289,6 +289,10 @@ alter table public.journal_posts add column if not exists card_image_url text;
 -- draft = only the admin sees it; published = public once published_at has passed (so a future
 -- date means "scheduled").
 alter table public.journal_posts add column if not exists status text not null default 'published';
+-- Email the mailing list when this entry goes live (set in the editor). emailed_at is filled in by the
+-- notify-posts function once it has been sent, so an entry is never emailed twice.
+alter table public.journal_posts add column if not exists email_subscribers boolean not null default false;
+alter table public.journal_posts add column if not exists emailed_at timestamptz;
 alter table public.journal_posts drop constraint if exists journal_posts_status_check;
 alter table public.journal_posts add constraint journal_posts_status_check check (status in ('draft', 'published'));
 
@@ -327,13 +331,21 @@ create table if not exists public.comments (
 );
 create index if not exists comments_post_slug_idx on public.comments (post_slug);
 
--- Newsletter sign-ups. Visitors can add an address and never read the list.
+-- Newsletter sign-ups. They go in through the subscribe Edge Function (which rate-limits and sends the
+-- welcome email), never straight from the browser, and visitors can never read the list.
 create table if not exists public.subscribers (
   id uuid primary key default gen_random_uuid(),
   email text not null check (email ~ '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$' and char_length(email) <= 200),
   at timestamptz not null default now()
 );
 create unique index if not exists subscribers_email_idx on public.subscribers (lower(email));
+-- For the emails: a private unsubscribe token per person, a hashed IP for rate limiting, and when the
+-- welcome email went out. Only the Edge Functions (service key) ever touch these.
+alter table public.subscribers add column if not exists unsub_token text not null default replace(gen_random_uuid()::text, '-', '');
+alter table public.subscribers add column if not exists ip_hash text;
+alter table public.subscribers add column if not exists welcomed_at timestamptz;
+create unique index if not exists subscribers_token_idx on public.subscribers (unsub_token);
+create index if not exists subscribers_ip_idx on public.subscribers (ip_hash, at desc);
 
 -- ---------------------------------------------------------------------
 -- Triggers: updated_at + audit log
@@ -447,11 +459,10 @@ language sql security definer set search_path = public as $$
 $$;
 grant execute on function public.increment_comment_like(uuid) to anon, authenticated;
 
--- subscribers: insert only for visitors
+-- subscribers: no direct access at all for visitors or admins. The subscribe function and these two
+-- admin functions are the only way in.
 drop policy if exists subscribers_insert on public.subscribers;
-create policy subscribers_insert on public.subscribers for insert to anon, authenticated with check (true);
 revoke all on public.subscribers from anon, authenticated;
-grant insert on public.subscribers to anon, authenticated;
 
 -- What the admin sees: the list itself, and removing an address.
 create or replace function public.subscriber_list() returns jsonb

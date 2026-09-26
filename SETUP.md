@@ -34,6 +34,7 @@ database needs its upgrade**.
 | Projects | Add/edit portfolio projects: types, tags, photos with a card crop, app icon, client card, brief builder |
 | Devlog | Write/edit entries with the block builder (titles, paragraphs, bullets, photos), draft / live / scheduled |
 | Comments | Approve or delete visitors' comments |
+| Orders | Website and app requests: accept or decline, move through the stages, email the customer, private notes |
 | Subscribers | Newsletter sign-ups (download CSV); they get a welcome email and new-entry emails (see Emails) |
 | Team & clients | People, client quotes, photo strip, social links |
 | Homepage & settings | Hero, **services**, section wording, spec table, call-to-action, footer, countdown, **Coming soon mode** |
@@ -78,6 +79,21 @@ To switch that on, add two repository secrets (GitHub → Settings → Secrets a
 string, and set the same string in Supabase: `supabase secrets set CRON_SECRET=that-string`.
 
 An entry is only ever emailed once, and entries written before this was set up are never emailed.
+
+## Project requests and the Orders tracker
+
+`/request/` is the form for website and app requests. When someone sends one:
+1. it is saved, and **you get a styled email at Admin@seventhboar.com** with the details and **Accept / Decline** buttons (they open that request in your admin, where you sign in and confirm your password before anything changes; replying to the email replies to the customer);
+2. the customer gets a confirmation email with a **private tracking link** (`/track/?o=1004&k=…`, no account needed, hidden from search engines).
+
+In the admin, **Orders** lists every request. Open one to accept or decline it, move it through the stages (websites: Received → Accepted → Design → Build → Review → Launched; apps: Received → Accepted → Planning → Development → Testing → Released), add a message for the customer, and keep private notes. Each change updates the customer's tracker and emails them (untick "Email the customer" to skip). Change the stage names in `assets/js/data.js` **and** `supabase/functions/_shared/templates.js`.
+
+To switch it on (after the Emails steps above), deploy the two extra functions:
+```bash
+supabase functions deploy submit-request --no-verify-jwt
+supabase functions deploy request-update --no-verify-jwt
+```
+and re-run `supabase/schema.sql` (it adds the requests table). To send the notification to a different address, `supabase secrets set ADMIN_EMAIL=someone@example.com`. `tools/email-preview.html` shows all the emails.
 
 ## Trying the admin without touching the database
 

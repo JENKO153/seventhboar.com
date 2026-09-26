@@ -66,12 +66,13 @@ const App = (() => {
             ${logoHtml()}
           </div>
           <nav class="nav" aria-label="Primary">${nav}</nav>
-          <div class="header__icons">${s.status ? `<span class="status-chip"><i></i>${esc(s.status)}</span>` : ''}</div>
+          <div class="header__icons">${s.status ? `<span class="status-chip"><i></i>${esc(s.status)}</span>` : ''}<a class="btn nav-cta" href="/request/">Start a project</a></div>
         </div>
       </header>
       <div class="mobile-nav" aria-hidden="true">
         <div class="mobile-nav__top">${logoHtml()}<button class="icon-btn" data-close-menu aria-label="Close menu">${ICON.close}</button></div>
         ${NAV.map(([h, l]) => `<a class="big" href="${h}">${l}</a>`).join('')}
+        <a class="big" href="/request/" style="color:var(--hot-text)">Start a project</a>
       </div>`;
 
     const email = s.footer.email || SITE.email;

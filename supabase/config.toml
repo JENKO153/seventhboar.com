@@ -9,3 +9,11 @@ verify_jwt = false
 
 [functions.notify-posts]
 verify_jwt = false
+
+# The public request form; spam-checked inside the function.
+[functions.submit-request]
+verify_jwt = false
+
+# Called from the admin's Orders screen; checks the admin's session and password window itself.
+[functions.request-update]
+verify_jwt = false

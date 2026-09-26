@@ -24,7 +24,9 @@ FEED_PATH = os.path.join(os.path.dirname(__file__), "..", "devlog", "feed.xml")
 
 
 def parse_dt(value):
-    return datetime.datetime.fromisoformat(value.replace("Z", "+00:00"))
+    # drop fractional seconds: older Pythons can't parse an odd number of digits ("...07.47+00:00")
+    import re
+    return datetime.datetime.fromisoformat(re.sub(r"\.\d+", "", value).replace("Z", "+00:00"))
 
 
 def rfc822(dt):

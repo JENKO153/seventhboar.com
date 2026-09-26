@@ -76,7 +76,7 @@ function shell({ site, p, preheader, body, unsubUrl, why }) {
     <tr><td class="pad" style="padding:30px 36px 36px">${body}</td></tr>
     <tr><td class="pad" style="padding:20px 36px 28px;border-top:1px solid ${C.line};font:400 12px/1.7 ${BODY};color:${C.muted}">
       ${esc(why)}<br>
-      <a href="${esc(unsubUrl)}" style="color:${C.muted};text-decoration:underline">Unsubscribe</a> &nbsp;·&nbsp; <a href="${esc(site)}" style="color:${C.muted};text-decoration:underline">seventhboar.com</a><br>
+      ${unsubUrl ? `<a href="${esc(unsubUrl)}" style="color:${C.muted};text-decoration:underline">Unsubscribe</a> &nbsp;·&nbsp; ` : ''}<a href="${esc(site)}" style="color:${C.muted};text-decoration:underline">seventhboar.com</a><br>
       ${NAME}, Australia
     </td></tr>
   </table>
@@ -117,5 +117,132 @@ export function newPostEmail({ site, unsubUrl, accent, post }) {
       ${button(url, 'Read the entry', p)}`,
   });
   const text = `New ${post.category || 'devlog'} entry: ${post.title}\n\n${post.excerpt || ''}\n\nRead it: ${url}\n\nUnsubscribe: ${unsubUrl}\n${NAME}, Australia\n`;
+  return { subject, html, text };
+}
+
+// =====================================================================
+// Project requests ("orders")
+// =====================================================================
+
+// The stages of each kind of project, in order. Keep in sync with REQUEST_STAGES in assets/js/data.js.
+// "declined" can happen from the start and isn't part of the tracker.
+export const STAGES = {
+  website: [
+    { key: 'received', label: 'Received', text: "We've got your request and will look at it shortly." },
+    { key: 'accepted', label: 'Accepted', text: "We've accepted your project and will be in touch about next steps." },
+    { key: 'design', label: 'Design', text: "We're designing your website." },
+    { key: 'build', label: 'Build', text: "We're building your website." },
+    { key: 'review', label: 'Review', text: "Your website is ready for you to look over." },
+    { key: 'launched', label: 'Launched', text: 'Your website is live.' },
+  ],
+  app: [
+    { key: 'received', label: 'Received', text: "We've got your request and will look at it shortly." },
+    { key: 'accepted', label: 'Accepted', text: "We've accepted your project and will be in touch about next steps." },
+    { key: 'planning', label: 'Planning', text: "We're planning and scoping your app." },
+    { key: 'development', label: 'Development', text: "We're building your app." },
+    { key: 'testing', label: 'Testing', text: "Your app is being tested." },
+    { key: 'released', label: 'Released', text: 'Your app is out.' },
+  ],
+};
+export const stageInfo = (kind, key) => (STAGES[kind] || STAGES.website).find(s => s.key === key);
+export const orderNo = r => `SB-${r.number}`;
+const kindWord = kind => (kind === 'app' ? 'app' : 'website');
+
+// A row of steps: done ones filled with the accent, the current one outlined, the rest grey.
+function trackerBar(kind, stage, p) {
+  const list = STAGES[kind] || STAGES.website;
+  const at = list.findIndex(s => s.key === stage);
+  const cells = list.map((s, i) => {
+    const done = i < at, now = i === at;
+    const bar = done ? p.fill : now ? p.text : C.line;
+    return `<td style="padding:0 3px 0 0;vertical-align:top" width="${Math.floor(100 / list.length)}%">
+      <div style="height:5px;background:${bar};font-size:0;line-height:0">&nbsp;</div>
+      <div style="padding-top:8px;font:${now ? '700' : '500'} 10px/1.3 ${MONO};letter-spacing:.06em;text-transform:uppercase;color:${now ? p.text : done ? C.text : C.muted}">${esc(s.label)}</div></td>`;
+  }).join('');
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0 6px"><tr>${cells}</tr></table>`;
+}
+
+const row = (k, v) => v ? `<tr>
+  <td style="padding:9px 14px 9px 0;border-bottom:1px solid ${C.line};font:500 11px/1.4 ${MONO};letter-spacing:.1em;text-transform:uppercase;color:${C.muted};vertical-align:top;white-space:nowrap">${esc(k)}</td>
+  <td style="padding:9px 0;border-bottom:1px solid ${C.line};font:400 15px/1.5 ${BODY};color:${C.bone};vertical-align:top">${v}</td></tr>` : '';
+const para = t => esc(t).replace(/\n/g, '<br>');
+
+// ---- A. To you: "New request", with the details and buttons to review it ----
+export function requestAdminEmail({ site, accent, r }) {
+  const p = palette(accent);
+  const base = `${site}/admin/dashboard/#request/${r.id}`;
+  const subject = `New ${kindWord(r.kind)} request ${orderNo(r)} from ${r.name}`;
+  const html = shell({
+    site, p, unsubUrl: '',
+    preheader: `${r.name}${r.company ? ` (${r.company})` : ''} sent a ${kindWord(r.kind)} request.`,
+    why: 'You are getting this because someone submitted the request form on seventhboar.com. Reply to this email to reply to them.',
+    body: `${eyebrow(`New ${kindWord(r.kind)} request`, p)}
+      <h1 class="h1" style="margin:0 0 6px;font:900 40px/.95 ${HEAD};letter-spacing:.01em;text-transform:uppercase;color:${C.bone}">${esc(orderNo(r))}</h1>
+      <div style="margin:0 0 22px;font:500 13px/1.4 ${MONO};letter-spacing:.06em;text-transform:uppercase;color:${C.muted}">${esc(r.name)}${r.company ? ` · ${esc(r.company)}` : ''}</div>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 20px">
+        ${row('Name', esc(r.name))}${row('Email', `<a href="mailto:${esc(r.email)}" style="color:${p.text};text-decoration:none">${esc(r.email)}</a>`)}
+        ${row('Phone', esc(r.phone))}${row('Business', esc(r.company))}${row('Current site', esc(r.current_site))}
+        ${row('Budget', esc(r.budget))}${row('Timeline', esc(r.timeline))}${row('Links', para(r.links))}
+      </table>
+      <div style="font:500 11px/1.4 ${MONO};letter-spacing:.14em;text-transform:uppercase;color:${C.muted};margin:0 0 8px">The project</div>
+      <div style="background:${C.panel};border-left:3px solid ${p.fill};padding:16px 18px;margin:0 0 26px;font:400 15px/1.7 ${BODY};color:${C.text}">${para(r.brief)}</div>
+      ${button(`${base}/accept`, 'Accept', p)}${button(`${base}/decline`, 'Decline', { ...p, fill: C.panel, on: C.bone })}${button(base, 'Open request', { ...p, fill: C.panel, on: C.bone })}
+      <p style="margin:14px 0 0;font:400 12px/1.6 ${BODY};color:${C.muted}">These open your admin panel. You'll sign in and confirm your password before anything changes, and the customer is only emailed once you do.</p>`,
+  });
+  const text = `New ${kindWord(r.kind)} request ${orderNo(r)}\n\nName: ${r.name}\nEmail: ${r.email}\n${r.phone ? `Phone: ${r.phone}\n` : ''}${r.company ? `Business: ${r.company}\n` : ''}${r.current_site ? `Current site: ${r.current_site}\n` : ''}${r.budget ? `Budget: ${r.budget}\n` : ''}${r.timeline ? `Timeline: ${r.timeline}\n` : ''}\n${r.brief}\n\n${r.links ? `Links: ${r.links}\n\n` : ''}Review it: ${base}\nAccept: ${base}/accept\nDecline: ${base}/decline\n`;
+  return { subject, html, text };
+}
+
+// ---- B. To the customer: "We've got your request" ----
+export function requestReceivedEmail({ site, accent, r, trackUrl }) {
+  const p = palette(accent);
+  const subject = `We've got your ${kindWord(r.kind)} request (${orderNo(r)})`;
+  const html = shell({
+    site, p, unsubUrl: '',
+    preheader: `Your request ${orderNo(r)} is in. Here's your private tracking link.`,
+    why: `You are getting this because you sent a request on seventhboar.com. Reply to this email if anything needs correcting.`,
+    body: `${eyebrow(`Request ${orderNo(r)}`, p)}
+      <h1 class="h1" style="margin:0 0 16px;font:900 42px/.95 ${HEAD};letter-spacing:.01em;text-transform:uppercase;color:${C.bone}">Got it, <span style="color:${p.text}">${esc(String(r.name).split(/\s+/)[0])}.</span></h1>
+      <p style="margin:0 0 6px;font:400 16px/1.7 ${BODY};color:${C.text}">Thanks for sending your ${kindWord(r.kind)} request. We'll read it properly and come back to you soon to say whether it's a fit and what happens next. You'll get an email each time it moves forward.</p>
+      ${trackerBar(r.kind, 'received', p)}
+      <p style="margin:18px 0 22px;font:400 15px/1.7 ${BODY};color:${C.text}">You can follow it any time here. This link is private to you, so keep it handy.</p>
+      ${button(trackUrl, 'Track my request', p)}`,
+  });
+  const text = `Got it, ${String(r.name).split(/\s+/)[0]}.\n\nThanks for sending your ${kindWord(r.kind)} request (${orderNo(r)}). We'll come back to you soon. You'll get an email each time it moves forward.\n\nTrack it: ${trackUrl}\n${NAME}, Australia\n`;
+  return { subject, html, text };
+}
+
+// ---- C. To the customer: accepted, declined, or "it's moved to the next stage" ----
+export function requestUpdateEmail({ site, accent, r, stage, note, trackUrl }) {
+  const p = palette(accent);
+  const info = stageInfo(r.kind, stage);
+  const first = String(r.name).split(/\s+/)[0];
+  let subject, head, lead;
+  if (stage === 'declined') {
+    subject = `About your ${kindWord(r.kind)} request (${orderNo(r)})`;
+    head = 'Thanks for asking.';
+    lead = `Thank you for thinking of us for your ${kindWord(r.kind)}. We've had a good look and we aren't able to take this one on right now.`;
+  } else if (stage === 'accepted') {
+    subject = `Your ${kindWord(r.kind)} request is accepted (${orderNo(r)})`;
+    head = `You're in, ${first}.`;
+    lead = `Good news: we've accepted your ${kindWord(r.kind)} project. We'll be in touch about next steps, and you'll get an email each time it moves forward.`;
+  } else {
+    subject = `${info ? info.label : 'Update'}: your ${kindWord(r.kind)} (${orderNo(r)})`;
+    head = info ? info.label : 'Update';
+    lead = info ? info.text : 'Your project has moved forward.';
+  }
+  const showBar = stage !== 'declined';
+  const html = shell({
+    site, p, unsubUrl: '',
+    preheader: lead,
+    why: `You are getting this because you sent a request on seventhboar.com (${orderNo(r)}). Reply to this email to reach us.`,
+    body: `${eyebrow(`Request ${orderNo(r)}`, p)}
+      <h1 class="h1" style="margin:0 0 16px;font:900 42px/.95 ${HEAD};letter-spacing:.01em;text-transform:uppercase;color:${C.bone}">${esc(head)}</h1>
+      <p style="margin:0 0 6px;font:400 16px/1.7 ${BODY};color:${C.text}">${esc(lead)}</p>
+      ${showBar ? trackerBar(r.kind, stage, p) : ''}
+      ${note ? `<div style="background:${C.panel};border-left:3px solid ${p.fill};padding:16px 18px;margin:20px 0 0;font:400 15px/1.7 ${BODY};color:${C.text}"><div style="font:500 11px/1.4 ${MONO};letter-spacing:.14em;text-transform:uppercase;color:${p.text};margin:0 0 6px">A note from us</div>${para(note)}</div>` : ''}
+      ${showBar ? `<p style="margin:22px 0 20px;font:400 15px/1.7 ${BODY};color:${C.text}">Follow every step on your tracking page.</p>${button(trackUrl, 'Track my request', p)}` : ''}`,
+  });
+  const text = `${head}\n\n${lead}\n\n${note ? `A note from us:\n${note}\n\n` : ''}${showBar ? `Track it: ${trackUrl}\n` : ''}${NAME}, Australia\n`;
   return { subject, html, text };
 }

@@ -14,19 +14,22 @@
     const drafts = [...posts, ...projects].filter(x => x.status !== 'published').length;
     const scheduled = [...posts, ...projects].filter(x => x.status === 'published' && future(x)).length;
     const pending = comments.filter(c => !c.approved).length;
+    const newOrders = (AD.DATA.requests || []).filter(r => r.stage === 'received').length;
+    const activeOrders = (AD.DATA.requests || []).filter(r => !['received', 'declined', 'launched', 'released'].includes(r.stage)).length;
     view.innerHTML = `
       ${CMS.mode === 'demo' ? `<div class="notice notice--demo"><b>Demo mode.</b> Changes are saved in this browser only, with sample content. Add <code>?demo=0</code> to any address to leave demo mode.</div>` : ''}
-      <div class="stats">
+      <div class="stats" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+        <a class="stat ${newOrders ? 'stat--warn' : ''}" href="#orders"><small>New requests</small><b>${newOrders}</b></a>
+        <a class="stat" href="#orders"><small>Orders in progress</small><b>${activeOrders}</b></a>
         <a class="stat" href="#projects"><small>Live projects</small><b>${liveJ}</b></a>
         <a class="stat" href="#devlog"><small>Live entries</small><b>${liveP}</b></a>
-        <a class="stat ${drafts ? 'stat--warn' : ''}" href="#devlog"><small>Drafts</small><b>${drafts}</b></a>
-        <a class="stat" href="#devlog"><small>Scheduled</small><b>${scheduled}</b></a>
         <a class="stat ${pending ? 'stat--warn' : ''}" href="#comments"><small>Comments waiting</small><b>${pending}</b></a>
         <a class="stat" href="#subscribers"><small>Subscribers</small><b id="subCount">…</b></a>
       </div>
       <div class="grid-2">
         <div class="stack">
           <div class="panel"><div class="panel__head"><h2>Quick actions</h2></div><div class="panel__body quick">
+            <a href="#orders"><b>Orders</b><small>Review requests and update progress</small></a>
             <a href="#post/new"><b>+ New entry</b><small>Write a devlog entry with photos and a live preview</small></a>
             <a href="#project/new"><b>+ New project</b><small>Add work to the portfolio, with a client card</small></a>
             <a href="#settings"><b>Edit homepage</b><small>Hero, sections and the footer</small></a>
@@ -46,6 +49,7 @@
   function attention(pending, scheduled) {
     const items = [];
     if (AD.ADMIN?.comingSoon) items.push('The site is <a href="#settings">closed to the public</a> (coming soon page is on)');
+    (AD.DATA.requests || []).filter(r => r.stage === 'received').forEach(r => items.push(`New request <a href="#request/${esc(r.id)}">${esc(requestNo(r))}</a> from ${esc(r.name)} needs a yes or no`));
     if (pending) items.push(`<a href="#comments">${pending} comment${pending === 1 ? '' : 's'}</a> waiting for approval`);
     AD.DATA.posts.filter(x => x.status !== 'published').forEach(x => items.push(`<a href="#post/${esc(x.id)}">${esc(x.title)}</a> is still a draft`));
     AD.DATA.projects.filter(x => x.status !== 'published').forEach(x => items.push(`<a href="#project/${esc(x.id)}">${esc(x.title)}</a> is still a draft`));

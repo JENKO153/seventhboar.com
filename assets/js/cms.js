@@ -124,6 +124,12 @@
     icon: r.icon_url || null, banner: r.banner_url, cardBanner: r.card_banner_url || null, brief: r.brief || [], featured: !!r.featured,
     date: r.published_at, clientLogo: r.client_logo_url || null, clientLinks: r.client_links || [], status: r.status || 'published',
   });
+  const toRequest = r => ({
+    id: r.id, number: r.number, kind: r.kind, stage: r.stage, name: r.name, email: r.email, phone: r.phone || '', company: r.company || '',
+    currentSite: r.current_site || '', budget: r.budget || '', timeline: r.timeline || '', brief: r.brief, links: r.links || '',
+    accessKey: r.access_key, adminNotes: r.admin_notes || '', history: r.history || [],
+    createdAt: r.created_at, updatedAt: r.updated_at, decidedAt: r.decided_at || null,
+  });
   const toComment = r => ({ id: r.id, postSlug: r.post_slug, author: r.author_name, body: r.body, likes: r.likes || 0, approved: !!r.approved, date: r.created_at });
   const postRow = p => ({
     slug: p.id, title: p.title, category: p.category, excerpt: p.excerpt, image_url: p.image, card_image_url: p.cardImage || null,
@@ -283,6 +289,54 @@
         if (res.status === 404) throw new Error('The email function isn\'t deployed yet (see SETUP.md, Emails).');
         if (!res.ok) throw new Error(body?.error || 'The emails could not be sent.');
         return body;
+      },
+
+      // Project requests: the public form, the customer's private tracker, and the admin's Orders screen.
+      async submitRequest(fields) {
+        let res, body;
+        try {
+          res = await fetch(`${cfg.supabaseUrl}/functions/v1/submit-request`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json', apikey: cfg.supabaseKey }, body: JSON.stringify(fields),
+          });
+          body = await res.json().catch(() => ({}));
+        } catch { throw new Error('Couldn\'t reach the request service. Check your connection and try again.'); }
+        if (res.status === 404) throw new Error('The request form isn\'t switched on yet. Please email Admin@seventhboar.com.');
+        if (!res.ok) throw new Error(body?.error || 'Couldn\'t send your request just now. Please try again in a minute.');
+        return body;
+      },
+      async getRequestStatus(number, key) {
+        const { data, error } = await hedged(() => pub().rpc('request_status', { p_number: number, p_key: key }).then(r => r));
+        if (error) throw new Error(missingFn(error) ? 'Tracking isn\'t switched on yet.' : 'Could not load this request. Please try again in a moment.');
+        return data; // null when the link is wrong
+      },
+      async loadRequests() {
+        const { data, error } = await hedged(() => admin().from('requests').select('*').order('created_at', { ascending: false }).limit(500).then(r => r));
+        if (error) { if (missingTable(error)) return []; fail(error, 'Could not load requests'); }
+        return data.map(toRequest);
+      },
+      // Moves a request to a stage and (unless email is false) emails the customer. Runs inside the password window.
+      async updateRequest(id, { stage, note = '', email = true }) {
+        return this._requestCall({ id, action: 'stage', stage, note, email });
+      },
+      saveRequestNotes(id, notes) { return this._requestCall({ id, action: 'notes', notes }); },
+      async _requestCall(payload) {
+        const { data: { session } } = await admin().auth.getSession();
+        let res, body;
+        try {
+          res = await fetch(`${cfg.supabaseUrl}/functions/v1/request-update`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', apikey: cfg.supabaseKey, Authorization: `Bearer ${session?.access_token || cfg.supabaseKey}` },
+            body: JSON.stringify(payload),
+          });
+          body = await res.json().catch(() => ({}));
+        } catch { throw new Error('Couldn\'t reach the request service.'); }
+        if (res.status === 404 && !body?.error) throw new Error('The request-update function isn\'t deployed yet (see SETUP.md, Requests).');
+        if (!res.ok) throw new Error(body?.error || 'The request could not be updated.');
+        return body;
+      },
+      async deleteRequest(id) {
+        const { data, error } = await admin().from('requests').delete().eq('id', id).select('id');
+        changed(data, error);
       },
 
       /* ---- auth ---- */
@@ -510,6 +564,42 @@
         saveComments([...comments(), { id: 'c-' + Date.now().toString(36), postSlug, author, body, likes: 0, approved: false, date: new Date().toISOString() }]);
       },
       async likeComment(id) { saveComments(comments().map(c => (c.id === id && c.approved ? { ...c, likes: c.likes + 1 } : c))); },
+      // Demo requests live in this browser; no emails are sent.
+      async submitRequest(f) {
+        await wait(400);
+        if (!f.name?.trim() || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email || '') || (f.brief || '').trim().length < 10) throw new Error('Please fill in your name, a valid email and a sentence about the project.');
+        const list = read('requests', DEMO_SEED.requests);
+        const number = Math.max(1000, ...list.map(x => x.number)) + 1;
+        const key = Array.from({ length: 36 }, () => 'abcdef0123456789'[Math.floor(Math.random() * 16)]).join('');
+        list.unshift({ id: 'r-' + Date.now().toString(36), number, kind: f.kind === 'app' ? 'app' : 'website', stage: 'received', name: f.name.trim(), email: f.email.trim(),
+          phone: f.phone || '', company: f.company || '', current_site: f.current_site || '', budget: f.budget || '', timeline: f.timeline || '', brief: f.brief.trim(), links: f.links || '',
+          access_key: key, admin_notes: '', history: [{ stage: 'received', at: new Date().toISOString(), note: '' }], created_at: new Date().toISOString(), updated_at: new Date().toISOString(), decided_at: null });
+        write('requests', list);
+        return { ok: true, number, key, emailed: false, demo: true };
+      },
+      async getRequestStatus(number, key) {
+        const r = read('requests', DEMO_SEED.requests).find(x => String(x.number) === String(number) && x.access_key === key);
+        return r ? { number: r.number, kind: r.kind, stage: r.stage, first_name: r.name.split(' ')[0], company: r.company, created_at: r.created_at, history: r.history } : null;
+      },
+      loadRequests: async () => read('requests', DEMO_SEED.requests).map(toRequest),
+      async updateRequest(id, { stage, note = '', email = true }) {
+        guard();
+        const list = read('requests', DEMO_SEED.requests);
+        const r = list.find(x => x.id === id);
+        if (!r) throw new Error('That request no longer exists.');
+        r.stage = stage; r.history = [...r.history, { stage, at: new Date().toISOString(), note }];
+        if ((stage === 'accepted' || stage === 'declined') && !r.decided_at) r.decided_at = new Date().toISOString();
+        r.updated_at = new Date().toISOString();
+        write('requests', list); log('update', 'requests', `SB-${r.number}: ${stage}`);
+        return { ok: true, history: r.history, emailed: email && stage !== 'received', emailError: '', demo: true };
+      },
+      async saveRequestNotes(id, notes) {
+        guard();
+        const list = read('requests', DEMO_SEED.requests);
+        const r = list.find(x => x.id === id); if (r) { r.admin_notes = notes; write('requests', list); }
+        return { ok: true };
+      },
+      async deleteRequest(id) { guard(); write('requests', read('requests', DEMO_SEED.requests).filter(x => x.id !== id)); log('delete', 'requests', 'Deleted a request'); },
       async notifyPosts(slug) {
         guard();
         const list = read('posts', DEMO_SEED.posts);
@@ -589,7 +679,7 @@
       },
       async uploadDataUrl(dataUrl) { guard(); return dataUrl; },
       removeImages: async () => {},
-      resetDemo() { ['posts', 'projects', 'settings', 'comments', 'subscribers', 'audit', 'fails', 'comingSoon', 'nickname'].forEach(k => localStorage.removeItem(KEY + k)); },
+      resetDemo() { ['posts', 'projects', 'settings', 'comments', 'subscribers', 'requests', 'audit', 'fails', 'comingSoon', 'nickname'].forEach(k => localStorage.removeItem(KEY + k)); },
     };
   }
 

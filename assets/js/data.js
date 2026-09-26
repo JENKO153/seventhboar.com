@@ -32,6 +32,30 @@ const typeLabel = (key, plural = false) => {
   return t ? (plural ? t.label : t.one) : String(key || '').replace(/^./, c => c.toUpperCase());
 };
 
+// The stages of a project request ("order"), in order. Keep in sync with STAGES in
+// supabase/functions/_shared/templates.js (the emails). "declined" can happen from the start.
+const REQUEST_STAGES = Object.freeze({
+  website: [
+    { key: 'received', label: 'Received', text: "We've got your request and will look at it shortly." },
+    { key: 'accepted', label: 'Accepted', text: "We've accepted your project and will be in touch about next steps." },
+    { key: 'design', label: 'Design', text: "We're designing your website." },
+    { key: 'build', label: 'Build', text: "We're building your website." },
+    { key: 'review', label: 'Review', text: 'Your website is ready for you to look over.' },
+    { key: 'launched', label: 'Launched', text: 'Your website is live.' },
+  ],
+  app: [
+    { key: 'received', label: 'Received', text: "We've got your request and will look at it shortly." },
+    { key: 'accepted', label: 'Accepted', text: "We've accepted your project and will be in touch about next steps." },
+    { key: 'planning', label: 'Planning', text: "We're planning and scoping your app." },
+    { key: 'development', label: 'Development', text: "We're building your app." },
+    { key: 'testing', label: 'Testing', text: 'Your app is being tested.' },
+    { key: 'released', label: 'Released', text: 'Your app is out.' },
+  ],
+});
+const stagesFor = kind => REQUEST_STAGES[kind === 'app' ? 'app' : 'website'];
+const stageLabel = (kind, key) => (key === 'declined' ? 'Declined' : (stagesFor(kind).find(s => s.key === key) || { label: key }).label);
+const requestNo = r => `SB-${r.number}`;
+
 // Accent colours offered in Admin -> Customise. The site derives a readable text tint and a
 // button text colour from whichever one is picked (see accent.js).
 const ACCENTS = [
@@ -85,7 +109,7 @@ const DEFAULT_SETTINGS = {
     line2: 'Made with bite.',
     subtitle: 'Seventh Boar Development is an independent Australian studio building custom websites for businesses and brands. Small team, no fluff. Apps are built on request.',
     cta: 'Start a website',
-    ctaUrl: '/contact/',
+    ctaUrl: '/request/',
     cta2: 'See the work',
     cta2Url: '/work/',
     image: '/assets/images/Home_Page_Banner.jpg',
@@ -99,10 +123,10 @@ const DEFAULT_SETTINGS = {
     items: [
       { tag: 'Main service', title: 'Websites', text: 'Custom websites for businesses and brands, designed around what your customers need to see and do, and built to look sharp on every screen.',
         bullets: ['Designed and built from scratch', 'Looks and works great on phones', 'Fast, clean and easy to find on search', 'Straightforward, honest communication'],
-        ctaText: 'Start a website', ctaUrl: '/contact/' },
+        ctaText: 'Start a website', ctaUrl: '/request/' },
       { tag: 'On request', title: 'Apps', text: 'Have an app idea? We build apps for iOS and Android on request. Tell us what you have in mind and we\'ll work out if it\'s a fit.',
         bullets: ['iOS and Android', 'Built around real, daily use', 'Scoped with you before we start'],
-        ctaText: 'Ask about an app', ctaUrl: '/contact/' },
+        ctaText: 'Ask about an app', ctaUrl: '/request/?type=app' },
     ],
   },
   typesSection: { eyebrow: 'Sec. 02 // Our work', title: 'Websites, apps & games', link: 'See all work' },
@@ -131,7 +155,7 @@ const DEFAULT_SETTINGS = {
   cta: {
     show: true, title: 'Need a website?',
     text: 'Tell us about your business and what you need. We\'ll come back with a plan.',
-    ctaText: 'Start your website', ctaUrl: '/contact/',
+    ctaText: 'Start your website', ctaUrl: '/request/',
   },
   newsletter: {
     show: true, eyebrow: 'Sec. 09 // Follow along', title: 'Follow the build',
@@ -204,6 +228,15 @@ const DEMO_SEED = (() => {
     comments: [
       { id: 'c-1', post_slug: 'devlog-003-fire-ghosts-and-one-very-stubborn-shader', author_name: 'Sam', body: 'That campfire looks great. Keep going!', likes: 3, approved: true, created_at: ago(9) },
       { id: 'c-2', post_slug: 'devlog-003-fire-ghosts-and-one-very-stubborn-shader', author_name: 'Alex', body: 'Any idea on a release window?', likes: 0, approved: false, created_at: ago(1) },
+    ],
+    requests: [
+      { id: 'r-demo-1', number: 1002, kind: 'website', stage: 'received', name: 'Jamie Carter', email: 'jamie@example.com', phone: '0400 000 000', company: 'Carter Plumbing',
+        current_site: '', budget: 'Around $3k', timeline: 'Live before December', brief: 'We need a simple site to show our services, service area and a quote form. We currently only have a Facebook page.',
+        links: 'https://example.com/inspiration', access_key: 'a1b2c3d4e5f60718293a4b5c6d7e8f901234', admin_notes: '', history: [{ stage: 'received', at: ago(1), note: '' }], created_at: ago(1), updated_at: ago(1), decided_at: null },
+      { id: 'r-demo-2', number: 1001, kind: 'website', stage: 'build', name: 'Sam Nguyen', email: 'sam@example.com', phone: '', company: 'Nguyen Bakery',
+        current_site: 'https://example.com', budget: '', timeline: '', brief: 'Redesign of our bakery website with online ordering info and opening hours.', links: '',
+        access_key: 'ffeeddccbbaa99887766554433221100abcd', admin_notes: 'Wants a warm colour palette.', history: [{ stage: 'received', at: ago(20), note: '' }, { stage: 'accepted', at: ago(18), note: 'Happy to take this on.' }, { stage: 'design', at: ago(14), note: '' }, { stage: 'build', at: ago(6), note: 'Design signed off, now building.' }],
+        created_at: ago(20), updated_at: ago(6), decided_at: ago(18) },
     ],
     subscribers: [
       { email: 'sam@example.com', at: ago(3) }, { email: 'jordan@example.com', at: ago(8) },

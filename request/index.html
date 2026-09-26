@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0A0A0A">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co; frame-src 'self'; base-uri 'none'; object-src 'none'">
+  <title>Start a project | Seventh Boar Development</title>
+  <meta name="description" content="Send a website or app request to Seventh Boar Development and follow it from received to launched.">
+  <link rel="canonical" href="https://seventhboar.com/request/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Seventh Boar Development">
+  <meta property="og:title" content="Start a project | Seventh Boar Development">
+  <meta property="og:description" content="Send a website or app request to Seventh Boar Development and follow it from received to launched.">
+  <meta property="og:url" content="https://seventhboar.com/request/">
+  <meta property="og:image" content="https://seventhboar.com/assets/images/Generic_Banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Start a project | Seventh Boar Development">
+  <meta name="twitter:description" content="Send a website or app request to Seventh Boar Development and follow it from received to launched.">
+  <meta name="twitter:image" content="https://seventhboar.com/assets/images/Generic_Banner.png">
+  <link rel="alternate" type="application/rss+xml" title="Seventh Boar Development — Devlog" href="/devlog/feed.xml">
+  <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark.png" media="(prefers-color-scheme: light)">
+  <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark-inverted.png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="/assets/images/seventh-boar-mark.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800;900&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <script src="/assets/js/accent.js"></script>
+</head>
+<body data-page="request">
+  <div id="chrome-top"></div>
+
+  <main id="main">
+    <div class="page-head">
+      <div class="page-head__bg" style="background-image:url('/assets/images/Generic_Banner.png');background-position:center"></div>
+      <span class="corners"></span>
+      <div class="wrap">
+        <div class="crumbs"><a href="/">Home</a> // <span>Start a project</span></div>
+        <h1 class="display">Tell us what you need.</h1>
+        <p class="lead">Send a request for a website, or an app. We read every one, come back to you with a yes or no, and you can follow it every step of the way.</p>
+
+      </div>
+    </div>
+    <section class="section">
+      <div class="wrap request">
+        <form class="panel form reveal" id="requestForm" novalidate>
+          <h3>Your request</h3>
+          <div class="kind-pick" id="kindPick" role="radiogroup" aria-label="What do you need?">
+            <label class="kind"><input type="radio" name="kind" value="website" checked><span class="kind__body"><b>A website</b><small>Custom-built for your business or brand</small></span></label>
+            <label class="kind"><input type="radio" name="kind" value="app"><span class="kind__body"><b>An app</b><small>iOS or Android, built on request</small></span></label>
+          </div>
+          <div class="form-grid">
+            <label>Your name<input name="name" type="text" required maxlength="100" autocomplete="name"></label>
+            <label>Email<input name="email" type="email" required maxlength="200" autocomplete="email"></label>
+            <label>Phone <span class="hint">Optional</span><input name="phone" type="tel" maxlength="40" autocomplete="tel"></label>
+            <label>Business or brand <span class="hint">Optional</span><input name="company" type="text" maxlength="120" autocomplete="organization"></label>
+            <label class="field-full"><span id="siteLabel">Current website</span> <span class="hint">Optional</span><input name="current_site" type="text" maxlength="300" placeholder="https://"></label>
+            <label>Budget <span class="hint">Optional</span><input name="budget" type="text" maxlength="80" placeholder="e.g. around $3,000"></label>
+            <label>When do you need it? <span class="hint">Optional</span><input name="timeline" type="text" maxlength="120" placeholder="e.g. live before December"></label>
+            <label class="field-full">Tell us about the project<textarea name="brief" required maxlength="4000" placeholder="What is it, who is it for, and what does it need to do?"></textarea></label>
+            <label class="field-full">Links or inspiration <span class="hint">Optional. Sites you like, one per line</span><textarea name="links" maxlength="1000" style="min-height:90px"></textarea></label>
+          </div>
+          <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <label class="toggle-row"><input type="checkbox" name="consent" required><span>I'm happy for Seventh Boar Development to email me about this request. <a href="/privacy/">Privacy</a></span></label>
+          <button class="btn" type="submit" id="requestSubmit">Send request</button>
+          <div class="form-status" id="requestStatus" role="alert"></div>
+        </form>
+        <aside class="stack">
+          <div class="panel reveal">
+            <span class="eyebrow">What happens next</span>
+            <ol class="steps">
+              <li><b>We read it</b><span>You get a confirmation email straight away, with a private link to track your request.</span></li>
+              <li><b>We say yes or no</b><span>We'll email you to say whether it's a fit, and what comes next.</span></li>
+              <li><b>You follow along</b><span>Every step, from design to launch, updates on your tracking page and lands in your inbox.</span></li>
+            </ol>
+          </div>
+        </aside>
+        <div class="panel reveal" id="requestDone" hidden>
+          <span class="eyebrow">Request sent</span>
+          <h3 id="doneTitle">Thank you.</h3>
+          <p id="doneText"></p>
+          <div class="page-head__actions"><a class="btn" id="doneTrack" href="#">Track my request</a><a class="btn btn--ghost" href="/">Back to home</a></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="chrome-bottom"></div>
+
+  <script src="/assets/vendor/supabase-2.116.0.js"></script>
+  <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/data.js"></script>
+  <script src="/assets/js/cms.js"></script>
+  <script src="/assets/js/reveal.js"></script>
+  <script src="/assets/js/site.js"></script>
+  <script src="/assets/js/request.js"></script>
+</body>
+</html>

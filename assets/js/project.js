@@ -48,6 +48,14 @@
       const url = `${SITE.url}/project/?id=${encodeURIComponent(p.id)}`;
       const image = /^https?:/.test(p.banner || '') ? p.banner : SITE.url + (p.banner || '/assets/images/Generic_Banner.png');
       window.SeoMeta.apply({ title: `${p.title} | ${SITE.name}`, description: p.tagline, url, image, type: 'website' });
+      window.SeoMeta.upsertJsonLd('breadcrumbJsonLd', {
+        '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE.url}/` },
+          { '@type': 'ListItem', position: 2, name: 'Work', item: `${SITE.url}/work/` },
+          { '@type': 'ListItem', position: 3, name: p.title, item: url },
+        ],
+      });
       window.SeoMeta.upsertJsonLd('projectJsonLd', {
         '@context': 'https://schema.org', '@type': 'CreativeWork', name: p.title, description: p.tagline, image,
         creator: { '@type': 'Organization', name: SITE.name }, datePublished: p.date, mainEntityOfPage: { '@type': 'WebPage', '@id': url },
@@ -75,7 +83,7 @@
               <div><b>${esc(fmtDate(p.date || new Date(), { month: 'short', year: 'numeric' }))}</b>Published</div>
             </div>
             <div class="pdp__ctas">
-              <a class="btn" href="/contact/">Talk about a project</a>
+              <a class="btn" href="/request/">Start a project</a>
               <a class="btn btn--ghost" href="/work/">All work</a>
             </div>
           </aside>

@@ -112,6 +112,8 @@ window.AD = (function () {
   AD.reload = async function () {
     const content = await CMS.loadAdmin().catch(err => { AD.toast(err.message, true); return null; });
     if (content) AD.DATA = { ...AD.DATA, ...content };
+    AD.DATA.requests = await CMS.loadRequests().catch(err => { console.error(err); return AD.DATA.requests || []; });
+    AD.updateOrderBadge?.();
     const pending = AD.DATA.comments.filter(c => !c.approved).length;
     $('#cmCount').textContent = pending; $('#cmCount').hidden = !pending;
     AD.applyAccent();
@@ -138,7 +140,7 @@ window.AD = (function () {
   AD.who = who;
   const ACTION = { insert: 'created', update: 'updated', delete: 'deleted' };
   const ENTITY = { journal_posts: 'devlog entry', projects: 'project', site_settings: 'homepage & settings', comments: 'comment', subscribers: 'subscriber',
-                   security_settings: 'site settings', admins: 'account', email: 'email' };
+                   security_settings: 'site settings', admins: 'account', email: 'email', requests: 'order' };
   AD.activityText = a => `${ACTION[a.action] || esc(a.action)} ${ENTITY[a.entity] || esc(a.entity)}`;
   AD.activityItem = a => `<li><time>${AD.fmtDate(a.at)}</time><span>${esc(who(a))} ${AD.activityText(a)}${a.summary && a.entity !== 'site_settings' ? ` <b>${esc(a.summary)}</b>` : ''}</span></li>`;
 
@@ -152,8 +154,8 @@ window.AD = (function () {
   AD.route = function () {
     AD.lastHash = location.hash;
     view.onclick = null; // views that need a delegated click handler set their own
-    const [name, id] = (location.hash.slice(1) || 'overview').split('/');
-    (AD.routes[name] || AD.routes.overview)(id);
+    const [name, id, action] = (location.hash.slice(1) || 'overview').split('/');
+    (AD.routes[name] || AD.routes.overview)(id, action);
     const key = AD.navKey[name] || name;
     $$('#nav a[data-route]').forEach(a => a.classList.toggle('active', a.dataset.route === key));
     $('#side').classList.remove('open');

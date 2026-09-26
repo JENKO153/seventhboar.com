@@ -16,18 +16,21 @@ export async function loadAccent(db: { from: (t: string) => any }) {
   } catch { /* keep the default */ }
 }
 
-export interface Mail { to: string; subject: string; html: string; text: string; unsubUrl: string }
+export interface Mail { to: string; subject: string; html: string; text: string; unsubUrl?: string; replyTo?: string }
 
-// Every mail is bulk mail, so it carries a one-click unsubscribe: Gmail and Yahoo expect it from
-// senders, and the law does too.
+// Mailing-list mail carries a one-click unsubscribe (Gmail and Yahoo expect it from senders, and the law
+// does too). One-to-one mail about someone's own request or order doesn't, and is marked as its own
+// conversation instead, which keeps it out of Gmail's Promotions tab.
 const payload = (m: Mail) => ({
   from: Deno.env.get('EMAIL_FROM'),
   to: [m.to],
   subject: m.subject,
   html: m.html,
   text: m.text,
-  reply_to: Deno.env.get('REPLY_TO') || undefined,
-  headers: { 'List-Unsubscribe': `<${m.unsubUrl}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
+  reply_to: m.replyTo || Deno.env.get('REPLY_TO') || undefined,
+  headers: m.unsubUrl
+    ? { 'List-Unsubscribe': `<${m.unsubUrl}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' }
+    : { 'X-Entity-Ref-ID': crypto.randomUUID() },
 });
 
 const headers = () => ({ Authorization: `Bearer ${Deno.env.get('RESEND_API_KEY')}`, 'Content-Type': 'application/json' });
@@ -52,6 +55,12 @@ export async function sendBatch(mails: Mail[]): Promise<number> {
   } catch (err) { throw Object.assign(err as Error, { sent }); }
   return sent;
 }
+
+export const requestAdminEmail = (site: string, r: Record<string, unknown>) => T.requestAdminEmail({ site, accent, r });
+export const requestReceivedEmail = (site: string, r: Record<string, unknown>, trackUrl: string) => T.requestReceivedEmail({ site, accent, r, trackUrl });
+export const requestUpdateEmail = (site: string, r: Record<string, unknown>, stage: string, note: string, trackUrl: string) =>
+  T.requestUpdateEmail({ site, accent, r, stage, note, trackUrl });
+export const STAGES = T.STAGES;
 
 export const welcomeEmail = (site: string, unsubUrl: string) => T.welcomeEmail({ site, unsubUrl, accent });
 export const newPostEmail = (site: string, unsubUrl: string, post: Record<string, unknown>) => T.newPostEmail({ site, unsubUrl, accent, post });

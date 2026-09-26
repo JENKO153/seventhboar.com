@@ -26,13 +26,21 @@
   <main>
     <section><h2 id="t1"></h2><iframe id="f1"></iframe></section>
     <section><h2 id="t2"></h2><iframe id="f2"></iframe></section>
+    <section><h2 id="t3"></h2><iframe id="f3"></iframe></section>
+    <section><h2 id="t4"></h2><iframe id="f4"></iframe></section>
+    <section><h2 id="t5"></h2><iframe id="f5"></iframe></section>
   </main>
   <script type="module">
-    import { welcomeEmail, newPostEmail } from '../supabase/functions/_shared/templates.js';
+    import { welcomeEmail, newPostEmail, requestAdminEmail, requestReceivedEmail, requestUpdateEmail } from '../supabase/functions/_shared/templates.js';
     const post = {
       slug: 'where-we-return-devlog-004', category: 'Devlog', title: 'Where We Return DEVLOG #004: The Night Shift',
       excerpt: 'Enemies that only come out after dark, a lantern that runs low, and the sound design finally clicking into place.',
       image_url: '/assets/images/Devlog_Page_Banner.png',
+    };
+    const req = {
+      id: 'demo-id', number: 1004, kind: 'website', stage: 'received', name: 'Jamie Carter', email: 'jamie@example.com', phone: '0400 000 000', company: 'Carter Plumbing',
+      current_site: '', budget: 'Around $3,000', timeline: 'Live before December',
+      brief: 'We need a simple site to show our services and service area, with a quote form.\nWe only have a Facebook page right now.', links: 'https://example.com/inspiration',
     };
     const draw = () => {
       const site = document.getElementById('site').value.trim() || location.origin;
@@ -41,6 +49,13 @@
       const a = welcomeEmail({ site, unsubUrl, accent }), b = newPostEmail({ site, unsubUrl, accent, post });
       document.getElementById('t1').textContent = 'Subject: ' + a.subject; document.getElementById('f1').srcdoc = a.html;
       document.getElementById('t2').textContent = 'Subject: ' + b.subject; document.getElementById('f2').srcdoc = b.html;
+      const track = site + '/track/?o=1004&k=demo';
+      const shows = [
+        ['3', requestAdminEmail({ site, accent, r: req }), 'To you: '],
+        ['4', requestReceivedEmail({ site, accent, r: req, trackUrl: track }), 'To the customer: '],
+        ['5', requestUpdateEmail({ site, accent, r: req, stage: 'design', note: 'The first design is coming together nicely. We\'ll send it over for a look soon.', trackUrl: track }), 'Progress update: '],
+      ];
+      for (const [n, m, label] of shows) { document.getElementById('t' + n).textContent = label + m.subject; document.getElementById('f' + n).srcdoc = m.html; }
     };
     document.getElementById('accent').addEventListener('input', draw);
     document.getElementById('site').addEventListener('change', draw);

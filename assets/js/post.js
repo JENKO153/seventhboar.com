@@ -39,6 +39,14 @@
       const url = `${SITE.url}/post/?id=${encodeURIComponent(p.id)}`;
       const image = /^https?:/.test(p.image || '') ? p.image : SITE.url + (p.image || '/assets/images/Generic_Banner.png');
       window.SeoMeta.apply({ title: `${p.title} | ${SITE.name}`, description: p.excerpt, url, image, type: 'article' });
+      window.SeoMeta.upsertJsonLd('breadcrumbJsonLd', {
+        '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE.url}/` },
+          { '@type': 'ListItem', position: 2, name: 'Devlog', item: `${SITE.url}/devlog/` },
+          { '@type': 'ListItem', position: 3, name: p.title, item: url },
+        ],
+      });
       window.SeoMeta.upsertJsonLd('postJsonLd', {
         '@context': 'https://schema.org', '@type': 'BlogPosting', headline: p.title, description: p.excerpt, image,
         datePublished: p.date, author: { '@type': 'Organization', name: SITE.name },

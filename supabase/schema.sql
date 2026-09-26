@@ -494,6 +494,69 @@ create policy audit_log_read on public.audit_log for select to authenticated usi
 revoke insert, update, delete, truncate on public.audit_log from authenticated;
 
 -- ---------------------------------------------------------------------
+-- Project requests ("orders"): the request form on /request/, tracked from received to launched.
+-- Written only by the submit-request and request-update Edge Functions (service key); the browser can
+-- never create or change one. Admins read them here; customers see a customer-safe view through
+-- request_status() using their private tracking link (number + secret key), no account needed.
+-- ---------------------------------------------------------------------
+create sequence if not exists public.request_number_seq start 1001;
+
+create table if not exists public.requests (
+  id uuid primary key default gen_random_uuid(),
+  number bigint not null unique default nextval('public.request_number_seq'),
+  kind text not null check (kind in ('website', 'app')),
+  -- website: received > accepted > design > build > review > launched
+  -- app:     received > accepted > planning > development > testing > released
+  -- declined can happen from the start
+  stage text not null default 'received' check (stage in
+    ('received', 'accepted', 'declined', 'design', 'build', 'review', 'launched', 'planning', 'development', 'testing', 'released')),
+  name text not null check (char_length(name) between 1 and 100),
+  email text not null check (email ~ '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$' and char_length(email) <= 200),
+  phone text not null default '' check (char_length(phone) <= 40),
+  company text not null default '' check (char_length(company) <= 120),
+  current_site text not null default '' check (char_length(current_site) <= 300),
+  budget text not null default '' check (char_length(budget) <= 80),
+  timeline text not null default '' check (char_length(timeline) <= 120),
+  brief text not null check (char_length(brief) between 1 and 4000),
+  links text not null default '' check (char_length(links) <= 1000),
+  access_key text not null default encode(extensions.gen_random_bytes(18), 'hex'),
+  admin_notes text not null default '' check (char_length(admin_notes) <= 4000),   -- private: never shown to the customer
+  history jsonb not null default '[]'::jsonb,          -- [{stage, at, note}] : what the customer sees on their tracker
+  ip_hash text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  decided_at timestamptz
+);
+create index if not exists requests_created_idx on public.requests (created_at desc);
+create index if not exists requests_ip_idx on public.requests (ip_hash, created_at desc);
+
+drop trigger if exists requests_touch on public.requests;
+create trigger requests_touch before update on public.requests for each row execute function public.touch_updated_at();
+
+alter table public.requests enable row level security;
+revoke all on public.requests from anon, authenticated;
+grant select, delete on public.requests to authenticated;
+drop policy if exists requests_read on public.requests;
+create policy requests_read on public.requests for select to authenticated using (public.admin_ok());
+drop policy if exists requests_delete on public.requests;
+create policy requests_delete on public.requests for delete to authenticated using (public.can_write());
+drop trigger if exists requests_audit on public.requests;
+create trigger requests_audit after delete on public.requests for each row execute function public.log_change();
+
+-- The customer's tracker: one request, customer-safe fields only (first name, kind, stage, the public
+-- history), by number AND private key. Never the email, phone, brief or your private notes.
+create or replace function public.request_status(p_number bigint, p_key text) returns jsonb
+language sql stable security definer set search_path = public as $$
+  select jsonb_build_object(
+    'number', r.number, 'kind', r.kind, 'stage', r.stage, 'first_name', split_part(r.name, ' ', 1),
+    'company', r.company, 'created_at', r.created_at, 'history', r.history)
+  from public.requests r
+  where r.number = p_number and p_key is not null and length(p_key) >= 32 and r.access_key = p_key;
+$$;
+revoke all on function public.request_status(bigint, text) from public;
+grant execute on function public.request_status(bigint, text) to anon, authenticated;
+
+-- ---------------------------------------------------------------------
 -- Everything a public page needs in ONE request. security definer, so it can honour the preview
 -- key while the site is closed: visitors get only the "coming soon" wording; admins, and anyone
 -- with the preview link, get the real site.

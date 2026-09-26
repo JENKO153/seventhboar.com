@@ -344,3 +344,21 @@ tbody tr:last-child td { border: 0; }
   .client-link { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* orders: progress tracker */
+.stepper--admin { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.stepper--admin li { display: flex; align-items: center; gap: 12px; padding: 8px 0; position: relative; }
+.stepper--admin li::before { content: ''; position: absolute; left: 15px; top: -50%; width: 2px; height: 100%; background: var(--line-2); }
+.stepper--admin li:first-child::before { display: none; }
+.stepper--admin li.done::before, .stepper--admin li.now::before { background: var(--hot); }
+.stepper--admin .stepper__dot { position: relative; z-index: 1; width: 32px; height: 32px; display: grid; place-items: center; background: var(--surface); border: 2px solid var(--line-2); font: 800 15px var(--stencil); color: var(--muted); flex: none; }
+.stepper--admin li.done .stepper__dot { background: var(--hot); border-color: var(--hot); color: var(--on-hot); }
+.stepper--admin li.now .stepper__dot { border-color: var(--hot-text); color: var(--hot-text); box-shadow: 0 0 0 4px color-mix(in srgb, var(--hot) 30%, transparent); }
+.stepper--admin b { font: 600 15px var(--cond); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.stepper--admin li.now b, .stepper--admin li.done b { color: var(--bone); }
+.timeline { list-style: none; margin: 0; padding: 0; }
+.timeline li { padding: 12px 0 12px 20px; border-left: 2px solid var(--line-2); position: relative; }
+.timeline li::before { content: ''; position: absolute; left: -6px; top: 18px; width: 10px; height: 10px; background: var(--hot); }
+.timeline time { display: block; font: 500 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.timeline b { font: 700 16px var(--cond); letter-spacing: .06em; text-transform: uppercase; color: var(--bone); }
+.timeline p { margin: 4px 0 0; color: var(--text); font-size: 14px; }

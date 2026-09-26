@@ -60,7 +60,7 @@
     txt('#hero-eyebrow', h.eyebrow);
     $('#hero-title').innerHTML = `${esc(h.line1)}${h.line2 ? `<br><em>${esc(h.line2)}</em>` : ''}`;
     txt('#hero-sub', h.subtitle);
-    linkTo('#hero-cta', h.cta, h.ctaUrl || '/contact/');
+    linkTo('#hero-cta', h.cta, h.ctaUrl || '/request/');
     linkTo('#hero-cta2', h.cta2, h.cta2Url || '/work/');
     const promises = (h.bar || []).filter(Boolean);
     const bar = $('#hero-bar');

@@ -57,6 +57,7 @@ const App = (() => {
     const socials = (s.socials || []).filter(x => x.label && safeLink(x.url));
     const nav = NAV.map(([h, l, k]) => `<a href="${h}" class="${k === active ? 'active' : ''}"${k === active ? ' aria-current="page"' : ''}>${l}</a>`).join('');
 
+    if (!$('#chrome-top')) { window.sbAccent?.apply(s.theme?.accent); return; }     // a page with its own layout (the welcome page)
     $('#chrome-top').innerHTML = `
       <a class="skip" href="#main">Skip to content</a>
       <header class="header">
@@ -118,7 +119,8 @@ const App = (() => {
 
   let toastTimer;
   function toast(msg) {
-    const t = $('.toast'); if (!t) return;
+    let t = $('.toast');
+    if (!t) { document.body.insertAdjacentHTML('beforeend', `<div class="toast" role="status">${ICON.check}<span></span></div>`); t = $('.toast'); }
     $('span', t).textContent = msg; t.classList.add('show');
     clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
   }

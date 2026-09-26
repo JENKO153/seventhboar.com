@@ -12,7 +12,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { adminCheck } from '../_shared/admin.ts';
 import { clean, cors, env, json, originAllowed, serviceKey, siteUrl } from '../_shared/http.ts';
-import { emailConfigured, loadAccent, requestUpdateEmail, sendEmail, STAGES } from '../_shared/email.ts';
+import { emailConfigured, loadAccent, ordersFrom, requestUpdateEmail, sendEmail, STAGES } from '../_shared/email.ts';
 
 const db = createClient(env('SUPABASE_URL'), serviceKey(), { auth: { persistSession: false } });
 const text = (v: unknown, max: number) => String(v ?? '').replace(/\r\n?/g, '\n').replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, '').trim().slice(0, max);
@@ -66,7 +66,7 @@ Deno.serve(async req => {
           await loadAccent(db);
           const site = siteUrl();
           const m = requestUpdateEmail(site, r, stage, customerNote, `${site}/track/?o=${r.number}&k=${r.access_key}`);
-          await sendEmail({ to: r.email, ...m });
+          await sendEmail({ to: r.email, ...m, from: ordersFrom() });
           emailed = true;
         } catch (err) {
           emailError = 'Saved, but the email to the customer could not be sent.';

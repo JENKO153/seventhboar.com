@@ -10,7 +10,7 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { clean, cors, env, json, originAllowed, serviceKey, siteUrl } from '../_shared/http.ts';
-import { emailConfigured, loadAccent, requestAdminEmail, requestReceivedEmail, sendEmail } from '../_shared/email.ts';
+import { emailConfigured, loadAccent, ordersFrom, requestAdminEmail, requestReceivedEmail, sendEmail } from '../_shared/email.ts';
 
 const db = createClient(env('SUPABASE_URL'), serviceKey(), { auth: { persistSession: false } });
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
@@ -78,12 +78,12 @@ Deno.serve(async req => {
       // To you: the styled summary. Reply goes straight to the customer.
       try {
         const m = requestAdminEmail(site, saved);
-        await sendEmail({ to: Deno.env.get('ADMIN_EMAIL') || 'Admin@seventhboar.com', ...m, replyTo: saved.email });
+        await sendEmail({ to: Deno.env.get('ADMIN_EMAIL') || 'Admin@seventhboar.com', ...m, replyTo: saved.email, from: ordersFrom() });
       } catch (err) { await noteEmailProblem(`Request SB-${saved.number}: email to you failed`, err); }
       // To the customer: confirmation + tracking link.
       try {
         const m = requestReceivedEmail(site, saved, trackUrl);
-        await sendEmail({ to: saved.email, ...m });
+        await sendEmail({ to: saved.email, ...m, from: ordersFrom() });
         emailed = true;
       } catch (err) { await noteEmailProblem(`Request SB-${saved.number}: confirmation email failed`, err); }
     }

@@ -95,7 +95,7 @@ To switch it on (after the Emails steps above), deploy the two extra functions:
 supabase functions deploy submit-request --no-verify-jwt
 supabase functions deploy request-update --no-verify-jwt
 ```
-and re-run `supabase/schema.sql` (it adds the requests table). To send the notification to a different address, `supabase secrets set ADMIN_EMAIL=someone@example.com`. `tools/email-preview.html` shows all the emails.
+and re-run `supabase/schema.sql` (it adds the requests table). Project emails (the notification to you, the customer's confirmation and progress updates) are sent from their own address: `supabase secrets set "ORDERS_EMAIL_FROM=Seventh Boar Orders <orders@seventhboar.com>"`, while the mailing list keeps using `EMAIL_FROM` (news@). To send the notification to a different inbox, `supabase secrets set ADMIN_EMAIL=someone@example.com`. `tools/email-preview.html` shows all the emails.
 
 ## Trying the admin without touching the database
 

@@ -479,6 +479,31 @@ input, select, textarea { font: inherit; color: inherit; }
 .timeline p { margin: 6px 0 0; color: var(--text); }
 .nav-cta { height: 40px; padding: 0 18px; font-size: 14px; --cut: 9px; }
 
+/* ---------- welcome page (QR code landing) ---------- */
+.wl-bar { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px var(--gutter); background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.wl-bar .wl-bar__cta { display: inline-flex; }
+.wl-hero { position: relative; isolation: isolate; overflow: hidden; min-height: calc(100svh - 66px); display: flex; align-items: flex-end; }
+.wl-hero__img { position: absolute; inset: 0; z-index: -2; }
+.wl-hero__img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
+.wl-hero::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(0deg, var(--bg) 0%, rgba(10,10,10,.94) 40%, rgba(10,10,10,.7) 68%, rgba(10,10,10,.6) 100%); }
+.wl-hero .corners { inset: 18px; --l: 30px; --c: var(--bone); }
+.wl-stamp { position: absolute; right: 20px; top: 34px; z-index: 3; font-size: 15px; color: var(--bone); background: rgba(10,10,10,.6); border-width: 2.5px; transform: rotate(8deg); }
+.wl-hero__inner { width: 100%; padding-top: 120px; padding-bottom: clamp(36px, 7vh, 72px); }
+.wl-hero h1 { font-size: clamp(60px, 15vw, 150px); margin: 14px 0 18px; }
+.wl-hero p { max-width: 520px; font-size: 18px; margin: 0 0 28px; }
+.wl-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; max-width: 520px; }
+.wl-actions .btn { width: 100%; padding: 0 12px; height: 56px; }
+.wl-actions .btn:first-child, .wl-actions .btn:last-child:nth-child(4) { grid-column: 1 / -1; }
+.wl-actions--center { margin: 26px auto 0; }
+.wl-connect { position: relative; text-align: center; padding: clamp(72px, 12vw, 140px) 0; background: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--hot) 24%, var(--bg)), var(--bg) 70%); border-top: 1px solid var(--line); }
+.wl-connect h2 { font-size: clamp(52px, 10vw, 110px); margin: 14px 0 16px; }
+.wl-connect p { max-width: 460px; margin: 0 auto; color: var(--text); font-size: 18px; }
+.wl-socials { justify-content: center; margin-top: 30px; }
+.wl-mail { display: inline-block; margin-top: 22px; font: 600 15px var(--cond); letter-spacing: .12em; text-transform: uppercase; color: var(--hot-text); border-bottom: 1.5px solid currentColor; padding-bottom: 4px; }
+.wl-foot { border-top: 1px solid var(--line); padding: 22px 0 30px; font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.wl-foot .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+@media (min-width: 900px) { .wl-actions { grid-template-columns: repeat(4, auto); max-width: none; } .wl-actions .btn { width: auto; padding: 0 26px; } .wl-actions .btn:first-child, .wl-actions .btn:last-child:nth-child(4) { grid-column: auto; } }
+
 /* ---------- coming soon curtain + preview bars ---------- */
 .preview-bar { position: sticky; top: 0; z-index: 90; background: var(--hot); color: var(--on-hot); text-align: center; padding: 7px 12px; font: 600 11px/1.3 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
 .preview-bar button { margin-left: 12px; font: inherit; text-decoration: underline; color: inherit; }

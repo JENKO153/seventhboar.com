@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0A0A0A">
+  <!-- A private landing page for the QR code on the business cards: not linked from the site, not in the sitemap, and hidden from search engines. -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co; frame-src 'self'; base-uri 'none'; object-src 'none'">
+  <title>Welcome | Seventh Boar Development</title>
+  <meta name="description" content="Welcome to Seventh Boar Development.">
+  <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark.png" media="(prefers-color-scheme: light)">
+  <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark-inverted.png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="/assets/images/seventh-boar-mark.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800;900&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <script src="/assets/js/accent.js"></script>
+</head>
+<body data-page="hello" class="welcome">
+
+  <header class="wl-bar">
+    <a class="logo" href="/hello/" aria-label="Seventh Boar Development">
+      <img class="logo__mark" src="/assets/images/seventh-boar-mark-inverted.png" alt="" width="40" height="40">
+      <span><span class="logo__text">Seventh Boar</span><span class="logo__sub">Development</span></span>
+    </a>
+    <a class="btn nav-cta wl-bar__cta" href="/request/">Start a project</a>
+  </header>
+
+  <main id="main">
+    <!-- WELCOME -->
+    <section class="wl-hero">
+      <div class="wl-hero__img"><img src="/assets/images/Generic_Banner.png" alt="" width="1983" height="793" fetchpriority="high"></div>
+      <span class="corners"></span>
+      <span class="stamp wl-stamp">Made in Australia</span>
+      <div class="wrap wl-hero__inner">
+        <span class="eyebrow">Thanks for taking our card</span>
+        <h1 class="display">Welcome to<br><em>Seventh Boar.</em></h1>
+        <p>An independent Australian studio building custom websites for businesses and brands. Small team, no fluff. Apps are built on request.</p>
+        <div class="wl-actions">
+          <a class="btn" href="/request/">Start a website</a>
+          <a class="btn btn--ghost" href="/work/">See our work</a>
+          <a class="btn btn--ghost" id="wl-email" href="mailto:Admin@seventhboar.com">Email us</a>
+          <button class="btn btn--ghost" id="wl-vcard" type="button">Save our contact</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT WE DO -->
+    <section class="section" id="wl-services">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div><span class="eyebrow">01 // What we do</span><h2 class="display" id="wl-services-title">What we build for you</h2><p id="wl-services-intro"></p></div>
+        </div>
+        <div class="services" id="wl-services-grid"></div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section section--flush">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div><span class="eyebrow">02 // How it works</span><h2 class="display">Simple from start to launch</h2></div>
+        </div>
+        <div class="strip3 reveal">
+          <div><span class="code">01 // Request</span><strong>Tell us what you need</strong><p>Send a quick request. You get a confirmation straight away with a private link to track it.</p></div>
+          <div><span class="code">02 // Build</span><strong>We design and build</strong><p>You'll hear from us with a yes or no, and get an update at every step, from design through to launch.</p></div>
+          <div><span class="code">03 // Launch</span><strong>Go live</strong><p>We check everything on every screen, launch it, and stay in touch after it's live.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECENT WORK -->
+    <section class="section section--flush" id="wl-work" hidden>
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div><span class="eyebrow">03 // Recent work</span><h2 class="display">Things we've built</h2></div>
+          <a href="/work/" class="link-arrow"><span>All work</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></a>
+        </div>
+        <div class="cards" id="wl-work-grid"></div>
+      </div>
+    </section>
+
+    <!-- CLIENT WORDS -->
+    <section class="section section--flush" id="wl-words" hidden>
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div><span class="eyebrow">04 // Kind words</span><h2 class="display">What clients say</h2></div>
+        </div>
+        <div class="reports reveal-group" id="wl-words-grid"></div>
+      </div>
+    </section>
+
+    <!-- CONNECT -->
+    <section class="wl-connect">
+      <div class="wrap wl-connect__inner reveal">
+        <span class="eyebrow">05 // Let's talk</span>
+        <h2 class="display">Got a project<br><em>in mind?</em></h2>
+        <p>Tell us what you need and we'll come back to you with a yes or no, and a pricing guide.</p>
+        <div class="wl-actions wl-actions--center">
+          <a class="btn" href="/request/">Start a project</a>
+          <a class="btn btn--ghost" href="/">Explore the site</a>
+        </div>
+        <div class="socials wl-socials" id="wl-socials"></div>
+        <a class="wl-mail" id="wl-mail" href="mailto:Admin@seventhboar.com">Admin@seventhboar.com</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wl-foot">
+    <div class="wrap">
+      <span>&copy; <span id="wl-year"></span> Seventh Boar Development</span>
+      <span>Built with purpose. Made with bite.</span>
+    </div>
+  </footer>
+
+  <script src="/assets/vendor/supabase-2.116.0.js"></script>
+  <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/data.js"></script>
+  <script src="/assets/js/cms.js"></script>
+  <script src="/assets/js/reveal.js"></script>
+  <script src="/assets/js/site.js"></script>
+  <script src="/assets/js/hello.js"></script>
+</body>
+</html>

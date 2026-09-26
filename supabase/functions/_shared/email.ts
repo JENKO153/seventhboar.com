@@ -18,13 +18,18 @@ export async function loadAccent(db: { from: (t: string) => any }) {
   } catch { /* keep the default */ }
 }
 
-export interface Mail { to: string; subject: string; html: string; text: string; unsubUrl?: string; replyTo?: string }
+export interface Mail { to: string; subject: string; html: string; text: string; unsubUrl?: string; replyTo?: string; from?: string }
+
+// Project and order emails (request received, accepted, progress updates, and the notification to you) come
+// from their own address, ORDERS_EMAIL_FROM (e.g. "Seventh Boar Orders <orders@seventhboar.com>"), so they
+// stay separate from the mailing list. Falls back to EMAIL_FROM if it isn't set.
+export const ordersFrom = () => Deno.env.get('ORDERS_EMAIL_FROM') || Deno.env.get('EMAIL_FROM');
 
 // Mailing-list mail carries a one-click unsubscribe (Gmail and Yahoo expect it from senders, and the law
 // does too). One-to-one mail about someone's own request or order doesn't, and is marked as its own
 // conversation instead, which keeps it out of Gmail's Promotions tab.
 const payload = (m: Mail) => ({
-  from: Deno.env.get('EMAIL_FROM'),
+  from: m.from || Deno.env.get('EMAIL_FROM'),
   to: [m.to],
   subject: m.subject,
   html: m.html,

@@ -173,6 +173,8 @@
     const evImg = [AD.withPhoto(ev)];
     const services = (s.servicesSection.items || []).map(x => ({ ...x, bulletsText: (x.bullets || []).join('\n') }));
     const foldService = ({ bulletsText, ...x }) => ({ ...x, bullets: lines(bulletsText || '', 6, 80) });
+    const pricing = (s.pricing.items || []).map(x => ({ kind: '', ...x, bulletsText: (x.bullets || []).join('\n') }));
+    const foldPricing = ({ bulletsText, ...x }) => ({ ...x, bullets: lines(bulletsText || '', 8, 90) });
     const A = AD.ADMIN;
 
     view.innerHTML = `
@@ -235,6 +237,17 @@
             </div>
             <label>Intro<input name="svIntro" maxlength="200" value="${esc(s.servicesSection.intro)}"></label>
             <div class="items" id="serviceList"></div>
+          </div>
+
+          <div class="section">
+            <h3>Pricing guide <small>Shown on the Services page and emailed to everyone who sends a request. Nothing shows until you add a tier.</small></h3>
+            <div class="field-row">
+              <label>Small text above<input name="prEyebrow" maxlength="60" value="${esc(s.pricing.eyebrow)}"></label>
+              <label>Heading<input name="prTitle" maxlength="60" value="${esc(s.pricing.title)}"></label>
+            </div>
+            <label>Intro<textarea name="prIntro" rows="2" maxlength="300" style="min-height:70px">${esc(s.pricing.intro)}</textarea></label>
+            <div class="items" id="pricingList"></div>
+            <label>Small print <span class="hint">Optional, e.g. what's included or excluded, GST, payment terms</span><textarea name="prFoot" rows="2" maxlength="400" style="min-height:70px">${esc(s.pricing.footnote)}</textarea></label>
           </div>
 
           <div class="section">
@@ -401,6 +414,7 @@
       s.status = f.status.value.trim();
       s.hero.bar = lines(f.heroBar.value, 4, 60);
       Object.assign(s.servicesSection, { show: f.svShow.checked, eyebrow: f.svEyebrow.value, title: f.svTitle.value, intro: f.svIntro.value });
+      Object.assign(s.pricing, { eyebrow: f.prEyebrow.value, title: f.prTitle.value, intro: f.prIntro.value, footnote: f.prFoot.value });
       Object.assign(s.typesSection, { eyebrow: f.tyEyebrow.value, title: f.tyTitle.value, link: f.tyLink.value });
       Object.assign(s.latestSection, { eyebrow: f.ltEyebrow.value, title: f.ltTitle.value, intro: f.ltIntro.value });
       Object.assign(s.devlogSection, { eyebrow: f.dvEyebrow.value, title: f.dvTitle.value });
@@ -429,6 +443,17 @@
           <label>Button text<input name="ctaText" maxlength="30" value="${esc(x.ctaText || '')}" placeholder="Start a website"></label>
           <label>Button address<input name="ctaUrl" maxlength="300" value="${esc(x.ctaUrl || '')}" placeholder="/contact/"></label>
         </div>` });
+    AD.listSection({ host: $('#pricingList'), list: pricing, max: 6, photo: false, onChange: changed,
+      blank: { kind: 'website', tag: '', title: '', price: '', text: '', bulletsText: '' }, label: (x, i) => x.title || `Tier ${i + 1}`,
+      row: x => `
+        <div class="field-row">
+          <label>Name<input name="title" maxlength="40" value="${esc(x.title || '')}" placeholder="Starter website"></label>
+          <label>Price<input name="price" maxlength="30" value="${esc(x.price || '')}" placeholder="From $1,500"></label>
+          <label>Applies to<select name="kind"><option value="website" ${x.kind === 'website' ? 'selected' : ''}>Websites</option><option value="app" ${x.kind === 'app' ? 'selected' : ''}>Apps</option><option value="" ${!x.kind ? 'selected' : ''}>Both</option></select></label>
+        </div>
+        <label>Small tag <span class="hint">Optional, e.g. Most popular</span><input name="tag" maxlength="30" value="${esc(x.tag || '')}"></label>
+        <label>Description<textarea name="text" rows="2" maxlength="300" style="min-height:70px">${esc(x.text || '')}</textarea></label>
+        <label>What's included <span class="hint">One per line, up to 8</span><textarea name="bulletsText" rows="4" maxlength="700" style="min-height:90px">${esc(x.bulletsText || '')}</textarea></label>` });
     AD.listSection({ host: $('#buildImgs'), list: buildImgs, max: 3, aspect: '3/4', onChange: changed, blank: { ph: null }, label: (x, i) => `Photo ${i + 1}`, row: () => '' });
     AD.listSection({ host: $('#specList'), list: specs, max: 8, photo: false, onChange: changed, blank: { specLabel: '', specValue: '' }, label: r => r.specLabel || 'Row',
       row: r => `<div class="field-row">
@@ -451,6 +476,7 @@
           hero: { ...s.hero, image: img },
           release: { ...s.release, image: evSaved[0].image },
           servicesSection: { ...s.servicesSection, items: services.map(foldService).filter(x => x.title) },
+          pricing: { ...s.pricing, items: pricing.map(foldPricing).filter(x => x.title && x.price) },
           build: { ...s.build, images: buildSaved.map(x => x.image).filter(Boolean), specs: specs.map(r => ({ label: r.specLabel, value: r.specValue })).filter(r => r.label || r.value) },
         };
         await CMS.saveSettings(next);

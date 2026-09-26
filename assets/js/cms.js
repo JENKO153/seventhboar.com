@@ -572,7 +572,7 @@
         const number = Math.max(1000, ...list.map(x => x.number)) + 1;
         const key = Array.from({ length: 36 }, () => 'abcdef0123456789'[Math.floor(Math.random() * 16)]).join('');
         list.unshift({ id: 'r-' + Date.now().toString(36), number, kind: f.kind === 'app' ? 'app' : 'website', stage: 'received', name: f.name.trim(), email: f.email.trim(),
-          phone: f.phone || '', company: f.company || '', current_site: f.current_site || '', budget: f.budget || '', timeline: f.timeline || '', brief: f.brief.trim(), links: f.links || '',
+          phone: f.phone || '', company: f.company || '', current_site: f.current_site || '', budget: '', timeline: f.timeline || '', brief: f.brief.trim(), links: f.links || '',
           access_key: key, admin_notes: '', history: [{ stage: 'received', at: new Date().toISOString(), note: '' }], created_at: new Date().toISOString(), updated_at: new Date().toISOString(), decided_at: null });
         write('requests', list);
         return { ok: true, number, key, emailed: false, demo: true };

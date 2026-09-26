@@ -129,6 +129,14 @@ const DEFAULT_SETTINGS = {
         ctaText: 'Ask about an app', ctaUrl: '/request/?type=app' },
     ],
   },
+  // The pricing guide: shown on the Services page and emailed to everyone who sends a request. Add your
+  // tiers in Admin -> Homepage & settings -> Pricing guide. Nothing shows (or is emailed) until you do.
+  pricing: {
+    eyebrow: 'Sec. 03 // Pricing', title: 'Pricing guide',
+    intro: 'Every project is different, so treat these as starting points. Send a request and we\'ll confirm what yours would involve.',
+    footnote: '',
+    items: [],   // { kind: 'website' | 'app' | '' (both), tag, title, price, text, bullets[] }
+  },
   typesSection: { eyebrow: 'Sec. 02 // Our work', title: 'Websites, apps & games', link: 'See all work' },
   latestSection: { eyebrow: 'Sec. 03 // Latest work', title: 'Fresh off the build', intro: 'Websites, apps and games shaped with care, restraint and a clear sense of purpose.' },
   teamSection: {

@@ -8,11 +8,13 @@ export const emailConfigured = () => !!Deno.env.get('RESEND_API_KEY') && !!Deno.
 
 // The accent colour picked in Admin -> Customise, so emails always match the site.
 let accent = '#97292A';
+let pricing: Record<string, unknown> | null = null;
 export async function loadAccent(db: { from: (t: string) => any }) {
   try {
     const { data } = await db.from('site_settings').select('data').eq('id', 1).maybeSingle();
     const a = data?.data?.theme?.accent;
     if (/^#[0-9a-fA-F]{6}$/.test(a ?? '')) accent = a;
+    pricing = data?.data?.pricing ?? null;
   } catch { /* keep the default */ }
 }
 
@@ -57,7 +59,7 @@ export async function sendBatch(mails: Mail[]): Promise<number> {
 }
 
 export const requestAdminEmail = (site: string, r: Record<string, unknown>) => T.requestAdminEmail({ site, accent, r });
-export const requestReceivedEmail = (site: string, r: Record<string, unknown>, trackUrl: string) => T.requestReceivedEmail({ site, accent, r, trackUrl });
+export const requestReceivedEmail = (site: string, r: Record<string, unknown>, trackUrl: string) => T.requestReceivedEmail({ site, accent, r, trackUrl, pricing });
 export const requestUpdateEmail = (site: string, r: Record<string, unknown>, stage: string, note: string, trackUrl: string) =>
   T.requestUpdateEmail({ site, accent, r, stage, note, trackUrl });
 export const STAGES = T.STAGES;

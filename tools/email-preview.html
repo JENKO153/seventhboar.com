@@ -52,7 +52,13 @@
       const track = site + '/track/?o=1004&k=demo';
       const shows = [
         ['3', requestAdminEmail({ site, accent, r: req }), 'To you: '],
-        ['4', requestReceivedEmail({ site, accent, r: req, trackUrl: track }), 'To the customer: '],
+        ['4', requestReceivedEmail({ site, accent, r: req, trackUrl: track, pricing: {
+          title: 'Pricing guide', intro: 'Every project is different, so treat these as starting points. Send a request and we\'ll confirm what yours would involve.',
+          footnote: 'Sample prices for this preview only. Prices are set in the admin.',
+          items: [
+            { kind: 'website', tag: 'Most popular', title: 'Starter website', price: 'From $X', text: 'A clean, fast site for a small business.', bullets: ['Up to 5 pages', 'Mobile-friendly', 'Contact form'] },
+            { kind: 'website', title: 'Business website', price: 'From $Y', text: 'More pages and features for a growing business.', bullets: ['Everything in Starter', 'Extra pages and features'] },
+          ] } }), 'To the customer (with pricing): '],
         ['5', requestUpdateEmail({ site, accent, r: req, stage: 'design', note: 'The first design is coming together nicely. We\'ll send it over for a look soon.', trackUrl: track }), 'Progress update: '],
       ];
       for (const [n, m, label] of shows) { document.getElementById('t' + n).textContent = label + m.subject; document.getElementById('f' + n).srcdoc = m.html; }

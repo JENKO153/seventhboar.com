@@ -193,10 +193,40 @@ export function requestAdminEmail({ site, accent, r }) {
   return { subject, html, text };
 }
 
-// ---- B. To the customer: "We've got your request" ----
-export function requestReceivedEmail({ site, accent, r, trackUrl }) {
+// The pricing guide: one card per tier that applies to this kind of project. Empty until you add tiers
+// in the admin, in which case the email simply leaves it out.
+function pricingGuide(pricing, kind, p) {
+  const tiers = ((pricing && pricing.items) || []).filter(t => t && t.title && (!t.kind || t.kind === kind));
+  if (!tiers.length) return { html: '', text: '' };
+  const cards = tiers.map(t => {
+    const bullets = (t.bullets || []).filter(Boolean);
+    return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 12px;background:${C.panel};border-left:3px solid ${p.fill}"><tr><td style="padding:16px 18px">
+      ${t.tag ? `<div style="font:500 10px/1.4 ${MONO};letter-spacing:.14em;text-transform:uppercase;color:${p.text};margin:0 0 4px">${esc(t.tag)}</div>` : ''}
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+        <td style="font:900 22px/1.1 ${HEAD};letter-spacing:.03em;text-transform:uppercase;color:${C.bone}">${esc(t.title)}</td>
+        <td align="right" style="font:900 22px/1.1 ${HEAD};letter-spacing:.02em;color:${p.text};white-space:nowrap;padding-left:12px">${esc(t.price)}</td></tr></table>
+      ${t.text ? `<div style="margin:8px 0 0;font:400 14px/1.6 ${BODY};color:${C.text}">${esc(t.text)}</div>` : ''}
+      ${bullets.length ? `<ul style="margin:10px 0 0;padding-left:18px;font:400 14px/1.7 ${BODY};color:${C.text}">${bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
+    </td></tr></table>`;
+  }).join('');
+  const html = `<div style="margin:30px 0 0;padding-top:26px;border-top:1px solid ${C.line}">
+      ${eyebrow('Pricing guide', p)}
+      <div style="margin:0 0 6px;font:900 28px/1 ${HEAD};letter-spacing:.02em;text-transform:uppercase;color:${C.bone}">${esc(pricing.title || 'Pricing guide')}</div>
+      ${pricing.intro ? `<p style="margin:10px 0 18px;font:400 15px/1.7 ${BODY};color:${C.text}">${esc(pricing.intro)}</p>` : '<div style="height:14px"></div>'}
+      ${cards}
+      ${pricing.footnote ? `<p style="margin:8px 0 0;font:400 12px/1.6 ${BODY};color:${C.muted}">${esc(pricing.footnote)}</p>` : ''}
+    </div>`;
+  const text = `\n${(pricing.title || 'Pricing guide').toUpperCase()}\n${pricing.intro ? pricing.intro + '\n' : ''}\n` +
+    tiers.map(t => `- ${t.title}: ${t.price}${t.text ? `\n  ${t.text}` : ''}${(t.bullets || []).filter(Boolean).map(b => `\n  * ${b}`).join('')}`).join('\n\n') +
+    `${pricing.footnote ? `\n\n${pricing.footnote}` : ''}\n`;
+  return { html, text };
+}
+
+// ---- B. To the customer: "We've got your request" (with the pricing guide, once you've added one) ----
+export function requestReceivedEmail({ site, accent, r, trackUrl, pricing }) {
   const p = palette(accent);
   const subject = `We've got your ${kindWord(r.kind)} request (${orderNo(r)})`;
+  const guide = pricingGuide(pricing, r.kind, p);
   const html = shell({
     site, p, unsubUrl: '',
     preheader: `Your request ${orderNo(r)} is in. Here's your private tracking link.`,
@@ -206,9 +236,10 @@ export function requestReceivedEmail({ site, accent, r, trackUrl }) {
       <p style="margin:0 0 6px;font:400 16px/1.7 ${BODY};color:${C.text}">Thanks for sending your ${kindWord(r.kind)} request. We'll read it properly and come back to you soon to say whether it's a fit and what happens next. You'll get an email each time it moves forward.</p>
       ${trackerBar(r.kind, 'received', p)}
       <p style="margin:18px 0 22px;font:400 15px/1.7 ${BODY};color:${C.text}">You can follow it any time here. This link is private to you, so keep it handy.</p>
-      ${button(trackUrl, 'Track my request', p)}`,
+      ${button(trackUrl, 'Track my request', p)}
+      ${guide.html}`,
   });
-  const text = `Got it, ${String(r.name).split(/\s+/)[0]}.\n\nThanks for sending your ${kindWord(r.kind)} request (${orderNo(r)}). We'll come back to you soon. You'll get an email each time it moves forward.\n\nTrack it: ${trackUrl}\n${NAME}, Australia\n`;
+  const text = `Got it, ${String(r.name).split(/\s+/)[0]}.\n\nThanks for sending your ${kindWord(r.kind)} request (${orderNo(r)}). We'll come back to you soon. You'll get an email each time it moves forward.\n\nTrack it: ${trackUrl}\n${guide.text}\n${NAME}, Australia\n`;
   return { subject, html, text };
 }
 

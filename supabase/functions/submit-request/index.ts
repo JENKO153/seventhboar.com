@@ -51,7 +51,6 @@ Deno.serve(async req => {
       phone: clean(b.phone, 40),
       company: clean(b.company, 120),
       current_site: clean(b.current_site, 300),
-      budget: clean(b.budget, 80),
       timeline: clean(b.timeline, 120),
       brief: text(b.brief, 4000),
       links: text(b.links, 1000),

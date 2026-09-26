@@ -24,7 +24,7 @@
     if (form.website.value) return;                       // the hidden field: only bots fill it in
     if (!form.reportValidity()) return;
     const f = new FormData(form);
-    const fields = Object.fromEntries(['kind', 'name', 'email', 'phone', 'company', 'current_site', 'budget', 'timeline', 'brief', 'links'].map(k => [k, String(f.get(k) || '').trim()]));
+    const fields = Object.fromEntries(['kind', 'name', 'email', 'phone', 'company', 'current_site', 'timeline', 'brief', 'links'].map(k => [k, String(f.get(k) || '').trim()]));
     btn.disabled = true; btn.textContent = 'Sending…';
     try {
       if (PREVIEW) throw new Error('Preview only: requests are switched off here.');

@@ -88,6 +88,8 @@ An entry is only ever emailed once, and entries written before this was set up a
 
 In the admin, **Orders** lists every request. Open one to accept or decline it, move it through the stages (websites: Received → Accepted → Design → Build → Review → Launched; apps: Received → Accepted → Planning → Development → Testing → Released), add a message for the customer, and keep private notes. Each change updates the customer's tracker and emails them (untick "Email the customer" to skip). Change the stage names in `assets/js/data.js` **and** `supabase/functions/_shared/templates.js`.
 
+**Pricing guide:** in the admin, **Homepage & settings → Pricing guide**, add your tiers (name, price, what's included, and whether each applies to websites, apps or both). They show on the Services page and are included in the customer's confirmation email as a styled pricing guide. Until you add a tier, neither shows. The form doesn't ask for a budget.
+
 To switch it on (after the Emails steps above), deploy the two extra functions:
 ```bash
 supabase functions deploy submit-request --no-verify-jwt

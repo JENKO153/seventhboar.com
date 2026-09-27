@@ -69,5 +69,5 @@ export const requestUpdateEmail = (site: string, r: Record<string, unknown>, sta
   T.requestUpdateEmail({ site, accent, r, stage, note, trackUrl });
 export const STAGES = T.STAGES;
 
-export const welcomeEmail = (site: string, unsubUrl: string) => T.welcomeEmail({ site, unsubUrl, accent });
+export const welcomeEmail = (site: string, unsubUrl: string) => T.welcomeEmail({ site, unsubUrl, accent, pricing });
 export const newPostEmail = (site: string, unsubUrl: string, post: Record<string, unknown>) => T.newPostEmail({ site, unsubUrl, accent, post });

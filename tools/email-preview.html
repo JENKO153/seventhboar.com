@@ -46,7 +46,10 @@
       const site = document.getElementById('site').value.trim() || location.origin;
       const accent = document.getElementById('accent').value.trim();
       const unsubUrl = 'https://example.supabase.co/functions/v1/subscribe?unsub=0123456789abcdef0123456789abcdef';
-      const a = welcomeEmail({ site, unsubUrl, accent }), b = newPostEmail({ site, unsubUrl, accent, post });
+      const pricingSample = { title: 'Pricing guide', items: [
+        { kind: 'website', tag: 'Most popular', title: 'Starter website', price: 'From $X', text: 'A clean, fast site for a small business.', bullets: ['Up to 5 pages', 'Mobile-friendly'] },
+      ] };
+      const a = welcomeEmail({ site, unsubUrl, accent, pricing: pricingSample }), b = newPostEmail({ site, unsubUrl, accent, post });
       document.getElementById('t1').textContent = 'Subject: ' + a.subject; document.getElementById('f1').srcdoc = a.html;
       document.getElementById('t2').textContent = 'Subject: ' + b.subject; document.getElementById('f2').srcdoc = b.html;
       const track = site + '/track/?o=1004&k=demo';

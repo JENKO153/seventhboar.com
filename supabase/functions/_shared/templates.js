@@ -84,8 +84,13 @@ function shell({ site, p, preheader, body, unsubUrl, why }) {
 }
 
 // ---- 1. "You're on the list" ----
-export function welcomeEmail({ site, unsubUrl, accent }) {
+export function welcomeEmail({ site, unsubUrl, accent, pricing }) {
   const p = palette(accent);
+  // A quiet link, not the full guide: this list is mainly devlog followers, not people who have
+  // shown buying intent, and a static price table here would go stale the moment prices change.
+  // The full styled guide belongs in the request-confirmation email (see requestReceivedEmail below).
+  const hasPricing = !!(pricing && (pricing.items || []).some(t => t && t.title));
+  const pricingUrl = `${site}/services/#pricing`;
   const subject = "You're on the list";
   const html = shell({
     site, p, unsubUrl,
@@ -94,9 +99,10 @@ export function welcomeEmail({ site, unsubUrl, accent }) {
     body: `${eyebrow('Welcome aboard', p)}
       <h1 class="h1" style="margin:0 0 16px;font:900 44px/.95 ${HEAD};letter-spacing:.01em;text-transform:uppercase;color:${C.bone}">You're on <span style="color:${p.text}">the list.</span></h1>
       <p style="margin:0 0 22px;font:400 16px/1.7 ${BODY};color:${C.text}">Thanks for following Seventh Boar Development. When there's a new devlog entry, you'll get an email straight away: what changed, what we learned, and what's next. No spam, ever.</p>
-      ${button(`${site}/devlog/`, 'Read the devlog', p)}${button(`${site}/work/`, 'See the work', { ...p, fill: C.panel, on: C.bone })}`,
+      ${button(`${site}/devlog/`, 'Read the devlog', p)}${button(`${site}/work/`, 'See the work', { ...p, fill: C.panel, on: C.bone })}
+      ${hasPricing ? `<p style="margin:26px 0 0;padding-top:22px;border-top:1px solid ${C.line};font:400 14px/1.6 ${BODY};color:${C.muted}">Thinking about a website or an app? <a href="${esc(pricingUrl)}" style="color:${p.text}">See our pricing guide</a> or <a href="${esc(site + '/request/')}" style="color:${p.text}">send a request</a>.</p>` : ''}`,
   });
-  const text = `You're on the list.\n\nThanks for following Seventh Boar Development. When there's a new devlog entry, you'll get an email straight away.\n\nDevlog: ${site}/devlog/\nWork: ${site}/work/\n\nUnsubscribe: ${unsubUrl}\n${NAME}, Australia\n`;
+  const text = `You're on the list.\n\nThanks for following Seventh Boar Development. When there's a new devlog entry, you'll get an email straight away.\n\nDevlog: ${site}/devlog/\nWork: ${site}/work/\n${hasPricing ? `\nThinking about a website or an app? Pricing: ${pricingUrl}\nStart a request: ${site}/request/\n` : ''}\nUnsubscribe: ${unsubUrl}\n${NAME}, Australia\n`;
   return { subject, html, text };
 }
 

@@ -22,6 +22,9 @@ App.boot('services').then(() => {
         ${(t.bullets || []).length ? `<ul class="feature-list">${t.bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
         <a class="btn" href="/request/${t.kind === 'app' ? '?type=app' : ''}">Send a request</a>
       </article>`).join('');
+    // The section starts hidden, so a page loaded as /services/#pricing (from an email link)
+    // wouldn't otherwise land on it: the browser tried to scroll there before it existed.
+    if (location.hash === '#pricing') $('#pricing').scrollIntoView({ block: 'start' });
   }
   window.ScrollReveal?.scan();
 });

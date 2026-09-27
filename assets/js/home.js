@@ -14,7 +14,9 @@
   });
 
   $$('[data-rail]').forEach(b => b.addEventListener('click', () => {
-    const r = $('#rail'); r.scrollBy({ left: r.clientWidth * 0.75 * +b.dataset.rail, behavior: 'smooth' });
+    const ctrls = b.closest('[data-rail-for]');
+    const r = ctrls ? $('#' + ctrls.dataset.railFor) : $('#rail');
+    r.scrollBy({ left: r.clientWidth * 0.75 * +b.dataset.rail, behavior: 'smooth' });
   }));
   $('#best-tabs').addEventListener('click', e => {
     const t = e.target.closest('.tab'); if (!t) return;

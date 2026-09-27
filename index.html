@@ -112,9 +112,15 @@
       <div class="wrap">
         <div class="section-head reveal">
           <div><span class="eyebrow" id="pricing-eyebrow"></span><h2 class="display" id="pricing-title"></h2><p id="pricing-intro"></p></div>
-          <a href="/services/#pricing" class="link-arrow"><span>Full pricing guide</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></a>
+          <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+            <a href="/services/#pricing" class="link-arrow"><span>Full pricing guide</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></a>
+            <div class="rail-ctrls" data-rail-for="pricing-grid">
+              <button type="button" aria-label="Previous" data-rail="-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 6-6 6 6 6"/></svg></button>
+              <button type="button" aria-label="Next" data-rail="1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg></button>
+            </div>
+          </div>
         </div>
-        <div class="pricing" id="pricing-grid"></div>
+        <div class="rail rail--wide" id="pricing-grid"></div>
         <p class="muted" id="pricing-foot" style="margin:18px 0 0"></p>
       </div>
     </section>

@@ -132,7 +132,7 @@ const DEFAULT_SETTINGS = {
   // The pricing guide: shown on the Services page and emailed to everyone who sends a request. Add your
   // tiers in Admin -> Homepage & settings -> Pricing guide. Nothing shows (or is emailed) until you do.
   pricing: {
-    eyebrow: 'Sec. 03 // Pricing', title: 'Pricing guide',
+    eyebrow: 'Sec. 02 // Pricing', title: 'Pricing guide',
     intro: 'Every project is different, so treat these as starting points. Send a request and we\'ll confirm what yours would involve.',
     footnote: 'Prices are in Australian dollars (AUD).',
     items: [
@@ -153,17 +153,17 @@ const DEFAULT_SETTINGS = {
         bullets: ['iOS and Android', 'Built around real, daily use', 'Scoped with you before a quote'] },
     ],
   },
-  typesSection: { eyebrow: 'Sec. 02 // Our work', title: 'Websites, apps & games', link: 'See all work' },
-  latestSection: { eyebrow: 'Sec. 03 // Latest work', title: 'Fresh off the build', intro: 'Websites, apps and games shaped with care, restraint and a clear sense of purpose.' },
+  typesSection: { eyebrow: 'Sec. 03 // Our work', title: 'Websites, apps & games', link: 'See all work' },
+  latestSection: { eyebrow: 'Sec. 04 // Latest work', title: 'Fresh off the build', intro: 'Websites, apps and games shaped with care, restraint and a clear sense of purpose.' },
   teamSection: {
-    eyebrow: 'Sec. 04 // The studio', title: 'Meet the studio',
+    eyebrow: 'Sec. 05 // The studio', title: 'Meet the studio',
     intro: 'A small team that cares how things feel to use.',
     ctaText: 'Work with us', ctaUrl: '/contact/',
   },
-  devlogSection: { eyebrow: 'Sec. 06 // From the devlog', title: 'Latest entries' },
+  devlogSection: { eyebrow: 'Sec. 07 // From the devlog', title: 'Latest entries' },
   build: {
     show: true,
-    eyebrow: 'Sec. 07 // How we build', title: 'Built to last',
+    eyebrow: 'Sec. 08 // How we build', title: 'Built to last',
     intro: 'Clean design, considered features, and sites that feel straightforward on the surface even when the build underneath is complex.',
     cta: 'See the work', ctaUrl: '/work/',
     images: ['/assets/images/Devlog_Page_Banner.png', '/assets/images/Generic_Banner.png', '/assets/images/Home_Page_Banner.jpg'],
@@ -175,14 +175,14 @@ const DEFAULT_SETTINGS = {
       { label: 'Based in', value: 'Australia' },
     ],
   },
-  reportsSection: { eyebrow: 'Sec. 08 // Client words', title: 'Kind words' },
+  reportsSection: { eyebrow: 'Sec. 09 // Client words', title: 'Kind words' },
   cta: {
     show: true, title: 'Need a website?',
     text: 'Tell us about your business and what you need. We\'ll come back with a plan.',
     ctaText: 'Start your website', ctaUrl: '/request/',
   },
   newsletter: {
-    show: true, eyebrow: 'Sec. 09 // Follow along', title: 'Follow the build',
+    show: true, eyebrow: 'Sec. 10 // Follow along', title: 'Follow the build',
     text: 'Devlog updates and release news, straight to your inbox.',
     fine: 'Unsubscribe any time. No spam, ever.',
     thanks: "You're on the list. Welcome aboard.",

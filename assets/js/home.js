@@ -70,6 +70,7 @@
     bar.hidden = !promises.length;
 
     renderServices();
+    renderPricing();
     renderTypes(projects);
     renderLatest(projects);
     renderTeam();
@@ -107,7 +108,20 @@
     $('#services-grid').innerHTML = App.servicesHtml(sv.items);
   }
 
-  // Sec. 02: one slanted tile per kind of project that has something published.
+  // Sec. 02: what things cost. Hidden until at least one tier is added in the admin.
+  function renderPricing() {
+    const pr = SETTINGS.pricing || {};
+    const tiers = (pr.items || []).filter(t => t.title);
+    $('#pricing').hidden = !tiers.length;
+    if (!tiers.length) return;
+    txt('#pricing-eyebrow', pr.eyebrow);
+    txt('#pricing-title', pr.title);
+    txt('#pricing-intro', pr.intro);
+    txt('#pricing-foot', pr.footnote);
+    $('#pricing-grid').innerHTML = App.pricingHtml(tiers);
+  }
+
+  // Sec. 03: one slanted tile per kind of project that has something published.
   function renderTypes(projects) {
     const t = SETTINGS.typesSection;
     const tiles = PROJECT_TYPES.map(type => {
@@ -125,7 +139,7 @@
         <div class="disc__label"><span class="code">Type 0${i + 1} // ${x.count} ${x.count === 1 ? 'project' : 'projects'}</span><h3>${esc(x.type.label)}</h3></div></a>`).join('');
   }
 
-  // Sec. 02: featured work first, then the newest.
+  // Sec. 04: featured work first, then the newest.
   function renderLatest(projects) {
     const l = SETTINGS.latestSection;
     $('#latest').hidden = !projects.length;
@@ -136,7 +150,7 @@
     $('#rail').innerHTML = ordered.map(App.Cards.project).join('');
   }
 
-  // Sec. 03: the people. Hidden until at least one is added in the admin.
+  // Sec. 05: the people. Hidden until at least one is added in the admin.
   function renderTeam() {
     const t = SETTINGS.teamSection;
     txt('#team-eyebrow', t.eyebrow);
@@ -164,7 +178,7 @@
     return [...(r.home ? [{ label: 'Based in', value: r.home }] : []), ...stats].slice(0, 4);
   }
 
-  // Sec. 04: the countdown block. Either a release (a drop date) or an event (date + doors + venue).
+  // Sec. 06: the countdown block. Either a release (a drop date) or an event (date + doors + venue).
   function renderEvent() {
     const ev = SETTINGS.release, event = ev.kind === 'event';
     $('#event').hidden = !ev.show;
@@ -172,7 +186,7 @@
     $('#event-img').src = safeUrl(ev.image) || '/assets/images/Home_Page_Banner.jpg';
     linkTo('#event-cta', ev.ctaText, ev.ctaUrl);
     const d = new Date(ev.date), valid = !!ev.date && !isNaN(d);
-    txt('#event-eyebrow', `Sec. 05 // ${event ? 'Next event' : 'Next release'}`);
+    txt('#event-eyebrow', `Sec. 06 // ${event ? 'Next event' : 'Next release'}`);
     $('#event-title').innerHTML = `${esc(ev.name)}${ev.round ? `<br><em>${esc(ev.round)}</em>` : ''}`;
     txt('#event-blurb', ev.blurb);
     $('#event-meta').innerHTML = [
@@ -194,7 +208,7 @@
     txt('#clock-label', !valid ? 'Coming soon' : ms > 0 ? (event ? 'Doors open in' : 'Releases in') : (event ? 'Live now' : 'Out now'));
   }
 
-  // Sec. 05: latest devlog entries, with tabs for the categories in use.
+  // Sec. 07: latest devlog entries, with tabs for the categories in use.
   function renderDevlogTabs(posts) {
     const current = $('#best-tabs .tab.active')?.dataset.c || 'All';
     const counts = {};
@@ -210,7 +224,7 @@
     window.ScrollReveal?.scan($('#best'));
   }
 
-  // Sec. 06: the photos and the spec table.
+  // Sec. 08: the photos and the spec table.
   function renderBuild() {
     const t = SETTINGS.build;
     $('#build').hidden = !t.show;
@@ -227,7 +241,7 @@
       .map(r => `<tr><td>${esc(r.label)}</td><td>${esc(r.value)}</td></tr>`).join('');
   }
 
-  // Sec. 07: what clients say, plus an optional photo strip.
+  // Sec. 09: what clients say, plus an optional photo strip.
   function renderReports() {
     const s = SETTINGS;
     txt('#reports-eyebrow', s.reportsSection.eyebrow);

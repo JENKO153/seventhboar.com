@@ -14,6 +14,17 @@
   $('#wl-services-intro').textContent = sv.intro;
   $('#wl-services-grid').innerHTML = App.servicesHtml(sv.items);
 
+  // Pricing: hidden until at least one tier is added in the admin.
+  const pr = s.pricing || {};
+  const tiers = (pr.items || []).filter(t => t.title);
+  $('#wl-pricing').hidden = !tiers.length;
+  if (tiers.length) {
+    $('#wl-pricing-title').textContent = pr.title || 'Pricing guide';
+    $('#wl-pricing-intro').textContent = pr.intro || '';
+    $('#wl-pricing-foot').textContent = pr.footnote || '';
+    $('#wl-pricing-grid').innerHTML = App.pricingHtml(tiers);
+  }
+
   // Recent work: featured first, then newest
   const projects = data.projects || [];
   const shown = [...projects.filter(p => p.featured), ...projects.filter(p => !p.featured)].slice(0, 3);

@@ -13,15 +13,7 @@ App.boot('services').then(() => {
     $('#pricing-title').textContent = pr.title || 'Pricing guide';
     $('#pricing-intro').textContent = pr.intro || '';
     $('#pricing-foot').textContent = pr.footnote || '';
-    $('#pricing-grid').innerHTML = tiers.map(t => `
-      <article class="tier reveal">
-        ${t.tag ? `<span class="code">${esc(t.tag)}</span>` : ''}
-        <h3 class="display">${esc(t.title)}</h3>
-        <div class="tier__price">${esc(t.price)}</div>
-        ${t.text ? `<p>${esc(t.text)}</p>` : ''}
-        ${(t.bullets || []).length ? `<ul class="feature-list">${t.bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
-        <a class="btn" href="/request/${t.kind === 'app' ? '?type=app' : ''}">Send a request</a>
-      </article>`).join('');
+    $('#pricing-grid').innerHTML = App.pricingHtml(tiers);
     // The section starts hidden, so a page loaded as /services/#pricing (from an email link)
     // wouldn't otherwise land on it: the browser tried to scroll there before it existed.
     if (location.hash === '#pricing') $('#pricing').scrollIntoView({ block: 'start' });

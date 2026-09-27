@@ -300,5 +300,18 @@ const App = (() => {
     }).join('');
   }
 
-  return { boot, renderChrome, toast, Cards, onPreview, previewBar, servicesHtml };
+  // The pricing tier cards (Home, Services, and the /hello/ welcome page).
+  function pricingHtml(tiers) {
+    return (tiers || []).filter(t => t && t.title).map(t => `
+      <article class="tier reveal">
+        ${t.tag ? `<span class="code">${esc(t.tag)}</span>` : ''}
+        <h3 class="display">${esc(t.title)}</h3>
+        <div class="tier__price">${esc(t.price)}</div>
+        ${t.text ? `<p>${esc(t.text)}</p>` : ''}
+        ${(t.bullets || []).length ? `<ul class="feature-list">${t.bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
+        <a class="btn" href="/request/${t.kind === 'app' ? '?type=app' : ''}">Send a request</a>
+      </article>`).join('');
+  }
+
+  return { boot, renderChrome, toast, Cards, onPreview, previewBar, servicesHtml, pricingHtml };
 })();

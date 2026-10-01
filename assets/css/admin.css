@@ -225,6 +225,15 @@ tbody tr:last-child td { border: 0; }
 .block textarea { min-height: 84px; }
 .block .pic { grid-template-columns: 160px 1fr; }
 
+/* "paste your whole post" */
+.paste { border: 1px dashed var(--line-2); background: var(--bg-2); padding: 12px 14px; }
+.paste summary { cursor: pointer; font: 700 13px var(--cond); letter-spacing: .08em; text-transform: uppercase; color: var(--bone); }
+.paste summary::marker { color: var(--hot-text); }
+.paste .hint { margin-top: 8px; }
+.paste textarea { margin-top: 10px; min-height: 160px; }
+.paste__actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+.paste__actions .hint { margin: 0; }
+
 /* client links */
 .client-links { display: grid; gap: 8px; }
 .client-link { display: grid; grid-template-columns: 140px 1fr; gap: 10px; align-items: center; }

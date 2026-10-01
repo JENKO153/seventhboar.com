@@ -106,7 +106,9 @@
      BLOCK BUILDER: title / subtitle / paragraph / bullets / photo blocks
      A block is {style, text, ph?}. Text edits don't redraw (so focus is never lost).
      ===================================================================== */
-  AD.blockEditor = function (host, blocks, onChange) {
+  // fill = { title(t), excerpt(e) }, same shape AD.wirePastePanel takes — used when a direct
+  // paste into a block happens to carry a title/excerpt too (e.g. a guessed leading heading).
+  AD.blockEditor = function (host, blocks, onChange, fill = {}) {
     const draw = () => {
       host.innerHTML = blocks.map((b, i) => `
         <div class="block" data-i="${i}">
@@ -154,8 +156,50 @@
       }
       draw(); onChange();
     });
+    // Pasting several paragraphs/headings/bullets straight into a block explodes it into separate
+    // blocks instead of one wall of text (an ordinary short paste is left to happen normally).
+    host.addEventListener('paste', e => {
+      if (e.target.tagName !== 'TEXTAREA') return;
+      const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+      const res = text && AD.parsePost(text);
+      if (!res || res.blocks.length < 2) return;
+      e.preventDefault();
+      const i = +e.target.closest('.block').dataset.i;
+      const replacing = !blocks[i].text.trim();
+      blocks.splice(i, replacing ? 1 : 0, ...res.blocks);
+      if (res.title) fill.title?.(res.title);
+      if (res.excerpt) fill.excerpt?.(res.excerpt);
+      draw(); onChange();
+    });
     draw();
     return { draw, add(style = 'paragraph') { blocks.push({ style, text: '' }); draw(); onChange(); } };
+  };
+  // The "✨ Paste your whole post" panel: one big paste, split into blocks, inserted at the top
+  // (or appended, if the block list already has real content) and used to fill in the title.
+  AD.pastePanel = (label) => `
+    <details class="paste" id="pastePanel">
+      <summary>✨ Paste your whole ${esc(label)}</summary>
+      <p class="hint">Written it in ChatGPT, Word or Google Docs? Paste all of it here and it's split into titles, paragraphs and lists for you. Add photos afterwards wherever you like.</p>
+      <textarea id="pasteBox" rows="8" placeholder="Paste your whole ${esc(label)} here…" aria-label="Paste your whole ${esc(label)}"></textarea>
+      <div class="paste__actions"><button type="button" class="btn btn--ghost btn--sm" id="pasteGo">Turn it into blocks</button><span class="hint">Pasting straight into any block above works too.</span></div>
+    </details>`;
+  // fill = { title(t), excerpt(e) } — excerpt is omitted for kinds with no excerpt field (projects).
+  AD.wirePastePanel = (host, blocks, blockUi, onChange, fill) => {
+    const panel = $('#pastePanel', host), box = $('#pasteBox', host);
+    $('#pasteGo', host).addEventListener('click', () => {
+      const res = AD.parsePost(box.value);
+      if (!res.blocks.length) return AD.toast('Nothing to add yet — paste some text first.', true);
+      const allEmpty = blocks.every(b => !b.text.trim() && !b.ph);
+      if (allEmpty) blocks.splice(0, blocks.length, ...res.blocks); else blocks.push(...res.blocks);
+      if (res.title) fill.title(res.title);
+      if (res.excerpt) fill.excerpt?.(res.excerpt);
+      blockUi.draw(); onChange();
+      box.value = ''; panel.open = false;
+      const n = s => res.blocks.filter(b => s.includes(b.style)).length;
+      const parts = [[n(['title', 'subtitle']), 'heading'], [n(['paragraph', 'paragraph-lg']), 'paragraph'], [n(['bullets']), 'list']]
+        .filter(([c]) => c).map(([c, l]) => `${c} ${l}${c === 1 ? '' : 's'}`);
+      AD.toast(`Added ${res.blocks.length} blocks: ${parts.join(', ')}.${res.title ? ' Title filled in.' : ''}`);
+    });
   };
   // What the live preview shows
   AD.blocksDraft = blocks => blocks.map(b => ({ style: b.style, text: b.text, image: b.ph ? AD.photoDraft(b.ph) : '' }));
@@ -384,6 +428,7 @@
 
           <div class="section">
             <h3>${kind === 'post' ? 'Entry' : 'Brief'} <small>Build it from blocks. Add photos between paragraphs.</small></h3>
+            ${AD.pastePanel(K.label)}
             <div class="blocks" id="blocks"></div>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <button type="button" class="btn btn--ghost btn--sm" id="addBlock">+ Add block</button>
@@ -424,9 +469,14 @@
     if (p[K.cover]) ctx.crop.load(AD.asset(p[K.cover]));
     ctx.extra = K.wireExtra(p, changed);
     ctx.blocks = blocks;
-    const blockUi = AD.blockEditor($('#blocks'), blocks, changed);
+    const fillFromPaste = {
+      title: t => { if (!form.title.value.trim()) { form.title.value = t; read(); } },
+      excerpt: form.excerpt ? e => { if (!form.excerpt.value.trim()) { form.excerpt.value = e; read(); } } : null,
+    };
+    const blockUi = AD.blockEditor($('#blocks'), blocks, changed, fillFromPaste);
     $('#addBlock').addEventListener('click', () => blockUi.add('paragraph'));
     $('#addPhoto').addEventListener('click', () => blockUi.add('photo'));
+    AD.wirePastePanel(form, blocks, blockUi, changed, fillFromPaste);
 
     const read = () => {
       p.title = form.title.value.trim();
@@ -438,7 +488,7 @@
       $('#previewUrl').textContent = 'seventhboar.com' + K.prefix + (p.id || p.slug || 'new');
     };
     form.slug.addEventListener('input', () => { slugTouched = true; });
-    form.addEventListener('input', e => { if (e.target.closest('.blocks, .crop, .client-links [data-on]')) return; read(); changed(); });
+    form.addEventListener('input', e => { if (e.target.closest('.blocks, .crop, .paste, .client-links [data-on]')) return; read(); changed(); });
     form.addEventListener('change', e => { if (e.target.closest('.blocks')) return; read(); changed(); });
     $('#status').addEventListener('click', e => {
       const b = e.target.closest('button'); if (!b) return;

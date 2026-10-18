@@ -97,6 +97,16 @@ supabase functions deploy request-update --no-verify-jwt
 ```
 and re-run `supabase/schema.sql` (it adds the requests table). Project emails (the notification to you, the customer's confirmation and progress updates) are sent from their own address: `supabase secrets set "ORDERS_EMAIL_FROM=Seventh Boar Orders <orders@seventhboar.com>"`, while the mailing list keeps using `EMAIL_FROM` (news@). To send the notification to a different inbox, `supabase secrets set ADMIN_EMAIL=someone@example.com`. `tools/email-preview.html` shows all the emails.
 
+## Rebrand notice (Seventh Boar is now SPXTR Development)
+
+**Homepage & settings → Rebrand notice** has three independent switches, saved with the Save button:
+a **splash screen** on a visitor's first page (once per visit, with "Visit the new site" / "Stay on this site"),
+a **notice bar on every page** plus a note in the footer, and the **welcome page** (`/hello/`, the business-card QR code)
+which says so, counts down, then redirects. Turn all three off to remove the notice completely. It's on by default,
+so it works as soon as the site is pushed, and it never shows in the admin's live preview, on `/track/` links (the splash
+only), or on the new site itself, so two sites can't redirect to each other. The welcome page redirects to
+`https://spxtrdevelopment.com/hello/` unless you change "Welcome page goes to".
+
 ## Trying the admin without touching the database
 
 On your own computer only: run `python3 -m http.server 8000` in this folder, open

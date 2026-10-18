@@ -98,6 +98,15 @@ const DEFAULT_SETTINGS = {
     text: "We're building it right now. Drop your email and you'll be first through the gate when it opens.",
     showEmail: true,
   },
+  // The rebrand notice (Admin -> Homepage & settings -> Rebrand notice): a splash on first visit, a bar on
+  // every page, and the /hello/ welcome page (the business-card QR code) counting down then redirecting.
+  // Each part has its own switch; turning all three off removes the notice completely.
+  rebrand: {
+    splash: true, banner: true, helloRedirect: true, helloSeconds: 6,
+    name: 'SPXTR Development', url: 'https://spxtrdevelopment.com', helloUrl: 'https://spxtrdevelopment.com/hello/',
+    title: "We've rebranded.",
+    text: 'Seventh Boar Development is now SPXTR Development. Same studio, same work, new name. Our new home is spxtrdevelopment.com.',
+  },
   socials: [
     { label: 'Instagram', url: 'https://instagram.com/seventhboardevelopment' },
     { label: 'TikTok', url: 'https://www.tiktok.com/@seventhboardevelopment' },

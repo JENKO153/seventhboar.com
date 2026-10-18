@@ -204,6 +204,25 @@
           </div>
 
           <div class="section">
+            <h3>Rebrand notice <small>Tells visitors the studio is now ${esc(s.rebrand.name)}</small></h3>
+            <p class="hint" style="margin:0">Three parts, each with its own switch. They save with the Save button at the bottom, and the live preview never shows them. Nothing shows on the new site itself.</p>
+            <label class="toggle"><input type="checkbox" name="rbSplash" ${s.rebrand.splash ? 'checked' : ''}>Splash screen on a visitor's first page</label>
+            <span class="hint" style="margin:-8px 0 0">Once per visit, with "Visit the new site" and "Stay on this site" buttons. Never on order-tracking links.</span>
+            <label class="toggle"><input type="checkbox" name="rbBanner" ${s.rebrand.banner ? 'checked' : ''}>Notice bar on every page, and a note in the footer</label>
+            <label class="toggle"><input type="checkbox" name="rbHello" ${s.rebrand.helloRedirect ? 'checked' : ''}>Welcome page (the business-card QR code) says so, then redirects</label>
+            <div class="field-row">
+              <label>New name<input name="rbName" maxlength="60" value="${esc(s.rebrand.name)}"></label>
+              <label>Redirect after <span class="hint">seconds, 2 to 30</span><input name="rbSeconds" type="number" min="2" max="30" value="${esc(s.rebrand.helloSeconds)}"></label>
+            </div>
+            <div class="field-row">
+              <label>New website<input name="rbUrl" maxlength="200" placeholder="https://" value="${esc(s.rebrand.url)}"></label>
+              <label>Welcome page goes to <span class="hint">leave empty to use the new website</span><input name="rbHelloUrl" maxlength="200" placeholder="https://" value="${esc(s.rebrand.helloUrl)}"></label>
+            </div>
+            <label>Headline<input name="rbTitle" maxlength="60" value="${esc(s.rebrand.title)}"></label>
+            <label>Message<textarea name="rbText" rows="3" maxlength="300" style="min-height:80px">${esc(s.rebrand.text)}</textarea></label>
+          </div>
+
+          <div class="section">
             <h3>Header</h3>
             <label>Status chip <span class="hint">The small tag in the header. Leave empty to hide it.</span><input name="status" maxlength="40" value="${esc(s.status)}"></label>
           </div>
@@ -424,6 +443,9 @@
       Object.assign(s.footer, { tagline: f.ftTagline.value, email: f.ftEmail.value.trim(), blurb: f.ftBlurb.value });
       Object.assign(s.hero, { line1: f.line1.value.trim(), line2: f.line2.value.trim(), eyebrow: f.eyebrow.value.trim(), subtitle: f.subtitle.value.trim(), cta: f.cta.value.trim(), ctaUrl: f.ctaUrl.value.trim(), cta2: f.cta2.value.trim(), cta2Url: f.cta2Url.value.trim() });
       Object.assign(s.comingSoon, { eyebrow: f.csEyebrow.value.trim(), title: f.csTitle.value.trim(), text: f.csText.value.trim(), showEmail: f.csEmail.checked });
+      Object.assign(s.rebrand, { splash: f.rbSplash.checked, banner: f.rbBanner.checked, helloRedirect: f.rbHello.checked,
+        helloSeconds: Math.max(2, Math.min(30, Math.round(+f.rbSeconds.value) || 6)), name: f.rbName.value.trim(), url: f.rbUrl.value.trim(),
+        helloUrl: f.rbHelloUrl.value.trim(), title: f.rbTitle.value.trim(), text: f.rbText.value.trim() });
       Object.assign(s.release, { show: f.evShow.checked, kind: f.evKind.value === 'event' ? 'event' : 'release', name: f.evName.value.trim(), round: f.evRound.value.trim(),
         place: f.evPlace.value.trim(), date: f.evDate.value, blurb: f.evBlurb.value.trim(), ctaText: f.evCta.value.trim(), ctaUrl: f.evUrl.value.trim() });
     };
@@ -466,6 +488,9 @@
       e.preventDefault();
       read();
       if (!s.hero.line1) return AD.toast('The headline needs at least line 1', true);
+      const rb = s.rebrand;
+      if ((rb.splash || rb.banner || rb.helloRedirect) && !/^https:\/\/[^\s]+$/i.test(rb.url)) return AD.toast('The new website address must start with https://', true);
+      if (rb.helloUrl && !/^https:\/\/[^\s]+$/i.test(rb.helloUrl)) return AD.toast('The welcome page address must start with https://', true);
       const before = [AD.DATA.settings.hero.image, AD.DATA.settings.release.image, ...AD.DATA.settings.build.images].filter(Boolean);
       const ok = await AD.withWrite('Enter your admin password to update the homepage.', async () => {
         const img = hero.get() ? await AD.uploadOne(hero.get(), 'pages') : '';

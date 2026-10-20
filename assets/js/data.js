@@ -11,6 +11,9 @@ const SITE = Object.freeze({
   short: 'Seventh Boar',
   tagline: 'Built with purpose. Made with bite.',
   email: 'Admin@seventhboar.com',
+  // Where the Contact page form addresses its email, by the reason picked (options marked data-to="support").
+  // Same inbox for now; point it at a support@ address when you have one.
+  supportEmail: 'Admin@seventhboar.com',
   url: 'https://seventhboar.com',
   est: 2026,
   brand: {
@@ -19,6 +22,24 @@ const SITE = Object.freeze({
     giant: '/assets/images/seventh-boar-logo.png',           // transparent: used as the giant footer stencil
   },
 });
+
+// The site's built-in pages that can be switched off in Admin -> Pages. Home can't be.
+//   paths: every address that belongs to the page (hiding Work also hides each project page)
+//   home:  homepage sections that go with it
+//   note:  what hiding it does, shown in the admin
+const SITE_PAGES = Object.freeze([
+  { key: 'work', label: 'Work', path: '/work/', paths: ['/work/', '/project/'], home: ['types', 'latest'],
+    note: 'Also hides every project page and the work sections on the homepage.' },
+  { key: 'services', label: 'Services', path: '/services/', paths: ['/services/'], home: [],
+    note: 'The homepage services section stays; its "All services" link goes.' },
+  { key: 'devlog', label: 'Devlog', path: '/devlog/', paths: ['/devlog/', '/post/'], home: ['devlog'],
+    note: 'Also hides every entry, the RSS link and the homepage devlog section.' },
+  { key: 'about', label: 'About', path: '/about/', paths: ['/about/'], home: [], note: '' },
+  { key: 'contact', label: 'Contact', path: '/contact/', paths: ['/contact/'], home: [],
+    note: 'People can still reach you through the request form and your email.' },
+]);
+// Pages made in Admin -> Pages live at /p/?id=<slug>.
+const customPageUrl = id => `/p/?id=${encodeURIComponent(id)}`;
 
 // What kind of project it is. The keys are what's stored in the database.
 const PROJECT_TYPES = Object.freeze([
@@ -90,6 +111,9 @@ const iconFor = (label, url) => {
 // These are only the starting values, used before anything has been saved.
 const DEFAULT_SETTINGS = {
   theme: { accent: '#97292A' },  // Admin -> Customise
+  // Admin -> Pages: built-in pages switched off, and pages of your own
+  //   custom: [{ id, title, navLabel, intro, image, blocks: [{ style, text, image }], inNav, status }]
+  pages: { hidden: [], custom: [] },
   status: 'Independent Australian studio',
   // The "coming soon" curtain (Admin -> Homepage & settings). The switch itself lives in the database.
   comingSoon: {
@@ -97,15 +121,6 @@ const DEFAULT_SETTINGS = {
     title: 'Something\'s coming.',
     text: "We're building it right now. Drop your email and you'll be first through the gate when it opens.",
     showEmail: true,
-  },
-  // The rebrand notice (Admin -> Homepage & settings -> Rebrand notice): a splash on first visit, a bar on
-  // every page, and the /hello/ welcome page (the business-card QR code) counting down then redirecting.
-  // Each part has its own switch; turning all three off removes the notice completely.
-  rebrand: {
-    splash: true, banner: true, helloRedirect: true, helloSeconds: 6,
-    name: 'SPXTR Development', url: 'https://spxtrdevelopment.com', helloUrl: 'https://spxtrdevelopment.com/hello/',
-    title: "We've rebranded.",
-    text: 'Seventh Boar Development is now SPXTR Development. Same studio, same work, new name. Our new home is spxtrdevelopment.com.',
   },
   socials: [
     { label: 'Instagram', url: 'https://instagram.com/seventhboardevelopment' },

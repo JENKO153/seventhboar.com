@@ -74,6 +74,7 @@ input[type=range] { padding: 0; height: 24px; accent-color: var(--hot); backgrou
 .pill--red { color: var(--red); background: rgba(255,77,64,.1); }
 .pill--accent { color: var(--on-hot); background: var(--hot); }
 .tag { display: inline-block; font: 600 12px var(--cond); letter-spacing: .06em; text-transform: uppercase; padding: 2px 8px; background: var(--surface-2); color: var(--text); margin: 0 4px 4px 0; }
+.tag--ok { background: color-mix(in srgb, var(--ok) 18%, var(--surface-2)); color: var(--ok); }
 
 .notice { padding: 12px 14px; font-size: 14px; border-left: 3px solid; margin-bottom: 16px; }
 .notice--error { color: #FFD2CE; background: rgba(255,77,64,.1); border-color: var(--red); }

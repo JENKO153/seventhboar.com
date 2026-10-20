@@ -23,6 +23,8 @@ const ICON = {
   thumb: '<svg viewBox="0 0 24 24"><path d="M2 22h3V10H2v12zm19.83-11.55c.11-.25.17-.53.17-.83v-1.66C22 6.9 21.1 6 20 6h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L13.17 0 7.59 5.59C7.22 5.95 7 6.45 7 7v10.99c0 1.11.9 2.01 2.01 2.01H17c.83 0 1.54-.5 1.84-1.22l2.99-6.98z"/></svg>',
   rss: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M6.18 17.82a2.18 2.18 0 100 4.36 2.18 2.18 0 000-4.36zM3 3v4c9.4 0 17 7.6 17 17h4C24 12.4 14.6 3 3 3zm0 8v4a10 10 0 0110 10h4A14 14 0 003 11z"/></svg>',
 };
+// "SEVENTH BOAR DEVELOPMENT" spelled out in binary, signed along the bottom of the footer.
+const BINARY_NAME = [...'SEVENTH BOAR DEVELOPMENT'].map(c => c.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
 const socialSvg = name => `<svg viewBox="0 0 24 24"><path d="${SOCIAL_ICON_PATHS[name] || SOCIAL_ICON_PATHS.website}"/></svg>`;
 
 const fmtDate = (d, opts = { day: 'numeric', month: 'short', year: 'numeric' }) => new Date(d).toLocaleDateString('en-AU', opts);
@@ -42,8 +44,19 @@ const App = (() => {
   const cacheSettings = s => { try { localStorage.setItem(CACHE_KEY, JSON.stringify(s)); } catch { /* private mode */ } };
 
   /* ---------------- chrome (header, footer, ticker) ---------------- */
-  const NAV = [['/', 'Home', 'home'], ['/work/', 'Work', 'work'], ['/services/', 'Services', 'services'],
-               ['/devlog/', 'Devlog', 'devlog'], ['/about/', 'About', 'about'], ['/contact/', 'Contact', 'contact']];
+  /* Pages: built-in ones can be switched off in Admin -> Pages, and pages made there join the menu. */
+  const visible = key => !(SETTINGS.pages?.hidden || []).includes(key);
+  const customPages = () => (SETTINGS.pages?.custom || []).filter(p => p && p.id && p.title && p.status === 'published');
+  // The built-in page a path belongs to, if that page is switched off.
+  const hiddenPageFor = path => SITE_PAGES.find(p => !visible(p.key) && p.paths.some(x => path.startsWith(x)));
+  // [address, label, key] for the menu: Home, the visible built-in pages, your pages, then Contact last.
+  function navItems() {
+    const items = [['/', 'Home', 'home'], ...SITE_PAGES.filter(p => p.key !== 'contact' && visible(p.key)).map(p => [p.path, p.label, p.key])];
+    customPages().filter(p => p.inNav !== false).forEach(p => items.push([customPageUrl(p.id), p.navLabel || p.title, 'p:' + p.id]));
+    if (visible('contact')) items.push(['/contact/', 'Contact', 'contact']);
+    return items;
+  }
+  const footerLink = (href, label) => `<li><a href="${esc(href)}">${esc(label)}</a></li>`;
 
   const logoHtml = () => `<a href="/" class="logo" aria-label="${esc(SITE.name)} home">
     <img class="logo__mark" src="${SITE.brand.mark}" alt="" width="44" height="44">
@@ -51,11 +64,12 @@ const App = (() => {
 
   function renderChrome(active = document.body.dataset.page || '') {
     const s = SETTINGS;
-    const sig = JSON.stringify([s.status, s.footer, s.socials, s.rebrand, active]);
+    const sig = JSON.stringify([s.status, s.footer, s.socials, s.pages, active]);
     if (sig === chromeSig) return;
     chromeSig = sig;
     const socials = (s.socials || []).filter(x => x.label && safeLink(x.url));
-    const nav = NAV.map(([h, l, k]) => `<a href="${h}" class="${k === active ? 'active' : ''}"${k === active ? ' aria-current="page"' : ''}>${l}</a>`).join('');
+    const NAV = navItems();
+    const nav = NAV.map(([h, l, k]) => `<a href="${esc(h)}" class="${k === active ? 'active' : ''}"${k === active ? ' aria-current="page"' : ''}>${esc(l)}</a>`).join('');
 
     if (!$('#chrome-top')) { window.sbAccent?.apply(s.theme?.accent); return; }     // a page with its own layout (the welcome page)
     $('#chrome-top').innerHTML = `
@@ -72,12 +86,11 @@ const App = (() => {
       </header>
       <div class="mobile-nav" aria-hidden="true">
         <div class="mobile-nav__top">${logoHtml()}<button class="icon-btn" data-close-menu aria-label="Close menu">${ICON.close}</button></div>
-        ${NAV.map(([h, l]) => `<a class="big" href="${h}">${l}</a>`).join('')}
+        ${NAV.map(([h, l]) => `<a class="big" href="${esc(h)}">${esc(l)}</a>`).join('')}
         <a class="big" href="/request/" style="color:var(--hot-text)">Start a project</a>
       </div>`;
 
     const email = s.footer.email || SITE.email;
-    const rb = Rebrand.info();
     $('#chrome-bottom').innerHTML = `
       <footer class="footer">
         <div class="wrap">
@@ -88,17 +101,17 @@ const App = (() => {
               <p style="max-width:380px;margin:0 0 18px">${esc(s.footer.blurb)}</p>
               <div class="socials">${socials.map(x => `<a href="${esc(safeLink(x.url))}" target="_blank" rel="noopener noreferrer" aria-label="${esc(x.label)}" title="${esc(x.label)}">${socialSvg(iconFor(x.label, x.url))}</a>`).join('')}</div>
             </div>
-            <div><h5>// Explore</h5><ul><li><a href="/work/">Work</a></li><li><a href="/devlog/">Devlog</a></li><li><a href="/services/">Services</a></li></ul></div>
-            <div><h5>// Studio</h5><ul><li><a href="/about/">About</a></li><li><a href="/contact/">Contact</a></li><li><a href="/privacy/">Privacy</a></li></ul></div>
-            <div><h5>// Connect</h5><ul><li><a href="mailto:${esc(email)}">Email</a></li>${socials.map(x => `<li><a href="${esc(safeLink(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.label)}</a></li>`).join('')}<li><a href="/devlog/feed.xml">RSS</a></li></ul></div>
+            <div><h5>// Explore</h5><ul>${[['work', '/work/', 'Work'], ['devlog', '/devlog/', 'Devlog'], ['services', '/services/', 'Services']].filter(([k]) => visible(k)).map(([, h, l]) => footerLink(h, l)).join('')}${customPages().filter(p => p.inNav !== false).map(p => footerLink(customPageUrl(p.id), p.navLabel || p.title)).join('')}</ul></div>
+            <div><h5>// Studio</h5><ul>${[['about', '/about/', 'About'], ['contact', '/contact/', 'Contact']].filter(([k]) => visible(k)).map(([, h, l]) => footerLink(h, l)).join('')}<li><a href="/privacy/">Privacy</a></li></ul></div>
+            <div><h5>// Connect</h5><ul><li><a href="mailto:${esc(email)}">Email</a></li>${socials.map(x => `<li><a href="${esc(safeLink(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.label)}</a></li>`).join('')}${visible('devlog') ? '<li><a href="/devlog/feed.xml">RSS</a></li>' : ''}</ul></div>
           </div>
-          ${rb.live && rb.c.banner ? `<p class="footer__rebrand"><b>${esc(rb.c.title)}</b> ${esc(rb.c.text)} <a href="${esc(rb.url)}">Visit ${esc(rb.host)}</a></p>` : ''}
           <div class="footer__bottom">
             <span>© ${new Date().getFullYear()} ${esc(SITE.name)} · ${esc(s.footer.tagline)}</span>
             <span>${esc(email)}</span>
           </div>
+          <span class="footer__binary" aria-hidden="true">${BINARY_NAME}</span>
         </div>
-        <div class="footer__giant" aria-hidden="true" style="-webkit-mask-image:url('${SITE.brand.giant}');mask-image:url('${SITE.brand.giant}')"></div>
+        <div class="footer__giant" aria-hidden="true" style="-webkit-mask-image:url('${SITE.brand.giant}');mask-image:url('${SITE.brand.giant}')"><span class="giant__liquid"><span class="giant__wave"></span></span></div>
       </footer>
       <div class="toast" role="status">${ICON.check}<span></span></div>`;
 
@@ -178,101 +191,6 @@ const App = (() => {
     $('#leave-preview').addEventListener('click', () => { CMS.forgetPreviewKey?.(); location.href = location.pathname; });
   }
 
-  /* ---------------- rebrand notice ----------------
-     Settings: SETTINGS.rebrand (Admin -> Homepage & settings -> Rebrand notice). Three independent parts:
-     a bar on every page, a splash on a visitor's first page, and the /hello/ welcome page (the business-card
-     QR code), which counts down and then sends people to the new site. It never runs in the admin's live
-     preview, and never on the new site itself, so two sites can't send people back and forth. */
-  const Rebrand = (() => {
-    const SEEN = 'sb_rebrand_seen';
-    let countdown = null, helloDismissed = false, onKey = null;
-
-    const httpsUrl = u => (/^https:\/\//i.test(u || '') ? u : '');
-    const hostOf = u => { try { return new URL(u).hostname; } catch { return ''; } };
-    const seen = () => { try { return sessionStorage.getItem(SEEN) === '1'; } catch { return false; } };
-    const markSeen = () => { try { sessionStorage.setItem(SEEN, '1'); } catch { /* private mode */ } };
-    const isHello = () => document.body.dataset.page === 'hello';
-
-    function info() {
-      const c = SETTINGS.rebrand || {};
-      const url = httpsUrl(c.url);
-      return { c, url, host: hostOf(url), live: !PREVIEW && !!url && hostOf(url) !== location.hostname };
-    }
-
-    function removeSplash() {
-      clearInterval(countdown); countdown = null;
-      $('#rebrand-splash')?.remove();
-      document.body.classList.remove('rebrand-open');
-      if (onKey) { document.removeEventListener('keydown', onKey); onKey = null; }
-    }
-
-    function showSplash({ c, url, host }, hello) {
-      if ($('#rebrand-splash')) {          // already up (from the saved settings): bring the wording up to date
-        $('#rebrand-title').textContent = c.title;
-        $('.rebrand-splash__box p').textContent = c.text;
-        $('.rebrand-splash__names b').textContent = c.name;
-        return;
-      }
-      const target = hello ? (httpsUrl(c.helloUrl) || url) : url;
-      document.body.insertAdjacentHTML('beforeend', `
-        <div class="rebrand-splash" id="rebrand-splash" role="dialog" aria-modal="true" aria-labelledby="rebrand-title">
-          <div class="rebrand-splash__box">
-            <img class="rebrand-splash__mark" src="${SITE.brand.mark}" alt="">
-            <div class="rebrand-splash__names"><s>${esc(SITE.name)}</s> &rarr; <b>${esc(c.name)}</b></div>
-            <h2 class="display" id="rebrand-title">${esc(c.title)}</h2>
-            <p>${esc(c.text)}</p>
-            ${hello ? '<div class="rebrand-splash__count" id="rebrand-count" aria-live="polite"></div>' : ''}
-            <div class="rebrand-splash__actions">
-              <a class="btn" id="rebrand-go" href="${esc(target)}">${hello ? 'Take me there now' : `Visit ${esc(host)}`}</a>
-              <button class="btn btn--ghost" type="button" id="rebrand-stay">${hello ? 'Stay on this page' : 'Stay on this site'}</button>
-            </div>
-          </div>
-        </div>`);
-      document.body.classList.add('rebrand-open');
-      const go = $('#rebrand-go'), stay = $('#rebrand-stay');
-      go.focus();
-      const dismiss = () => { if (hello) helloDismissed = true; else markSeen(); removeSplash(); };
-      stay.addEventListener('click', dismiss);
-      if (!hello) go.addEventListener('click', markSeen);
-      onKey = e => {
-        if (e.key === 'Escape') dismiss();
-        else if (e.key === 'Tab') {      // keep focus inside the dialog
-          if (e.shiftKey && document.activeElement === go) { e.preventDefault(); stay.focus(); }
-          else if (!e.shiftKey && document.activeElement === stay) { e.preventDefault(); go.focus(); }
-        }
-      };
-      document.addEventListener('keydown', onKey);
-      if (hello) {
-        let left = Math.max(2, Math.min(30, Math.round(+c.helloSeconds) || 6));
-        const count = $('#rebrand-count');
-        const tick = () => { count.textContent = `Taking you there in ${left}…`; };
-        tick();
-        countdown = setInterval(() => {
-          left -= 1;
-          if (left <= 0) { clearInterval(countdown); countdown = null; location.replace(target); } else tick();
-        }, 1000);
-      }
-    }
-
-    // Brings the page in line with the current settings. Safe to call again and again (the first
-    // call uses the last settings this browser saw, the next one the fresh ones).
-    function sync() {
-      const r = info(), { c } = r;
-      const bar = $('#rebrand-bar');
-      if (r.live && c.banner) {
-        const html = `${esc(c.title)} We're now <b>${esc(c.name)}</b> <a href="${esc(r.url)}">Visit ${esc(r.host)} &rarr;</a>`;
-        if (bar) bar.innerHTML = html;
-        else document.body.insertAdjacentHTML('afterbegin', `<div class="rebrand-bar" id="rebrand-bar" role="region" aria-label="Rebrand notice">${html}</div>`);
-      } else bar?.remove();
-
-      const wantSplash = r.live && (isHello() ? c.helloRedirect && !helloDismissed
-        : c.splash && !seen() && !/^\/track\//.test(location.pathname));   // the tracker link in customers' emails opens straight to their order
-      if (wantSplash) showSplash(r, isHello()); else removeSplash();
-    }
-
-    return { info, sync };
-  })();
-
   /* ---------------- admin live preview ----------------
      The admin loads these pages in an iframe with ?preview and posts unsaved drafts in.
      Only messages from this same site, sent by the parent window, are accepted. */
@@ -309,36 +227,68 @@ const App = (() => {
   /* ---------------- boot ---------------- */
   // Every page calls this first. It draws the header/footer straight away (from the last
   // settings this browser saw), then loads the content and returns it.
+  // Lifts the loading screen. A timer (not requestAnimationFrame, which background tabs pause) lets the
+  // page's own script draw its content first.
+  const shown = () => setTimeout(() => document.documentElement.classList.remove('is-loading'), 30);
+
   async function boot(active) {
+    if (PREVIEW) document.documentElement.classList.remove('is-loading');   // the admin's live preview
     if (/\/index\.html$/.test(location.pathname) && /^https?:$/.test(location.protocol)) {
       history.replaceState(null, '', location.pathname.replace(/index\.html$/, '') + location.search + location.hash);
     }
     if (active) document.body.dataset.page = active;
-    const cached = cachedSettings();
-    SETTINGS = cached || SETTINGS;
+    SETTINGS = cachedSettings() || SETTINGS;
     renderChrome(active);
     wireContactForm();
-    // The rebrand notice goes up before the content loads when this browser has seen the settings
-    // before (so there's no flash of the old page), and always on the welcome page, so the QR code
-    // redirects even if the database is slow.
-    if (cached || active === 'hello') Rebrand.sync();
     let data;
     try {
       data = PREVIEW ? await previewData() : await CMS.loadPublic();
     } catch (err) {
       console.error(err);
-      Rebrand.sync();
       document.body.insertAdjacentHTML('afterbegin', '<div class="preview-problem">The site is having trouble loading. Please refresh in a moment.</div>');
+      shown();
       return { settings: SETTINGS, posts: [], projects: [], failed: true };
     }
     SETTINGS = data.settings;
     // Closed to the public: the database held the content back, so there's nothing to show but the curtain.
-    if (data.locked) { showComingSoon(); await new Promise(() => {}); }
+    if (data.locked) { showComingSoon(); shown(); await new Promise(() => {}); }
     if (data.comingSoon) previewBar();
     if (!PREVIEW) cacheSettings(SETTINGS);
     renderChrome(active);
-    Rebrand.sync();
+    // A page switched off in Admin -> Pages: say so instead of drawing it (the admin's own preview still shows it).
+    const off = !PREVIEW && hiddenPageFor(location.pathname);
+    if (off) { showUnavailable(); shown(); await new Promise(() => {}); }
+    hideLinksToHiddenPages();
+    shown();
     return data;
+  }
+
+  function showUnavailable() {
+    document.title = `Page not available | ${SITE.name}`;
+    document.head.insertAdjacentHTML('beforeend', '<meta name="robots" content="noindex">');
+    const main = $('#main');
+    if (!main) return;
+    main.innerHTML = `
+      <div class="page-head"><span class="corners"></span><div class="wrap">
+        <div class="crumbs"><a href="/">Home</a></div>
+        <h1 class="display">This page isn't<br><em>available.</em></h1>
+        <p class="lead">It's switched off for now. Head back to the homepage, or tell us what you're after.</p>
+        <div class="page-head__actions"><a class="btn" href="/">Back to home</a><a class="btn btn--ghost" href="/request/">Start a project</a></div>
+      </div></div>`;
+  }
+
+  // Links in the page itself (buttons, "see all" links, cards) that point at a switched-off page are
+  // hidden, including ones drawn later from the database.
+  function hideLinksToHiddenPages() {
+    if (PREVIEW || !SITE_PAGES.some(p => !visible(p.key))) return;
+    const main = $('#main');
+    if (!main) return;
+    const sweep = () => $$('a[href]', main).forEach(a => {
+      const url = new URL(a.getAttribute('href'), location.href);
+      if (url.origin === location.origin && hiddenPageFor(url.pathname)) a.hidden = true;
+    });
+    sweep();
+    new MutationObserver(sweep).observe(main, { childList: true, subtree: true });
   }
 
   // The contact page's form opens an email draft addressed to the studio.
@@ -352,7 +302,9 @@ const App = (() => {
       const head = [`Name: ${f.get('name') || ''}`, `Email: ${f.get('email') || ''}`, f.get('company') ? `Company: ${f.get('company')}` : '',
         f.get('reason') ? `Reason: ${f.get('reason')}` : ''].filter(Boolean).join('\n');
       const body = `${head}\n\n${f.get('message') || ''}`;
-      location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(f.get('subject') || 'Website contact')}&body=${encodeURIComponent(body)}`;
+      // Existing-client help and site feedback go to support; new work and everything else to admin.
+      const to = form.querySelector('[name="reason"]')?.selectedOptions[0]?.dataset.to === 'support' ? SITE.supportEmail : SITE.email;
+      location.href = `mailto:${to}?subject=${encodeURIComponent(f.get('subject') || 'Website contact')}&body=${encodeURIComponent(body)}`;
     });
   }
 
@@ -417,5 +369,5 @@ const App = (() => {
       </article>`).join('');
   }
 
-  return { boot, renderChrome, toast, Cards, onPreview, previewBar, servicesHtml, pricingHtml };
+  return { boot, renderChrome, toast, Cards, onPreview, previewBar, servicesHtml, pricingHtml, visible, customPages };
 })();

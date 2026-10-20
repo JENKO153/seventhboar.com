@@ -4,21 +4,19 @@
 Run on a schedule by .github/workflows/update-feed.yml -- keeps the RSS feed
 (what a newsletter service polls to auto-email new devlog posts) in sync
 with a site that otherwise has no build step. Uses the same public anon key
-already embedded client-side in assets/js/cms.js (read-only, RLS-gated).
+already embedded client-side in assets/js/config.js (read-only, RLS-gated).
 """
 import datetime
 import json
 import os
+import re
 import urllib.request
 import xml.sax.saxutils as saxutils
 
-SUPABASE_URL = "https://jkougveywojjypwcjbmi.supabase.co"
-SUPABASE_ANON_KEY = (
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
-    "eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imprb3VndmV5d29qanlwd2NqYm1pIiwicm9sZSI6"
-    "ImFub24iLCJpYXQiOjE3ODczNjg2NzAsImV4cCI6MjEwMjk0NDY3MH0."
-    "t0elEbA9tefhSrC3Woq97c_3dl8ecpwXpMRyD78O1zU"
-)
+# The public URL and anon key live in one place: assets/js/config.js.
+_CFG = open(os.path.join(os.path.dirname(__file__), "..", "assets", "js", "config.js")).read()
+SUPABASE_URL = re.search(r"supabaseUrl:\s*'([^']+)'", _CFG).group(1)
+SUPABASE_ANON_KEY = re.search(r"supabaseKey:\s*'([^']+)'", _CFG).group(1)
 SITE_URL = "https://seventhboar.com"
 FEED_PATH = os.path.join(os.path.dirname(__file__), "..", "devlog", "feed.xml")
 

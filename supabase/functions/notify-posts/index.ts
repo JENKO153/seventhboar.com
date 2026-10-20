@@ -12,7 +12,7 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { clean, cors, env, json, originAllowed, serviceKey, siteUrl } from '../_shared/http.ts';
-import { emailConfigured, loadAccent, newPostEmail, sendBatch } from '../_shared/email.ts';
+import { emailConfigured, loadAccent, newPostEmail, sendBatch, supportEmail } from '../_shared/email.ts';
 
 const db = createClient(env('SUPABASE_URL'), serviceKey(), { auth: { persistSession: false } });
 const unsubUrl = (token: string) => `${env('SUPABASE_URL')}/functions/v1/subscribe?unsub=${token}`;
@@ -75,7 +75,7 @@ Deno.serve(async req => {
       const { data: subs } = await db.from('subscribers').select('email, unsub_token').limit(5000);
       const mails = (subs ?? []).map(s => {
         const m = newPostEmail(site, unsubUrl(s.unsub_token), post);
-        return { to: s.email, ...m, unsubUrl: unsubUrl(s.unsub_token) };
+        return { to: s.email, ...m, unsubUrl: unsubUrl(s.unsub_token), replyTo: supportEmail() };
       });
       try {
         const sent = mails.length ? await sendBatch(mails) : 0;

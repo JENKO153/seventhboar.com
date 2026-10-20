@@ -1,2 +1,7 @@
 supabase/.temp/
 .DS_Store
+
+# Local secrets: never commit
+supabase/.db-password
+supabase/.cron-secret
+.claude/

@@ -79,7 +79,7 @@
     renderEvent();
     txt('#best-eyebrow', s.devlogSection.eyebrow);
     txt('#best-title', s.devlogSection.title);
-    $('#devlog').hidden = !posts.length;
+    $('#devlog').hidden = !posts.length || !App.visible('devlog');
     renderDevlogTabs(posts);
     renderDevlog($('#best-tabs .tab.active')?.dataset.c || 'All');
     renderBuild();
@@ -130,7 +130,7 @@
       const list = projects.filter(p => (p.categories || []).includes(type.key));
       return list.length ? { type, count: list.length, cover: list[0].cardBanner || list[0].banner } : null;
     }).filter(Boolean);
-    $('#types').hidden = !tiles.length;
+    $('#types').hidden = !tiles.length || !App.visible('work');
     txt('#types-eyebrow', t.eyebrow);
     txt('#types-title', t.title);
     txt('#types-link', t.link);
@@ -144,7 +144,7 @@
   // Sec. 04: featured work first, then the newest.
   function renderLatest(projects) {
     const l = SETTINGS.latestSection;
-    $('#latest').hidden = !projects.length;
+    $('#latest').hidden = !projects.length || !App.visible('work');
     txt('#latest-eyebrow', l.eyebrow);
     txt('#latest-title', l.title);
     txt('#latest-intro', l.intro);

@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="is-loading">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0A0A0A">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co; frame-src 'self'; base-uri 'none'; object-src 'none'">
-  <title>Contact | Seventh Boar Development</title>
-  <meta name="description" content="Contact Seventh Boar Development about a website, an app request, or any general business enquiry.">
+  <title>Contact | Web Design Brisbane | Seventh Boar Development</title>
+  <meta name="description" content="Talk to Seventh Boar Development about a new website, help with your existing site, or an app idea. Based in Brisbane, working with clients Australia-wide.">
   <link rel="canonical" href="https://seventhboar.com/contact/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Seventh Boar Development">
-  <meta property="og:title" content="Contact | Seventh Boar Development">
-  <meta property="og:description" content="Contact Seventh Boar Development about a website, an app request, or any general business enquiry.">
+  <meta property="og:title" content="Contact | Web Design Brisbane | Seventh Boar Development">
+  <meta property="og:description" content="Talk to Seventh Boar Development about a new website, help with your existing site, or an app idea. Based in Brisbane, working with clients Australia-wide.">
   <meta property="og:url" content="https://seventhboar.com/contact/">
   <meta property="og:image" content="https://seventhboar.com/assets/images/Generic_Banner.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Contact | Seventh Boar Development">
-  <meta name="twitter:description" content="Contact Seventh Boar Development about a website, an app request, or any general business enquiry.">
+  <meta name="twitter:title" content="Contact | Web Design Brisbane | Seventh Boar Development">
+  <meta name="twitter:description" content="Talk to Seventh Boar Development about a new website, help with your existing site, or an app idea. Based in Brisbane, working with clients Australia-wide.">
   <meta name="twitter:image" content="https://seventhboar.com/assets/images/Generic_Banner.png">
   <link rel="alternate" type="application/rss+xml" title="Seventh Boar Development — Devlog" href="/devlog/feed.xml">
   <link rel="icon" type="image/png" href="/assets/images/seventh-boar-mark.png" media="(prefers-color-scheme: light)">
@@ -26,6 +26,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800;900&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css">
+  <script src="/assets/js/matrix.js" defer></script>
+  <script src="/assets/js/motion.js" defer></script>
   <script src="/assets/js/accent.js"></script>
 </head>
 <body data-page="contact">
@@ -63,9 +65,10 @@
               <select id="reason" name="reason">
                 <option>Website enquiry</option>
                 <option>App request</option>
+                <option data-to="support">Help with my existing website</option>
                 <option>General enquiry</option>
                 <option>Press or partnership</option>
-                <option>Feedback about this website</option>
+                <option data-to="support">Feedback about this website</option>
                 <option>Other</option>
               </select>
             </label>

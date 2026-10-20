@@ -37,6 +37,7 @@ database needs its upgrade**.
 | Orders | Website and app requests: accept or decline, move through the stages, email the customer, private notes |
 | Subscribers | Newsletter sign-ups (download CSV); they get a welcome email and new-entry emails (see Emails) |
 | Team & clients | People, client quotes, photo strip, social links |
+| Pages | Switch the built-in pages (Work, Services, Devlog, About, Contact) on and off, and make pages of your own (see Pages) |
 | Homepage & settings | Hero, **services**, section wording, spec table, call-to-action, footer, countdown, **Coming soon mode** |
 | Customise | The accent colour for the whole site |
 | Security & activity | Your account, sign out everywhere, the change log |
@@ -97,15 +98,27 @@ supabase functions deploy request-update --no-verify-jwt
 ```
 and re-run `supabase/schema.sql` (it adds the requests table). Project emails (the notification to you, the customer's confirmation and progress updates) are sent from their own address: `supabase secrets set "ORDERS_EMAIL_FROM=Seventh Boar Orders <orders@seventhboar.com>"`, while the mailing list keeps using `EMAIL_FROM` (news@). To send the notification to a different inbox, `supabase secrets set ADMIN_EMAIL=someone@example.com`. `tools/email-preview.html` shows all the emails.
 
-## Rebrand notice (Seventh Boar is now SPXTR Development)
+## Pages, motion and email routing (ported from the SPXTR Development site)
 
-**Homepage & settings → Rebrand notice** has three independent switches, saved with the Save button:
-a **splash screen** on a visitor's first page (once per visit, with "Visit the new site" / "Stay on this site"),
-a **notice bar on every page** plus a note in the footer, and the **welcome page** (`/hello/`, the business-card QR code)
-which says so, counts down, then redirects. Turn all three off to remove the notice completely. It's on by default,
-so it works as soon as the site is pushed, and it never shows in the admin's live preview, on `/track/` links (the splash
-only), or on the new site itself, so two sites can't redirect to each other. The welcome page redirects to
-`https://spxtrdevelopment.com/hello/` unless you change "Welcome page goes to".
+**Pages** (admin → Pages). The five built-in pages each have a Showing / Hidden switch: a hidden page leaves the menu,
+footer, sitemap and the homepage sections that go with it, and anyone going to its address is told it isn't available.
+**+ New page** makes a page of your own (an FAQ, hosting plans…) at `/p/?id=<name>`, built with the same block builder
+and "Paste your whole page" box as the devlog, with an optional header photo, a live preview, and a switch for whether it
+sits in the menu and footer. Pages live in the site settings, so they save with the usual password check. The hourly
+sitemap job leaves out hidden pages and adds live custom ones.
+
+**Motion.** `assets/js/motion.js` (headlines that rise word by word, labels that decode from binary, tilting cards,
+magnetic buttons, a reticle cursor, a progress line, parallax, and the loading screen between pages) and
+`assets/js/matrix.js` (falling binary behind the hero, page heads and footer) load on every public page. Buttons and
+the giant footer logo fill with a wave on hover (CSS only). None of it runs with "reduce motion" on, the cursor effects
+only run with a mouse, and the admin's live preview gets none of it. To switch it off, delete the two `<script ... defer>`
+lines for `matrix.js` / `motion.js` (the loader class on `<html>` is lifted by `site.js`, so nothing else is needed).
+
+**Email routing.** Request alerts go to `ADMIN_EMAIL` (default Admin@seventhboar.com). Replies to a customer's request
+confirmation go to the same address; order-progress updates and the mailing-list emails reply to `SUPPORT_EMAIL`, which
+falls back to the admin address until you set it: `supabase secrets set SUPPORT_EMAIL=support@seventhboar.com`. The
+Contact page's "Help with my existing website" and "Feedback" reasons email `SITE.supportEmail` (assets/js/data.js).
+After changing any of this, redeploy the four functions (`subscribe`, `notify-posts`, `submit-request`, `request-update`).
 
 ## Trying the admin without touching the database
 

@@ -9,7 +9,7 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { clean, cors, env, json, originAllowed, serviceKey, siteUrl } from '../_shared/http.ts';
-import { emailConfigured, loadAccent, sendEmail, welcomeEmail } from '../_shared/email.ts';
+import { emailConfigured, loadAccent, sendEmail, supportEmail, welcomeEmail } from '../_shared/email.ts';
 
 const db = createClient(env('SUPABASE_URL'), serviceKey(), { auth: { persistSession: false } });
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
@@ -87,7 +87,7 @@ Deno.serve(async req => {
       try {
         await loadAccent(db);
         const m = welcomeEmail(siteUrl(), unsubUrl(row.unsub_token));
-        await sendEmail({ to: email, ...m, unsubUrl: unsubUrl(row.unsub_token) });
+        await sendEmail({ to: email, ...m, unsubUrl: unsubUrl(row.unsub_token), replyTo: supportEmail() });
         await db.from('subscribers').update({ welcomed_at: new Date().toISOString() }).eq('id', row.id);
         emailed = true;
       } catch (err) { await noteEmailProblem('Welcome email failed', err); }   // they're on the list either way

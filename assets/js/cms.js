@@ -300,7 +300,7 @@
           });
           body = await res.json().catch(() => ({}));
         } catch { throw new Error('Couldn\'t reach the request service. Check your connection and try again.'); }
-        if (res.status === 404) throw new Error('The request form isn\'t switched on yet. Please email Admin@seventhboar.com.');
+        if (res.status === 404) throw new Error('The request form isn\'t switched on yet. Please email sales@seventhboar.com.');
         if (!res.ok) throw new Error(body?.error || 'Couldn\'t send your request just now. Please try again in a minute.');
         return body;
       },

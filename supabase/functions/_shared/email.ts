@@ -28,9 +28,12 @@ export const ordersFrom = () => Deno.env.get('ORDERS_EMAIL_FROM') || Deno.env.ge
 // Where replies and alerts land, by what they're about:
 //   admin@    new work: request alerts, and replies to a client's request confirmation (quotes, pricing)
 //   support@  people already working with you, and the mailing list: order updates, welcome and devlog emails
-// SUPPORT_EMAIL is optional: until it is set, everything goes to ADMIN_EMAIL (default Admin@seventhboar.com), as before.
+// The three public aliases of the admin mailbox: request alerts still go to the admin address itself; customers are
+// pointed at sales@ (replies to their request confirmation) and info@ (order updates, welcome and devlog emails).
+// Each can be overridden with a secret: ADMIN_EMAIL, SALES_EMAIL, SUPPORT_EMAIL.
 export const adminEmail = () => Deno.env.get('ADMIN_EMAIL') || 'Admin@seventhboar.com';
-export const supportEmail = () => Deno.env.get('SUPPORT_EMAIL') || adminEmail();
+export const salesEmail = () => Deno.env.get('SALES_EMAIL') || 'sales@seventhboar.com';
+export const supportEmail = () => Deno.env.get('SUPPORT_EMAIL') || 'info@seventhboar.com';
 
 // Mailing-list mail carries a one-click unsubscribe (Gmail and Yahoo expect it from senders, and the law
 // does too). One-to-one mail about someone's own request or order doesn't, and is marked as its own

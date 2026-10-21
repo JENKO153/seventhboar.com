@@ -102,7 +102,7 @@ const App = (() => {
         <a class="big" href="/request/" style="color:var(--hot-text)">Start a project</a>
       </div>`;
 
-    const email = s.footer.email || SITE.email;
+    const email = publicEmail(s.footer.email);
     const place = [s.footer.location, s.footer.abn ? `ABN ${s.footer.abn}` : ''].filter(Boolean).join(' · ');
     const call = callLink();
     $('#chrome-bottom').innerHTML = `
@@ -319,8 +319,8 @@ const App = (() => {
       const head = [`Name: ${f.get('name') || ''}`, `Email: ${f.get('email') || ''}`, f.get('company') ? `Company: ${f.get('company')}` : '',
         f.get('reason') ? `Reason: ${f.get('reason')}` : ''].filter(Boolean).join('\n');
       const body = `${head}\n\n${f.get('message') || ''}`;
-      // Existing-client help and site feedback go to support; new work and everything else to admin.
-      const to = form.querySelector('[name="reason"]')?.selectedOptions[0]?.dataset.to === 'support' ? SITE.supportEmail : SITE.email;
+      // New work goes to sales, help with an existing site and feedback to support, everything else to the general address.
+      const to = { sales: SITE.salesEmail, support: SITE.supportEmail }[form.querySelector('[name="reason"]')?.selectedOptions[0]?.dataset.to] || SITE.email;
       location.href = `mailto:${to}?subject=${encodeURIComponent(f.get('subject') || 'Website contact')}&body=${encodeURIComponent(body)}`;
     });
   }

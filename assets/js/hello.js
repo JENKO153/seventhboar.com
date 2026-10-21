@@ -4,9 +4,10 @@
   $('#wl-year').textContent = new Date().getFullYear();
   const data = await App.boot('hello');
   const s = SETTINGS;
-  const email = s.footer.email || SITE.email;
-  $('#wl-email').href = `mailto:${email}`;
-  $('#wl-mail').href = `mailto:${email}`; $('#wl-mail').textContent = email;
+  const email = publicEmail(s.footer.email);          // the saved contact card
+  const sales = SITE.salesEmail;                       // people who scanned the card are mostly new work
+  $('#wl-email').href = `mailto:${sales}`;
+  $('#wl-mail').href = `mailto:${sales}`; $('#wl-mail').textContent = sales;
 
   // What we do
   const sv = s.servicesSection;

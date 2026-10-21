@@ -10,7 +10,7 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { clean, cors, env, json, originAllowed, serviceKey, siteUrl } from '../_shared/http.ts';
-import { adminEmail, emailConfigured, loadAccent, ordersFrom, requestAdminEmail, requestReceivedEmail, sendEmail } from '../_shared/email.ts';
+import { adminEmail, emailConfigured, loadAccent, ordersFrom, requestAdminEmail, requestReceivedEmail, salesEmail, sendEmail } from '../_shared/email.ts';
 
 const db = createClient(env('SUPABASE_URL'), serviceKey(), { auth: { persistSession: false } });
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
@@ -83,7 +83,7 @@ Deno.serve(async req => {
       // To the customer: confirmation + tracking link.
       try {
         const m = requestReceivedEmail(site, saved, trackUrl);
-        await sendEmail({ to: saved.email, ...m, replyTo: adminEmail(), from: ordersFrom() });
+        await sendEmail({ to: saved.email, ...m, replyTo: salesEmail(), from: ordersFrom() });
         emailed = true;
       } catch (err) { await noteEmailProblem(`Request SB-${saved.number}: confirmation email failed`, err); }
     }
@@ -91,6 +91,6 @@ Deno.serve(async req => {
   } catch (err) {
     if (err instanceof Bad) return json({ error: err.message }, 400, headers);
     console.error('submit-request failed', err);
-    return json({ error: 'Couldn\'t send your request just now. Please try again in a minute, or email Admin@seventhboar.com.' }, 502, headers);
+    return json({ error: 'Couldn\'t send your request just now. Please try again in a minute, or email sales@seventhboar.com.' }, 502, headers);
   }
 });

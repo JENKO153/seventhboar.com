@@ -10,10 +10,13 @@ const SITE = Object.freeze({
   name: 'Seventh Boar Development',
   short: 'Seventh Boar',
   tagline: 'Built with purpose. Made with bite.',
-  email: 'Admin@seventhboar.com',
-  // Where the Contact page form addresses its email, by the reason picked (options marked data-to="support").
-  // Same inbox for now; point it at a support@ address when you have one.
-  supportEmail: 'Admin@seventhboar.com',
+  // The addresses the public site shows. They are aliases of the admin mailbox, which is never shown:
+  //   info@   general questions, help with an existing site, feedback, the footer
+  //   sales@  new websites and apps: quotes, the welcome page, the request form's replies
+  email: 'info@seventhboar.com',
+  salesEmail: 'sales@seventhboar.com',
+  // Where the Contact page form addresses its email, by the reason picked (options marked data-to="sales" or "support").
+  supportEmail: 'info@seventhboar.com',
   url: 'https://seventhboar.com',
   est: 2026,
   brand: {
@@ -27,6 +30,9 @@ const SITE = Object.freeze({
 //   paths: every address that belongs to the page (hiding Work also hides each project page)
 //   home:  homepage sections that go with it
 //   note:  what hiding it does, shown in the admin
+// The admin mailbox itself is never shown publicly: a saved footer address of Admin@ shows the general address instead.
+const publicEmail = e => (!e || /^admin@seventhboar\.com$/i.test(e.trim()) ? SITE.email : e.trim());
+
 const SITE_PAGES = Object.freeze([
   { key: 'work', label: 'Work', path: '/work/', paths: ['/work/', '/project/'], home: ['types', 'latest'],
     note: 'Also hides every project page and the work sections on the homepage.' },
@@ -595,7 +601,7 @@ const DEFAULT_SETTINGS = {
   footer: {
     tagline: 'Built with purpose. Made with bite.',
     blurb: 'An independent Australian studio building custom websites for businesses and brands, with apps built on request.',
-    email: 'Admin@seventhboar.com',
+    email: 'info@seventhboar.com',
     abn: '',                              // shown in the footer when filled in (Admin -> Homepage & settings -> Footer)
     location: 'Brisbane, Queensland',
   },

@@ -62,7 +62,7 @@ Until this is set up, sign-ups say "not switched on yet" and nothing is emailed;
    ```
 3. **Secrets** (use your own key and sending address):
    ```bash
-   supabase secrets set RESEND_API_KEY=re_xxx "EMAIL_FROM=Seventh Boar <news@seventhboar.com>" REPLY_TO=Admin@seventhboar.com SITE_URL=https://seventhboar.com
+   supabase secrets set RESEND_API_KEY=re_xxx "EMAIL_FROM=Seventh Boar <news@seventhboar.com>" REPLY_TO=info@seventhboar.com SITE_URL=https://seventhboar.com
    supabase secrets set ALLOWED_ORIGINS=https://www.seventhboar.com   # only if the site is also served on www
    ```
 4. **Deploy the functions:**
@@ -142,10 +142,12 @@ the giant footer logo fill with a wave on hover (CSS only). None of it runs with
 only run with a mouse, and the admin's live preview gets none of it. To switch it off, delete the two `<script ... defer>`
 lines for `matrix.js` / `motion.js` (the loader class on `<html>` is lifted by `site.js`, so nothing else is needed).
 
-**Email routing.** Request alerts go to `ADMIN_EMAIL` (default Admin@seventhboar.com). Replies to a customer's request
-confirmation go to the same address; order-progress updates and the mailing-list emails reply to `SUPPORT_EMAIL`, which
-falls back to the admin address until you set it: `supabase secrets set SUPPORT_EMAIL=support@seventhboar.com`. The
-Contact page's "Help with my existing website" and "Feedback" reasons email `SITE.supportEmail` (assets/js/data.js).
+**Email addresses.** `info@` and `sales@` are aliases of the admin mailbox; the website only ever shows those two.
+`sales@` is for new work: the Contact page's "Email us directly" button and its website/app enquiry reasons, the QR welcome page,
+and the replies to a customer's request confirmation. `info@` is for everything else: the footer, general questions, "help with my
+existing website" and feedback, order updates and the mailing-list emails. Request alerts to you still go to `ADMIN_EMAIL`
+(default Admin@seventhboar.com). The addresses are set in `assets/js/data.js` (`SITE`) and `supabase/functions/_shared/email.ts`
+(secrets `ADMIN_EMAIL`, `SALES_EMAIL`, `SUPPORT_EMAIL` override them). A footer email saved in admin as Admin@ is shown as info@.
 After changing any of this, redeploy the four functions (`subscribe`, `notify-posts`, `submit-request`, `request-update`).
 
 ## Trying the admin without touching the database

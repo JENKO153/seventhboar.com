@@ -12,6 +12,13 @@
   setKind(new URLSearchParams(location.search).get('type') === 'app' ? 'app' : 'website');
   form.addEventListener('change', e => { if (e.target.name === 'kind') setKind(kindNow()); });
 
+  // Optional care plan: the choices come from Admin -> Homepage & settings -> Care plans.
+  const careTiers = ((SETTINGS.care || {}).tiers || []).filter(t => t.name && t.price);
+  if (!careTiers.length || !App.visible('care')) $('#careField').hidden = true;
+  else {
+    $('#careSelect').insertAdjacentHTML('beforeend', careTiers.map(t => `<option value="${esc(App.careKey(t))}">${esc(t.name)} (${esc(t.price)}${esc(t.per || '')})</option>`).join(''));
+  }
+
   // The first step is just name, email and what you need. The rest opens when asked for.
   const more = $('#moreFields'), toggle = $('#moreToggle');
   toggle.addEventListener('click', () => {
@@ -21,6 +28,9 @@
     $('#moreLabel').textContent = open ? 'Hide extra detail' : 'Add more detail';
     if (open) $('input', more).focus();
   });
+  // Arriving from a care plan button (/request/?care=growth): choose it and show the extra detail.
+  const wantCare = new URLSearchParams(location.search).get('care');
+  if (wantCare && [...$('#careSelect').options].some(o => o.value === wantCare)) { $('#careSelect').value = wantCare; toggle.click(); }
 
   const show = (msg, kind) => {
     status.textContent = msg;
@@ -35,6 +45,9 @@
     if (!form.reportValidity()) return;
     const f = new FormData(form);
     const fields = Object.fromEntries(['kind', 'name', 'email', 'phone', 'company', 'current_site', 'timeline', 'brief', 'links'].map(k => [k, String(f.get(k) || '').trim()]));
+    // A chosen care plan travels with the brief, so it shows in the Orders screen and the email to you.
+    const care = form.care.selectedOptions[0];
+    if (care && care.value && care.value !== 'none') fields.brief += `\n\nCare plan interest: ${care.textContent}`;
     btn.disabled = true; btn.textContent = 'Sending…';
     try {
       if (PREVIEW) throw new Error('Preview only: requests are switched off here.');

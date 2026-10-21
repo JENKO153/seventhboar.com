@@ -42,6 +42,10 @@ def day(value):
     return (value or datetime.date.today().isoformat())[:10]
 
 
+# Pages of your own that a built-in page replaces (see SUPERSEDED_PAGES in assets/js/data.js).
+SUPERSEDED = {"care-and-hosting-plans"}
+
+
 def starter_pages():
     """The STARTER_PAGES list in assets/js/data.js (plain JSON between two marker comments)."""
     m = re.search(r"// STARTER_PAGES\nconst STARTER_PAGES = (\[.*?\]);\n// END STARTER_PAGES", (ROOT / "assets" / "js" / "data.js").read_text(), re.S)
@@ -57,7 +61,7 @@ def settings_pages():
     pages = ((rows[0].get("data") if rows else None) or {}).get("pages") or {}
     # Until Admin -> Pages has saved a list of its own, the site shows the starter pages from assets/js/data.js.
     listed = pages["custom"] if "custom" in pages else starter_pages()
-    custom = [p for p in listed or [] if p.get("id") and p.get("status") == "published"]
+    custom = [p for p in listed or [] if p.get("id") and p.get("status") == "published" and p["id"] not in SUPERSEDED]
     return set(pages.get("hidden") or []), custom
 
 
@@ -66,7 +70,7 @@ def main():
     hidden, custom = settings_pages()
     # No lastmod on the fixed pages, so the file only changes when the content does.
     fixed = [("/", "1.0", None), ("/services/", "0.9", "services"), ("/work/", "0.9", "work"), ("/request/", "0.8", None),
-             ("/devlog/", "0.8", "devlog"), ("/about/", "0.6", "about"), ("/contact/", "0.6", "contact"), ("/privacy/", "0.3", None)]
+             ("/devlog/", "0.8", "devlog"), ("/care-plans/", "0.7", "care"), ("/about/", "0.6", "about"), ("/contact/", "0.6", "contact"), ("/privacy/", "0.3", None)]
     urls = [(f"{SITE}{path}", None, pri) for path, pri, key in fixed if key not in hidden]
     if "work" not in hidden:
         urls += [(f"{SITE}/project/?id={p['slug']}", day(p["published_at"]), "0.8") for p in projects]

@@ -46,12 +46,12 @@ const App = (() => {
   /* ---------------- chrome (header, footer, ticker) ---------------- */
   /* Pages: built-in ones can be switched off in Admin -> Pages, and pages made there join the menu. */
   const visible = key => !(SETTINGS.pages?.hidden || []).includes(key);
-  const customPages = () => (SETTINGS.pages?.custom || []).filter(p => p && p.id && p.title && p.status === 'published');
+  const customPages = () => (SETTINGS.pages?.custom || []).filter(p => p && p.id && p.title && p.status === 'published' && !SUPERSEDED_PAGES.includes(p.id));
   // The built-in page a path belongs to, if that page is switched off.
   const hiddenPageFor = path => SITE_PAGES.find(p => !visible(p.key) && p.paths.some(x => path.startsWith(x)));
   // [address, label, key] for the menu: Home, the visible built-in pages, your pages, then Contact last.
   function navItems() {
-    const items = [['/', 'Home', 'home'], ...SITE_PAGES.filter(p => p.key !== 'contact' && visible(p.key)).map(p => [p.path, p.label, p.key])];
+    const items = [['/', 'Home', 'home'], ...SITE_PAGES.filter(p => p.key !== 'contact' && p.menu !== false && visible(p.key)).map(p => [p.path, p.label, p.key])];
     customPages().filter(p => pageWhere(p) === 'both').forEach(p => items.push([customPageUrl(p.id), p.navLabel || p.title, 'p:' + p.id]));
     if (visible('contact')) items.push(['/contact/', 'Contact', 'contact']);
     return items;
@@ -115,7 +115,7 @@ const App = (() => {
               <p style="max-width:380px;margin:0 0 18px">${esc(s.footer.blurb)}</p>
               <div class="socials">${socials.map(x => `<a href="${esc(safeLink(x.url))}" target="_blank" rel="noopener noreferrer" aria-label="${esc(x.label)}" title="${esc(x.label)}">${socialSvg(iconFor(x.label, x.url))}</a>`).join('')}</div>
             </div>
-            <div><h5>// Explore</h5><ul>${[['work', '/work/', 'Work'], ['devlog', '/devlog/', 'Devlog'], ['services', '/services/', 'Services']].filter(([k]) => visible(k)).map(([, h, l]) => footerLink(h, l)).join('')}${customPages().filter(p => pageWhere(p) !== 'none').map(p => footerLink(customPageUrl(p.id), p.navLabel || p.title)).join('')}</ul></div>
+            <div><h5>// Explore</h5><ul>${[['work', '/work/', 'Work'], ['devlog', '/devlog/', 'Devlog'], ['services', '/services/', 'Services'], ['care', '/care-plans/', 'Care plans']].filter(([k]) => visible(k)).map(([, h, l]) => footerLink(h, l)).join('')}${customPages().filter(p => pageWhere(p) !== 'none').map(p => footerLink(customPageUrl(p.id), p.navLabel || p.title)).join('')}</ul></div>
             <div><h5>// Studio</h5><ul>${[['about', '/about/', 'About'], ['contact', '/contact/', 'Contact']].filter(([k]) => visible(k)).map(([, h, l]) => footerLink(h, l)).join('')}<li><a href="/privacy/">Privacy</a></li></ul></div>
             <div><h5>// Connect</h5><ul><li><a href="mailto:${esc(email)}">Email</a></li>${socials.map(x => `<li><a href="${esc(safeLink(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.label)}</a></li>`).join('')}${visible('devlog') ? '<li><a href="/devlog/feed.xml">RSS</a></li>' : ''}</ul></div>
           </div>
@@ -373,6 +373,16 @@ const App = (() => {
     }).join('');
   }
 
+  // A short, stable name for a care plan ("Essentials" -> "essentials"): used in /request/?care=... and the request form.
+  const careKey = t => String(t.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  // "Want it looked after? Optional care plans from $49/month", shown under the prices. '' until care plans exist (or are hidden).
+  function careTeaser() {
+    const tiers = ((SETTINGS.care || {}).tiers || []).filter(t => t.name && t.price);
+    if (!tiers.length || !visible('care')) return '';
+    const first = tiers[0];
+    return `Want it looked after afterwards? <a href="/care-plans/">Optional care plans from ${esc(first.price)}${esc(first.per || '')}</a>.`;
+  }
+
   // The pricing tier cards (Home, Services, and the /hello/ welcome page).
   function pricingHtml(tiers) {
     return (tiers || []).filter(t => t && t.title).map(t => `
@@ -386,5 +396,5 @@ const App = (() => {
       </article>`).join('');
   }
 
-  return { boot, renderChrome, toast, Cards, onPreview, previewBar, servicesHtml, pricingHtml, visible, customPages, fillReach };
+  return { boot, renderChrome, toast, Cards, onPreview, previewBar, servicesHtml, pricingHtml, visible, customPages, fillReach, careKey, careTeaser };
 })();

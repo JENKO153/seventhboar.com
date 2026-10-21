@@ -547,6 +547,12 @@ input, select, textarea { font: inherit; color: inherit; }
 .wl-foot .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 @media (min-width: 900px) { .wl-actions { grid-template-columns: repeat(4, auto); max-width: none; } .wl-actions .btn { width: auto; padding: 0 26px; } .wl-actions .btn:first-child, .wl-actions .btn:last-child:nth-child(4) { grid-column: auto; } }
 
+/* ---------- care plans ---------- */
+.tier__price small { font: 600 15px var(--cond); letter-spacing: .06em; color: var(--muted); margin-left: 4px; text-transform: none; }
+.compare__total { display: block; margin: 0 0 10px; font: 900 26px/1.05 var(--stencil); color: var(--hot-text); text-transform: uppercase; }
+.pricing__care { margin: 10px 0 0; font-size: 15px; color: var(--muted); }
+.pricing__care a { color: var(--hot-text); text-decoration: underline; text-underline-offset: 3px; }
+
 /* ---------- trust + getting in touch ---------- */
 .promise { margin: 0; font: 500 12px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--hot-text); }
 .promise::before { content: ''; display: inline-block; width: 8px; height: 8px; margin-right: 10px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 25%, transparent); }

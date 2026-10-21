@@ -11,6 +11,7 @@
     return;
   }
 
+  if (SUPERSEDED_PAGES.includes(id)) { location.replace('/care-plans/'); return; }   // replaced by the Care plans page
   await App.boot('p:' + id);
   const page = App.customPages().find(p => p.id === id);
   if (!page) return notFound();

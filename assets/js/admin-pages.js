@@ -186,10 +186,29 @@
           </ul>
         </div></div>
       </div>
+      <div class="panel" style="margin-bottom:18px"><div class="panel__head"><h2>Backup</h2></div><div class="panel__body stack">
+        <p class="hint" style="margin:0">Downloads everything in one file: devlog entries and projects (drafts too), the homepage, pages and care plan settings, comments, subscribers and orders. Photos stay in storage and aren't in the file. It includes customers' details, so keep it somewhere private.</p>
+        <div><button class="btn" id="downloadBackup">Download a backup</button></div>
+      </div></div>
       <div class="panel"><div class="panel__head"><h2>Activity log</h2><span class="hint">Last 100 changes</span></div>
         <div class="table-wrap"><table><thead><tr><th>When</th><th>Who</th><th>What</th><th>Item</th></tr></thead><tbody id="log"><tr><td colspan="4" class="muted">Loading…</td></tr></tbody></table></div></div>
       ${demo ? `<div class="panel" style="margin-top:18px"><div class="panel__head"><h2>Demo data</h2><button class="btn btn--danger btn--sm" id="resetDemo">Reset demo data</button></div><div class="panel__body hint">Puts every entry, project and setting back to the starting demo content in this browser.</div></div>` : ''}`;
 
+    $('#downloadBackup').addEventListener('click', async e => {
+      const btn = e.currentTarget; btn.disabled = true; btn.textContent = 'Collecting…';
+      try {
+        await AD.reload();
+        const subscribers = await CMS.loadSubscribers().catch(() => []);
+        const { posts, projects, comments, settings, requests } = AD.DATA;
+        const file = { exportedAt: new Date().toISOString(), site: location.origin, posts, projects, settings, comments, subscribers, requests };
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([JSON.stringify(file, null, 2)], { type: 'application/json' }));
+        a.download = `seventh-boar-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        AD.toast(`Backup downloaded: ${posts.length} entries, ${projects.length} projects, ${requests?.length || 0} orders`);
+      } catch (err) { AD.toast(err.message || 'Could not make the backup', true); }
+      btn.disabled = false; btn.textContent = 'Download a backup';
+    });
     $('#signOutAll').addEventListener('click', async () => {
       if (!confirm('Sign out of the admin on every device, including this one?')) return;
       await CMS.logout(true);

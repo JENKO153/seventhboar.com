@@ -176,6 +176,9 @@
     const pricing = (s.pricing.items || []).map(x => ({ kind: '', ...x, bulletsText: (x.bullets || []).join('\n') }));
     const foldPricing = ({ bulletsText, ...x }) => ({ ...x, bullets: lines(bulletsText || '', 8, 90) });
     const trust = (s.trust.items || []).map(x => ({ ...x }));
+    const careTiers = (s.care.tiers || []).map(x => ({ ...x, bulletsText: (x.bullets || []).join('\n') }));
+    const foldCare = ({ bulletsText, ...x }) => ({ ...x, bullets: lines(bulletsText || '', 8, 90) });
+    const compare = (s.care.compare.items || []).map(x => ({ ...x }));
     const A = AD.ADMIN;
 
     view.innerHTML = `
@@ -202,6 +205,25 @@
               <span id="testResult" class="hint"></span>
             </div>
             <p class="hint" style="margin:0">A new link stops the old one working. People who signed up on the coming soon page are on the <a class="link" href="#subscribers">Subscribers</a> list.</p>
+          </div>
+
+          <div class="section">
+            <h3>Care plans <small>Optional ongoing care: the /care-plans/ page, the request form choice and the line under your prices</small></h3>
+            <div class="field-row">
+              <label>Small text above<input name="cpEyebrow" maxlength="60" value="${esc(s.care.eyebrow)}"></label>
+              <label>Heading<input name="cpTitle" maxlength="60" value="${esc(s.care.title)}"></label>
+            </div>
+            <label>Intro<textarea name="cpIntro" rows="2" maxlength="300" style="min-height:70px">${esc(s.care.intro)}</textarea></label>
+            <div class="items" id="careList"></div>
+            <label>Small print <span class="hint">Extra hours, yearly discount, what isn't included</span><textarea name="cpNote" rows="2" maxlength="400" style="min-height:70px">${esc(s.care.note)}</textarea></label>
+            <h3 style="margin-top:6px">The three-year comparison</h3>
+            <div class="field-row">
+              <label>Small text above<input name="cmEyebrow" maxlength="60" value="${esc(s.care.compare.eyebrow)}"></label>
+              <label>Heading<input name="cmTitle" maxlength="80" value="${esc(s.care.compare.title)}"></label>
+            </div>
+            <label>Intro<textarea name="cmIntro" rows="2" maxlength="300" style="min-height:70px">${esc(s.care.compare.intro)}</textarea></label>
+            <div class="items" id="compareList"></div>
+            <label>Small print<textarea name="cmNote" rows="2" maxlength="400" style="min-height:70px">${esc(s.care.compare.note)}</textarea></label>
           </div>
 
           <div class="section">
@@ -442,6 +464,8 @@
       s.hero.bar = lines(f.heroBar.value, 4, 60);
       Object.assign(s.servicesSection, { show: f.svShow.checked, eyebrow: f.svEyebrow.value, title: f.svTitle.value, intro: f.svIntro.value });
       Object.assign(s.pricing, { eyebrow: f.prEyebrow.value, title: f.prTitle.value, intro: f.prIntro.value, footnote: f.prFoot.value, trust: f.prTrust.value.trim() });
+      Object.assign(s.care, { eyebrow: f.cpEyebrow.value.trim(), title: f.cpTitle.value.trim(), intro: f.cpIntro.value.trim(), note: f.cpNote.value.trim() });
+      Object.assign(s.care.compare, { eyebrow: f.cmEyebrow.value.trim(), title: f.cmTitle.value.trim(), intro: f.cmIntro.value.trim(), note: f.cmNote.value.trim() });
       Object.assign(s.typesSection, { eyebrow: f.tyEyebrow.value, title: f.tyTitle.value, link: f.tyLink.value });
       Object.assign(s.latestSection, { eyebrow: f.ltEyebrow.value, title: f.ltTitle.value, intro: f.ltIntro.value });
       Object.assign(s.devlogSection, { eyebrow: f.dvEyebrow.value, title: f.dvTitle.value });
@@ -472,6 +496,25 @@
           <label>Button text<input name="ctaText" maxlength="30" value="${esc(x.ctaText || '')}" placeholder="Start a website"></label>
           <label>Button address<input name="ctaUrl" maxlength="300" value="${esc(x.ctaUrl || '')}" placeholder="/contact/"></label>
         </div>` });
+    AD.listSection({ host: $('#careList'), list: careTiers, max: 4, photo: false, onChange: changed,
+      blank: { name: '', price: '', per: '/month', tag: '', text: '', bulletsText: '' }, label: (x, i) => x.name || `Plan ${i + 1}`,
+      row: x => `
+        <div class="field-row">
+          <label>Name<input name="name" maxlength="30" value="${esc(x.name || '')}" placeholder="Essentials"></label>
+          <label>Price<input name="price" maxlength="20" value="${esc(x.price || '')}" placeholder="$49"></label>
+          <label>Per<input name="per" maxlength="12" value="${esc(x.per || '')}" placeholder="/month"></label>
+        </div>
+        <label>Small tag <span class="hint">Optional, e.g. Most popular</span><input name="tag" maxlength="30" value="${esc(x.tag || '')}"></label>
+        <label>Description<textarea name="text" rows="2" maxlength="200" style="min-height:70px">${esc(x.text || '')}</textarea></label>
+        <label>What's included <span class="hint">One per line, up to 8</span><textarea name="bulletsText" rows="4" maxlength="600" style="min-height:90px">${esc(x.bulletsText || '')}</textarea></label>` });
+    AD.listSection({ host: $('#compareList'), list: compare, max: 3, photo: false, onChange: changed,
+      blank: { title: '', total: '', text: '' }, label: (x, i) => x.title || `Column ${i + 1}`,
+      row: x => `
+        <div class="field-row">
+          <label>Title<input name="title" maxlength="50" value="${esc(x.title || '')}"></label>
+          <label>Three-year cost<input name="total" maxlength="40" value="${esc(x.total || '')}"></label>
+        </div>
+        <label>Text<textarea name="text" rows="3" maxlength="320" style="min-height:80px">${esc(x.text || '')}</textarea></label>` });
     AD.listSection({ host: $('#trustList'), list: trust, max: 4, photo: false, onChange: changed,
       blank: { title: '', text: '' }, label: (x, i) => x.title || `Point ${i + 1}`,
       row: x => `
@@ -513,6 +556,7 @@
           servicesSection: { ...s.servicesSection, items: services.map(foldService).filter(x => x.title) },
           pricing: { ...s.pricing, items: pricing.map(foldPricing).filter(x => x.title && x.price) },
           trust: { ...s.trust, items: trust.filter(x => x.title) },
+          care: { ...s.care, tiers: careTiers.map(foldCare).filter(x => x.name && x.price), compare: { ...s.care.compare, items: compare.filter(x => x.title) } },
           build: { ...s.build, images: buildSaved.map(x => x.image).filter(Boolean), specs: specs.map(r => ({ label: r.specLabel, value: r.specValue })).filter(r => r.label || r.value) },
         };
         await CMS.saveSettings(next);

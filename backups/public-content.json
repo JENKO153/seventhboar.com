@@ -1,0 +1,1564 @@
+{
+  "note": "Published content only. Photos are not included. Full backups: Admin -> Security & activity.",
+  "posts": [
+    {
+      "author": "Seventh Boar",
+      "card_image_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1788862335922-u1fl9lvum4a.jpg",
+      "category": "Devlog",
+      "content": [
+        {
+          "style": "subtitle",
+          "text": "Building Things Is Supposed to Be the Fun Part"
+        },
+        {
+          "style": "paragraph",
+          "text": "The whole game is eventually about building a settlement. So naturally, before I let myself build anything in the settlement, I had to build the thing that lets you build things. Very efficient use of my time, thank you for asking."
+        },
+        {
+          "style": "paragraph",
+          "text": "The idea is simple enough on paper: craft an item, drag it to your hotbar, select it, and a translucent ghost of whatever you're holding should follow your mouse around, turning green where it's allowed to go and red where it isn't. Click, and it becomes real. Simple."
+        },
+        {
+          "style": "paragraph",
+          "text": "It was not simple. It was, in fact, the single most iterated-on system in this entire devlog, and I say that as someone who once spent three days on a dropdown menu."
+        },
+        {
+          "style": "paragraph",
+          "text": "Getting the ghost to snap to the grid was easy. Getting it to actually check anything — is this solid ground, is there already a tree here, is this the exact tile a rock has been sitting on since the beginning of time — took a proper physics query, because it turns out \"translucent and green\" is not, by itself, a safety feature. Who knew."
+        },
+        {
+          "style": "subtitle",
+          "text": "Teaching a Campfire to Have Moods"
+        },
+        {
+          "style": "paragraph",
+          "text": "Once placement worked, I needed something worth placing, so: a fire pit. Which sounds like a decorative afterthought and turned out to have more internal states than some of my actual characters."
+        },
+        {
+          "style": "paragraph",
+          "text": "Press E, it catches, then goes properly alight. Press E again, it dies down, smoulders for a bit, and goes cold — none of this \"instantly snuff it out like a birthday candle\" business, it gets to have a proper little death scene. Stand close enough and press F, and it'll eat a stick to keep itself going, provided you're standing in the correct invisible box next to it and not the other invisible box that's also there for a different reason. Two separate interaction zones on one small pile of rocks felt slightly absurd to build and is, I'm told, exactly how real campfires work."
+        },
+        {
+          "style": "paragraph",
+          "text": "The flicker took genuine trial and error — my first attempt made the light chase a target value at a constant speed, which looked less like fire and more like a light bulb having a mild disagreement with its dimmer switch. Fresh random target every frame, smoothed with a lerp, and suddenly it looks like it's actually burning instead of politely negotiating its own brightness."
+        },
+        {
+          "image": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1788862336926-t17pcuy2857.jpg",
+          "style": "photo",
+          "text": ""
+        },
+        {
+          "style": "subtitle",
+          "text": "The Shader That Ate My Evening"
+        },
+        {
+          "style": "paragraph",
+          "text": "Here's the part I'm least proud of and most obligated to tell you about."
+        },
+        {
+          "style": "paragraph",
+          "text": "I wanted the placement ghost to tint green or red, so I went to modify the shader every outlined object in the game already shares — one line, multiply the output by the built-in that represents a node's tint. Elegant. Reusable. Definitely correct."
+        },
+        {
+          "style": "paragraph",
+          "text": "It was not correct. That built-in does not exist the way I confidently remembered it existing, and the shader failed in a way that didn't crash, didn't error loudly, and didn't obviously look broken — it just quietly stopped drawing outlines on every single object in the game while making the ghost tint look like it was working purely by accident. I shipped that fix, moved on, and only found out an hour later when I noticed I could no longer see the little glowing highlight on a tree I was standing right next to."
+        },
+        {
+          "style": "paragraph",
+          "text": "The actual fix was almost insultingly small once I stopped trying to be clever: strip the shader off the ghost entirely and let it fall back to Godot's default rendering, which handles tinting correctly on its own. No shader edit required. The shared shader that every other object in the game depends on didn't need to know the placement system existed at all. I miss the version of my evening where I figured that out first."
+        },
+        {
+          "style": "subtitle",
+          "text": "A Brief, Related Inventory Detour"
+        },
+        {
+          "style": "paragraph",
+          "text": "While I was already in a mood to distrust my own assumptions about how Godot positions things on screen, I also finally fixed drag-and-drop in the inventory — you can merge matching stacks now, split one in half with a right-click, and the drag icon is bigger and actually centers on your cursor instead of trailing slightly behind it like it's thinking about something else. That last one turned out to be a coordinate-space mismatch between the game's UI scaling and Godot's built-in drag preview, which is a sentence I did not expect to type today, and which I fixed by not using the built-in preview at all and just moving my own icon to the mouse position every frame like a normal, humble person."
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "Where It Landed"
+        },
+        {
+          "style": "paragraph",
+          "text": "What's actually in the game now: a full build-to-place pipeline with real validity checking, a campfire with more emotional range than it has any right to, and an inventory that finally does the things inventories are supposed to do."
+        },
+        {
+          "style": "paragraph",
+          "text": "Somewhere in there I also relearned, for what feels like the hundredth time, that the fix that feels clever is usually wrong, and the fix that feels almost too simple to bother trying is usually the one that works. You'd think I'd have that tattooed on something by now."
+        },
+        {
+          "image": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1788862338451-howhr9bu2i7.jpg",
+          "style": "photo",
+          "text": ""
+        }
+      ],
+      "created_at": "2026-09-08T10:12:20.900417+00:00",
+      "email_subscribers": false,
+      "emailed_at": null,
+      "excerpt": "\"The most frustrating placement ghost bug\"",
+      "image_focal_x": 50,
+      "image_focal_y": 50,
+      "image_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1788862334161-konndsimfv8.jpg",
+      "published_at": "2026-09-08T10:12:06.782+00:00",
+      "slug": "where-we-return-devlog-003-fire-ghosts-and-one-very-stubborn-shader-mtsig7qh",
+      "status": "published",
+      "title": "Where We Return DEVLOG #003 - Fire, Ghosts, and One Very Stubborn Shader"
+    },
+    {
+      "author": "Seventh Boar",
+      "card_image_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1788662986404-6saci9bbxe.jpg",
+      "category": "Devlog",
+      "content": [
+        {
+          "style": "subtitle",
+          "text": "The Part Not Many Think About"
+        },
+        {
+          "style": "paragraph",
+          "text": "Not many people think about polish until its missing. Players ask for features — a crafting menu, something to chop down. Polish is the thing you only notice when it's missing. This one's mostly about the stuff in between the features — the parts that don't show up on a feature list, but are the entire reason the game feels like a real place instead of a box of art and logic bolted together."
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "One input language, round two"
+        },
+        {
+          "style": "paragraph",
+          "text": "Devlog #001 talked about getting mouse and keyboard to behave like one system instead of two fighting each other. Turns out that wasn't the whole story."
+        },
+        {
+          "style": "paragraph",
+          "text": "Every menu button uses the same trick: hovering with the mouse grabs keyboard focus, so the two inputs never disagree about what's selected. Except once menus started sliding on and off screen — tabs sliding in, panels animating open — a new failure mode showed up. If your mouse happened to be sitting still over a button while the layout moved underneath it, the game read that as \"the mouse just hovered this,\" even though you never touched it. Tab your way carefully to one button, and the still-stationary mouse could silently steal focus back to a completely different one a frame before you pressed Enter. You'd be looking at one button, glowing, focused — and firing whatever the mouse was actually sitting on."
+        },
+        {
+          "image": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1788662987156-vr1nals2k7d.jpg",
+          "style": "photo",
+          "text": "Tree.gd - How we handled the states of the tree during wood cutting and regrowth"
+        },
+        {
+          "style": "paragraph",
+          "text": "The fix leaned on something I didn't know existed until I went looking: Godot tracks actual mouse velocity, not just position. So now a hover only counts if the mouse is actually moving, not just occupying space a slid-in panel happened to land under. Small check, one line, and an entire category of \"why did the wrong button just fire\" bugs disappeared."
+        },
+        {
+          "style": "paragraph",
+          "text": "The other half of this round was giving every menu the same animation vocabulary on purpose rather than by accident — the same slide-in/slide-out for every panel, the same scale-and-tilt hover on every button, the same bounce on every selected slot, whether it's your hotbar, your inventory, or a crafting recipe. None of it is new motion. That's deliberate. A UI that keeps reusing its own language reads as considered even when you can't say exactly why."
+        },
+        {
+          "style": "subtitle",
+          "text": "Giving the world things to say no to"
+        },
+        {
+          "style": "paragraph",
+          "text": "Trees, rocks, and a hemp plant all needed the same basic feeling: hit it, or pull it, and it should know. Not just lose a health number — visibly react, in a way that matches what it actually is.\n\nA tree wobbles and sheds a small burst of falling leaves on every hit, drifting down with just enough gravity to feel weightless rather than dropped. A rock does a quick squash-and-overshoot, reading as crunch rather than sway — a boulder shouldn't wiggle like a sapling. The hemp plant got the strangest treatment: a full second and a half of genuine struggle, rocking back and forth like it's actually resisting being pulled, before popping loose and fading away. Three objects, three completely different personalities, all built from the same small toolkit of tweened rotations and scales, all sharing one underlying interaction system underneath so none of it had to be reinvented per-object."
+        },
+        {
+          "style": "paragraph",
+          "text": "They also all grow back now — properly, with a save file that remembers exactly how far along the regrowth was if you quit mid-timer. Small detail, but a world where every tree you cut down stays cut down forever isn't a world, it's a lawn."
+        },
+        {
+          "style": "subtitle",
+          "text": "The bug that was one wrong word"
+        },
+        {
+          "style": "paragraph",
+          "text": "The hemp plant, specifically, gave me the most infuriating kind of bug: total silence. No rustle when walked through, no response to interacting, no errors, no crashes. Hours checking collision shapes, checking signals, checking layer masks — all of it fine."
+        },
+        {
+          "style": "paragraph",
+          "text": "The actual problem was three lines of setup code sitting one tab-stop too far to the right, quietly nested inside an if block that was true for a completely unrelated reason — so they simply never ran. The fix was deleting one tab character. The lesson, as always with bugs like this: \"nothing is happening\" almost never means something complicated is going wrong. It usually means something was never actually asked to happen in the first place."
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "Making sure the map doesn't look copy-pasted"
+        },
+        {
+          "style": "paragraph",
+          "text": "The last piece was less glamorous but matters just as much: trees, rocks, hemp, and grass are all scattered automatically now, but scattering four things independently means they don't know about each other — a rock can land right on top of a tree if nothing's checking. Grass now explicitly checks the position of every tree, rock, and hemp plant already placed before deciding where a tuft is allowed to grow, so the ground actually respects what's already standing on it instead of clipping through it. It's the kind of thing that, done right, you'll never consciously notice while playing. Done wrong, the whole map reads as slightly fake."
+        },
+        {
+          "style": "subtitle",
+          "text": "Where it landed"
+        },
+        {
+          "style": "paragraph",
+          "text": "Nothing here would make a trailer. A menu that can't mis-click itself anymore. A tree that flinches like it means it. A hemp plant that fights back for a second before giving in. A map that doesn't overlap itself.\n\nSame conclusion as last time — the work that matters most is usually the work nobody's meant to notice at all."
+        },
+        {
+          "image": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1788662988241-thjy7kowve.jpg",
+          "style": "photo",
+          "text": "The Crafting Tab in the User menu - The Biggest achievement this dev cycle"
+        }
+      ],
+      "created_at": "2026-09-06T02:49:49.530177+00:00",
+      "email_subscribers": false,
+      "emailed_at": null,
+      "excerpt": "Polish is the main objective",
+      "image_focal_x": 50,
+      "image_focal_y": 50,
+      "image_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1788662985080-pk772rtkilc.jpg",
+      "published_at": "2026-09-06T02:49:38.246+00:00",
+      "slug": "where-we-return-devlog-002-polish-is-key-mtp7rf9k",
+      "status": "published",
+      "title": "Where We Return DEVLOG #002 - Polish is Key"
+    },
+    {
+      "author": "Seventh Boar",
+      "card_image_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1787398664668-j6ivr9wvhh.jpg",
+      "category": "Devlog",
+      "content": [
+        {
+          "style": "subtitle",
+          "text": "The Menu That Fought Back"
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "Every game needs a front door. I did not expect mine to have quite so many locks."
+        },
+        {
+          "style": "paragraph",
+          "text": "I started simple: a title, a campfire, some fog rolling through the trees, five buttons stacked on the left. Continue, New Game, Settings, the works. Easy. A weekend job, surely."
+        },
+        {
+          "style": "paragraph",
+          "text": "It was not a weekend job."
+        },
+        {
+          "style": "subtitle",
+          "text": "Making the buttons feel alive"
+        },
+        {
+          "style": "paragraph",
+          "text": "The first real decision was small but it set the tone for everything after: keyboard and mouse had to feel like the same input, not two systems bolted together. Tab cycles through buttons — that's free, Godot ships it. But move the mouse over a different button while Tab-focus is somewhere else, and suddenly you've got two things glowing at once, which looks exactly as broken as it sounds. The fix turned out to be almost embarrassingly simple: make hovering a button also grab keyboard focus. One line. Suddenly mouse and keyboard are just two ways of doing the same thing, and the whole system stopped fighting itself."
+        },
+        {
+          "style": "paragraph",
+          "text": "Then I wanted the hover state to reveal rather than just swap textures — a radial wipe expanding from the center of the button, like something waking up. That meant my first real shader: a fragment shader measuring each pixel's distance from center and masking it in or out based on a tweened fill_amount. Watching that first successful wipe animate across a button for the first time was one of those small, disproportionately satisfying wins game dev is built on."
+        },
+        {
+          "style": "paragraph",
+          "text": "Add in some tweened scale-pops on focus, easing curves that don't feel robotic, and the main menu came together faster than I expected. Foolishly, I thought the hard part was over."
+        },
+        {
+          "style": "subtitle",
+          "text": "The dropdown that would not die"
+        },
+        {
+          "style": "paragraph",
+          "text": "Then I built a dropdown for the settings screen — Screen Mode, Resolution, that sort of thing — and the wheels came off."
+        },
+        {
+          "style": "paragraph",
+          "text": "The short version: a dropdown's option list needs to render and accept clicks above whatever's sitting underneath it. Simple in theory. In practice it turned into a multi-day war across half a dozen different approaches, each one fixing exactly the problem in front of it while quietly breaking something two steps back."
+        },
+        {
+          "style": "paragraph",
+          "text": "z_index alone? Fixes rendering, does nothing for input — Godot checks tree order for clicks, not paint order. Blanket-disabling the button underneath with mouse_filter? Fixed that, but now you can't click a different dropdown to switch to it, because I'd disabled every sibling, not just the ones actually being covered. Reparent the panel into its own CanvasLayer so it's guaranteed to render on top of everything? That solved input and rendering — and then silently broke the panel's position, because CanvasLayers don't inherit the same stretch-scaling as the rest of the UI, so a position captured in one coordinate space landed somewhere completely different in another."
+        },
+        {
+          "style": "paragraph",
+          "text": "Eventually the real fix was almost anticlimactic: move the open panel to be the last sibling under a parent that isn't a layout container, so reordering it doesn't also reshuffle anyone's position — just their priority. No CanvasLayer, no mouse-filter juggling, just genuinely understanding that in Godot, tree order controls both what draws on top and what catches your click, and everything else had been working around that fact instead of with it."
+        },
+        {
+          "style": "paragraph",
+          "text": "Somewhere in the middle of all this I also discovered that Godot's ButtonGroup — the thing that makes only one dropdown stay open at a time — deselects other buttons silently, without firing their signal. Which is a delightful little gotcha to discover at 11pm when your dropdown just refuses to close."
+        },
+        {
+          "image": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1787396257762-vi50tpps2gf.jpg",
+          "style": "photo",
+          "text": "Half finished settings panel"
+        },
+        {
+          "style": "subtitle",
+          "text": "Settings that actually remember who they are"
+        },
+        {
+          "style": "paragraph",
+          "text": "Once the UI itself behaved, the real settings system went in surprisingly cleanly by comparison — mostly because by then I'd learned the lesson the dropdown had been trying to teach me the whole time: put logic where it actually belongs, not where it's convenient to write it."
+        },
+        {
+          "style": "paragraph",
+          "text": "Screen Mode, Resolution, VSync, Brightness, a FPS counter — all of it now lives on the autoload, not the settings menu itself, specifically because the settings menu doesn't exist yet when the game boots up and tries to reapply your saved preferences. The menu just asks for changes; the autoload is the one thing guaranteed to be alive the whole time to actually make them happen and remember them."
+        },
+        {
+          "style": "paragraph",
+          "text": "Brightness turned out to have its own small plot twist. My first pass was a black rectangle you fade in over the screen — which works great for making things darker, and is completely useless for making things brighter, since you can't un-darken past \"not dark at all.\" The real fix was CanvasModulate, multiplying the whole scene's colors by a factor that can go both above and below 1.0 — so 50% sits at true neutral, and the slider can genuinely push brightness either direction depending on the player's monitor."
+        },
+        {
+          "style": "paragraph",
+          "text": "And resolution changes taught me that \"exclusive fullscreen,\" the classic old-school way games change your actual display resolution, doesn't really exist on macOS the way it does on Windows — so the fix that felt clever on paper did precisely nothing when I tested it, and I ended up scaling the render resolution internally instead. Cross-platform is full of little surprises like that."
+        },
+        {
+          "style": "subtitle",
+          "text": "Where it landed"
+        },
+        {
+          "style": "paragraph",
+          "text": "What actually shipped: a menu that reads keyboard and mouse as one language, dropdowns that behave regardless of what's stacked underneath them, and a settings system that genuinely persists — quit the game, come back a week later, and it remembers exactly how you like your screen."
+        },
+        {
+          "style": "paragraph",
+          "text": "None of it looks especially dramatic from the player's seat. Which, honestly, might be the whole point."
+        },
+        {
+          "image": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1787396258559-85xfkoknshf.jpg",
+          "style": "photo",
+          "text": "Main menu scene"
+        }
+      ],
+      "created_at": "2026-08-22T10:57:39.508757+00:00",
+      "email_subscribers": false,
+      "emailed_at": null,
+      "excerpt": "\"Turns out the hardest boss fight in this game so far wasn't a monster — it was a dropdown menu.\"",
+      "image_focal_x": 48.82807253190061,
+      "image_focal_y": 30.184093494673697,
+      "image_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1787396256149-r634bq7pj1m.jpg",
+      "published_at": "2026-08-22T10:57:29.806+00:00",
+      "slug": "where-we-return-devlog-001-main-menu-mt49l0c7",
+      "status": "published",
+      "title": "Where We Return DEVLOG #001 - Main Menu"
+    }
+  ],
+  "projects": [
+    {
+      "banner_focal_x": 50,
+      "banner_focal_y": 50,
+      "banner_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/projects/a99dd589-6654-4192-b5f3-3e6e18f84ebd.webp",
+      "brief": [
+        {
+          "style": "subtitle",
+          "text": "Tearri Grundy: fully custom travel blog"
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "A warm, editorial travel blog with its own writing studio, built so its owner never has to touch code."
+        },
+        {
+          "style": "paragraph",
+          "text": "We designed and built tearrigrundy.com for Tearri Grundy, a travel writer whose lifelong dream has been to see the world and write honestly about it. It's a fast, light-coloured travel blog with a custom-built dashboard. She can write and schedule posts, change her own homepage wording and photos, and see what her blog earns, all without a developer. It's secured like a small business app, with a password re-check before every change and two-step sign-in."
+        },
+        {
+          "style": "subtitle",
+          "text": "Who Tearri is"
+        },
+        {
+          "style": "paragraph",
+          "text": "Tearri has wanted to travel since she was a kid, and her blog is where that dream turns into something useful for other people. She writes country by country about what she got right, what she'd skip next time, and the places worth going. Her voice is friendly, honest and a bit funny, \"the honest version, not the highlight reel\", and the site had to feel like her: warm, light and personal, not a corporate template."
+        },
+        {
+          "image": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/projects/b0d1c736-a27c-460f-a1bb-a405defe5509.webp",
+          "style": "photo",
+          "text": ""
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "The brief"
+        },
+        {
+          "style": "bullets",
+          "text": "A professional travel blog with a cursive logotype and a light, warm palette.\nA home page with an introduction and her latest posts.\nA searchable, filterable blog page and a personal About page.\nA private way for her to publish, with no code and no third-party site builder.\nA way to earn from the blog through ads and travel affiliate links."
+        },
+        {
+          "style": "subtitle",
+          "text": "What We built"
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "The public site"
+        },
+        {
+          "style": "bullets",
+          "text": "A homepage with a full-width photo banner, a \"Hello, I'm Tearri\" introduction, latest posts and a contact section.\nA blog page with category filters and search, and a reading experience for each post with adjustable text styles, photos and bullet lists.\nSmooth scroll animations, a polished mobile menu and clean web addresses like /blog/ and /about/."
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "Her own dashboard"
+        },
+        {
+          "style": "bullets",
+          "text": "A private, login-protected app with a \"Welcome back\" greeting in her own handwriting-style font.\nA block-by-block post editor with drag-and-drop reordering and photo drop-in. She sees the real page updating live beside her, in desktop and mobile views.\nDrafts that save automatically, scheduling for a future date and time, and a one-click \"take down\" that turns a live post back into a draft.\nA Homepage & About editor, so she can change her own wording and photos and see the change live.\nCategory management and a Security page."
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "Built to earn"
+        },
+        {
+          "style": "bullets",
+          "text": "Support for Google AdSense, Stay22 hotel maps and link swapping, and Travelpayouts flight and hotel search boxes.\nAn Earnings screen that pulls her live figures, converts them to Australian dollars and shows them in one place.\nA built-in affiliate disclosure on posts that carry affiliate links."
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "Search and sharing"
+        },
+        {
+          "style": "bullets",
+          "text": "Search and social-sharing tags on every page, structured data for each post, a sitemap that updates itself on a schedule, and a robots file that keeps the admin area out of search."
+        },
+        {
+          "style": "subtitle",
+          "text": "How it's built"
+        },
+        {
+          "style": "paragraph",
+          "text": "Vanilla HTML, CSS and JavaScript with no build step, hosted on GitHub Pages under her own domain. Supabase provides the database, login, photo storage and a serverless function that keeps her earnings account tokens secret. Row-level security means the database itself decides who can read or change anything. The dashboard adds automatic sign-out after 5 minutes idle, a password check before publishing, editing or deleting, an activity log, and authenticator-app two-step sign-in."
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "Why it works"
+        },
+        {
+          "style": "bullets",
+          "text": "It's hers. Tearri can publish without asking anyone. She writes, previews, schedules and manages the site herself.\nIt's safe. Nobody can change the blog without her password, and with two-step sign-in a stolen password isn't enough.\nIt's fast and cheap to run. There's no heavy CMS or plugin stack, so pages are quick and hosting costs almost nothing.\nIt can grow. Earnings, SEO and affiliate features are built in from the start, not bolted on."
+        },
+        {
+          "image": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/projects/5e427341-eb6d-4b39-b46f-94f489fb9632.webp",
+          "style": "photo",
+          "text": ""
+        }
+      ],
+      "card_banner_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/projects/26b7fbb9-1657-46b1-b3f2-204d7e3fda38.jpg",
+      "categories": [
+        "website"
+      ],
+      "client": "Tearri Grundy",
+      "client_links": [
+        {
+          "label": "Website",
+          "platform": "website",
+          "url": "https://tearrigrundy.com"
+        },
+        {
+          "label": "Instagram",
+          "platform": "instagram",
+          "url": "https://instagram.com/tearrigrundy"
+        }
+      ],
+      "client_logo_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/projects/529ef187-b85d-4862-abb8-c2bb3d360066.webp",
+      "created_at": "2026-09-25T22:02:27.981778+00:00",
+      "featured": false,
+      "icon_url": null,
+      "platforms": [
+        "Custom Build"
+      ],
+      "published_at": "2026-09-25T21:41:00+00:00",
+      "slug": "tearri-grundy",
+      "status": "published",
+      "tagline": "Personal Blog with none of the subscriptions!",
+      "title": "Tearri Grundy"
+    },
+    {
+      "banner_focal_x": 50,
+      "banner_focal_y": 50,
+      "banner_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/projects/305a71cc-3408-4df0-8a34-29a6a7c36470.webp",
+      "brief": [
+        {
+          "style": "subtitle",
+          "text": "The client"
+        },
+        {
+          "style": "paragraph",
+          "text": "SPXTR COLLECTIVE is a streetwear label built for people who send it — Motorcyles, Streetwear and Tactical Gear. The brand makes heavyweight, rider-tested gear: 500gsm hoodies, back-print tees, hi-vis puffers, utility cargos. The aesthetic is black, stencil type, hi-vis accents and a gothic ghost mark — closer to a race team than a fashion house."
+        },
+        {
+          "style": "paragraph",
+          "text": "They came with a brand, a crew and a plan to drop product in seasons. What they didn't have was somewhere to sell it that felt like them."
+        },
+        {
+          "style": "subtitle",
+          "text": "The brief"
+        },
+        {
+          "style": "paragraph",
+          "text": "Off-the-shelf platforms would have had them live in a weekend — and looking like everyone else, paying a monthly fee, renting a theme, fighting an editor to get one section right."
+        },
+        {
+          "style": "paragraph",
+          "text": "They wanted three things:"
+        },
+        {
+          "style": "bullets",
+          "text": "A store that looked like the brand, not like a template with their logo dropped in.\nFull control without touching code. Two founders who run the brand between sessions needed to add product, publish pages, change the wording and swap photos from a phone.\nSomething that doesn't leak. Real card payments, real customer addresses, real money."
+        },
+        {
+          "style": "subtitle",
+          "text": "What I built"
+        },
+        {
+          "style": "paragraph",
+          "text": "The storefront — a fast, static site with a hero video banner, scrolling tickers, category pages, product pages with size and colour selection, live stock states, a slide-out cart, and a full Stripe checkout. Built responsive from a 375px phone to 2200px+ displays."
+        },
+        {
+          "style": "paragraph",
+          "text": "The admin — a complete custom CMS behind a secure login. Not a headless service with a generic dashboard: a purpose-built control room for this store, in the brand's own visual language."
+        },
+        {
+          "style": "bullets",
+          "text": "Products: photos with drag ordering, price, sale price, stock, sizes, colours, badges, draft/live, and which pages each product appears on\nPages: create a section like Moto or Rock Climbing with its own hero, header photo, nav link and product list\nOrders: every paid order with items and address; add carrier and tracking and mark shipped, which emails the customer; full or partial refunds through Stripe, with optional restocking\nReviews: customers leave reviews with photos from the product page or their order page; nothing appears publicly until an admin approves it, and approved favourites can be featured on the homepage\nHomepage & settings: every heading, promise, ticker word, countdown and footer line is editable, with a live preview of the real site in desktop or phone size as they type\nCustomise: change the brand accent colour across the entire site — buttons, prices, tickers, even the order emails — with a built-in contrast check\nComing soon mode: closes the store to the public before launch while the founders and anyone holding a private preview link browse the real site"
+        },
+        {
+          "style": "paragraph",
+          "text": "Behind the scenes — a launch mailing list with automated welcome and \"we're live\" emails, branded transactional email for order confirmations and shipping notifications, and an activity log that records every change and who made it."
+        },
+        {
+          "style": "paragraph",
+          "text": "Some decisions I'm proud of: the whole storefront loads its content in one database call; requests that stall are quietly retried so a slow response never leaves a blank page; assets are version-stamped so a deploy reaches customers instantly instead of after a browser cache expires."
+        },
+        {
+          "style": "subtitle",
+          "text": "Security, because it's a real shop"
+        },
+        {
+          "style": "paragraph",
+          "text": "This is the part most small-business sites skip."
+        },
+        {
+          "style": "bullets",
+          "text": "Every single change in the admin requires the password again, checked by the database — not just by the screen. A stolen session can't quietly edit anything.\nRow-level security on every table: the public can read published products and approved reviews, and nothing else. Ever.\nPrices and stock are looked up on the server at checkout, so nothing can be tampered with in the browser.\nOrders can only be created by Stripe's signed webhook. Admins can add tracking and mark orders shipped, but cannot edit an order's amounts.\nUploaded photos are re-drawn in the browser (stripping location data and anything hidden inside the file) and then structurally validated again on the server.\nTwo-factor authentication, automatic sign-out, lockout after repeated failures, and an append-only audit log of every change."
+        },
+        {
+          "style": "subtitle",
+          "text": "The result"
+        },
+        {
+          "style": "paragraph",
+          "text": "A store that looks like a race team's pit wall and runs like a proper piece of software. The founders can add a product in two minutes on a phone, close the shop behind a coming-soon page, send a launch email to everyone waiting, and approve a customer review with a photo — all without opening a line of code or paying a platform fee."
+        },
+        {
+          "image": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/projects/b684ce9e-6098-4b72-b0a5-8e8a0a1fa8f7.webp",
+          "style": "photo",
+          "text": "The Coming Soon Page"
+        }
+      ],
+      "card_banner_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/projects/78dd4ab4-3649-4408-a898-ef102ce9297a.jpg",
+      "categories": [
+        "website"
+      ],
+      "client": "SPXTR",
+      "client_links": [
+        {
+          "label": "Website",
+          "platform": "website",
+          "url": "https://spxtr.com"
+        },
+        {
+          "label": "Instagram",
+          "platform": "instagram",
+          "url": "https://instagram.com/spxtrcltv"
+        }
+      ],
+      "client_logo_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/projects/28ae44d2-a1e2-41e8-93af-c523da478fe0.webp",
+      "created_at": "2026-09-25T12:18:55.900538+00:00",
+      "featured": true,
+      "icon_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/projects/ce5d6a10-0dab-4a11-8aa7-aba47a3a6312.webp",
+      "platforms": [],
+      "published_at": "2026-09-24T22:53:00+00:00",
+      "slug": "spxtr",
+      "status": "published",
+      "tagline": "You won't see us coming.",
+      "title": "SPXTR"
+    },
+    {
+      "banner_focal_x": 50,
+      "banner_focal_y": 50,
+      "banner_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1789011199523-htlgc8luyga.jpg",
+      "brief": [
+        {
+          "style": "subtitle",
+          "text": "A top-down survival settlement game set in the long, quiet ruin after the world already ended."
+        },
+        {
+          "style": "paragraph",
+          "text": "The apocalypse isn't breaking news anymore. It happened. Societies rose, fell, got raided, got taken, and stopped working — a long time ago. What's left isn't a fresh crisis, it's the aftermath of one: overgrown, scavenged-over, and mostly empty, except for what's still hungry."
+        },
+        {
+          "style": "paragraph",
+          "text": "You start with nothing but the clothes on your back. No base, no supplies, no plan — until you meet someone who remembers a place: an old return outpost. Before everything fell apart, it was the spot people agreed on in advance — the place you'd head to if things went bad, so everyone would know where to find each other again. It's been abandoned for years. It's still standing. And it's yours to rebuild."
+        },
+        {
+          "style": "paragraph",
+          "text": "Where We Return is a survival settlement builder about turning that ruin back into a rally point — one wall, one station, one returning survivor at a time."
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "What you actually do"
+        },
+        {
+          "style": "bullets",
+          "text": "Build the outpost. Construct and upgrade the settlement's defenses and stations from the resources you scavenge, turning a stripped-down ruin into something that can actually hold the line.\nRecruit and assign survivors. NPCs find their way back to the outpost over time, each with their own skills. Put them to work at the stations that suit them — the settlement runs on more than just you.\nExplore beyond the wire. The map isn't one zone — it's several, each with its own loot, its own zombie types, and its own risk. Early on, you can only push so far. The more you level and the more ground your outpost secures, the further out you're able to go.\nSurvive the day-to-day. Hunger, thirst, stamina, and health all matter while you're out gathering — the world doesn't pause just because you're far from home.\nDefend against hordes. Zombies wander outside the wire, but they don't stay there. When a horde comes for the settlement, everything you've built and everyone you've recruited gets tested at once.\nGrow, gradually. Levels and reach unlock access to the more dangerous, more rewarding areas further from home — progression that's tied to how far you're willing to push, not just how long you've played."
+        },
+        {
+          "style": "paragraph",
+          "text": "And zombies aren't the only thing worth worrying about out there."
+        },
+        {
+          "style": "subtitle",
+          "text": "Under the hood"
+        },
+        {
+          "style": "paragraph",
+          "text": "The game's built in Godot 4, with a component-based architecture — health, hunger, thirst, and stamina all run as independent, reusable pieces rather than one tangled player script, the same way inventory, interaction, and combat are each their own self-contained systems. Terrain uses a dual-grid autotiling setup for smooth, non-repetitive ground transitions instead of the usual blocky tile edges, and the world runs on a full day/night cycle that affects lighting and, eventually, what comes out at night."
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "Where it's at"
+        },
+        {
+          "style": "paragraph",
+          "text": "Where We Return is in active development. The core loops — building, gathering, crafting, surviving, defending — are up and playable; NPC recruitment, the wider map, and the deeper threat beyond the zombies are still being built out."
+        }
+      ],
+      "card_banner_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1789011201492-y6slfnl14qc.jpg",
+      "categories": [
+        "game"
+      ],
+      "client": "Owned/Internal Project",
+      "client_links": [
+        {
+          "label": "Twitter / X",
+          "platform": "twitter",
+          "url": "https://x.com/seventhboar"
+        }
+      ],
+      "client_logo_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1789011202568-z3vudc9f38s.jpg",
+      "created_at": "2026-09-10T03:33:23.868016+00:00",
+      "featured": true,
+      "icon_url": null,
+      "platforms": [
+        "Survival",
+        "Settlement Builder"
+      ],
+      "published_at": "2026-09-10T03:33:13.069+00:00",
+      "slug": "where-we-return-mtuz2v1n",
+      "status": "published",
+      "tagline": "Build the place people were promised.",
+      "title": "Where We Return"
+    },
+    {
+      "banner_focal_x": 50,
+      "banner_focal_y": 50,
+      "banner_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1787381954758-ajx8u1t9rij.jpg",
+      "brief": [
+        {
+          "style": "paragraph",
+          "text": "Not Another Monday began with a simple question:"
+        },
+        {
+          "style": "subtitle",
+          "text": "Did you move your life forward today?"
+        },
+        {
+          "style": "paragraph",
+          "text": "That question became the heart of the app.\n\nThe idea was never to build another noisy fitness tracker, another strict diet app, or another dashboard full of numbers that makes people feel behind before they have even started. Not Another Monday was created for people who want to change their life without being overwhelmed by it."
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "It is for the person who keeps saying, “I’ll start Monday.”"
+        },
+        {
+          "style": "paragraph",
+          "text": "It is for the person who wants to walk more, drink more water, stretch, journal, improve their health, lose weight, build consistency, and feel proud of themselves again, but does not want an app that makes the process feel complicated."
+        },
+        {
+          "style": "paragraph",
+          "text": "The purpose of Not Another Monday is simple:"
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "Help people take small daily actions that compound into a better life."
+        },
+        {
+          "style": "subtitle",
+          "text": "Where The Idea Started"
+        },
+        {
+          "style": "paragraph",
+          "text": "The app started from a very human place."
+        },
+        {
+          "style": "paragraph",
+          "text": "Most people do not fail because they do not care. They fail because change becomes too big, too confusing, or too easy to put off. Health goals often get wrapped up in pressure, guilt, perfection, and unrealistic expectations.\n\nNot Another Monday was built around the opposite idea."
+        },
+        {
+          "style": "paragraph",
+          "text": "Instead of asking users to completely reinvent themselves overnight, the app focuses on a few simple daily actions:"
+        },
+        {
+          "style": "bullets",
+          "text": "Walked\nDrank water\nStretched\nJournaled\nRead\nSaved money\nAte enough protein"
+        },
+        {
+          "style": "paragraph",
+          "text": "Small things. Achievable things. Actions that make someone feel like they are back in control."
+        },
+        {
+          "style": "paragraph",
+          "text": "The goal was to create an app that feels calm, clean, and encouraging. No clutter. No ads. No punishment. Just a simple daily check-in that helps users ask, “Did I do something today that my future self will thank me for?”"
+        },
+        {
+          "style": "subtitle",
+          "text": "Why This App Matters"
+        },
+        {
+          "style": "paragraph",
+          "text": "Consistency is one of the hardest parts of personal change.\n\nPeople often focus on the big end result: the goal weight, the marathon, the transformation photo, the perfect routine. But the real work happens in ordinary moments."
+        },
+        {
+          "style": "bullets",
+          "text": "Drinking water when you would usually forget.\nGoing for a walk when motivation is low.\nStretching for five minutes.\nWriting one honest sentence in a journal.\nChoosing to show up again after missing a day."
+        },
+        {
+          "style": "paragraph",
+          "text": "Not Another Monday matters because it treats those small moments as meaningful."
+        },
+        {
+          "style": "paragraph",
+          "text": "The app is designed to help users see progress before the big result arrives. A streak. A completed habit. A better week. A new weight entry. A saved journal note. A progress photo. A reminder that they are not starting from zero."
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "The app is not about perfection."
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "It is about momentum."
+        },
+        {
+          "style": "subtitle",
+          "text": "Designing The Experience"
+        },
+        {
+          "style": "paragraph",
+          "text": "From the beginning, the design direction was clear: the app needed to feel calming, premium, and easy to use."
+        },
+        {
+          "style": "paragraph",
+          "text": "The visual style is soft, natural, and minimal. Gentle greens, warm backgrounds, rounded cards, simple icons, and large touch targets all work together to make the app feel approachable. The interface avoids clutter because the product itself is about reducing friction."
+        },
+        {
+          "style": "paragraph",
+          "text": "The home screen became the emotional centre of the app."
+        },
+        {
+          "style": "paragraph",
+          "text": "At the top, users see the question:"
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "Did you move your life forward today?"
+        },
+        {
+          "style": "paragraph",
+          "text": "Below that, a progress circle fills as habits are completed. The goal was to make progress feel satisfying without making the screen feel busy. When users complete their daily actions, the app celebrates that moment because those small wins deserve to feel good."
+        },
+        {
+          "style": "paragraph",
+          "text": "The app also includes progress tracking, habits, stretching, water, steps, journaling, profile setup, fasting, achievements, challenges, rewards, and shareable milestone cards. But every feature had to pass the same test:"
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "Does this help the user take action with fewer taps and less stress?"
+        },
+        {
+          "style": "paragraph",
+          "text": "If the answer was no, it had to be simplified."
+        },
+        {
+          "style": "subtitle",
+          "text": "Building The App"
+        },
+        {
+          "style": "paragraph",
+          "text": "Not Another Monday was built with Flutter so it could be released on both iOS and Android from a shared codebase."
+        },
+        {
+          "style": "paragraph",
+          "text": "That decision mattered because the app needed to feel consistent across both platforms while still supporting native features like Apple Sign In, Google Sign In, Apple Health, Health Connect, profile photos, push notifications, and future wearable integrations."
+        },
+        {
+          "style": "paragraph",
+          "text": "The early development focused on getting the core app structure right:"
+        },
+        {
+          "style": "bullets",
+          "text": "Onboarding\nAccount sign-in\nProfile setup\nDaily habit tracking\nProgress tracking\nWeight logging\nWater tracking\nSteps\nStretching\nJournaling\nProfile and settings\nCloud sync"
+        },
+        {
+          "style": "paragraph",
+          "text": "As the app grew, it became clear that the most important technical challenge was not just making screens look good. It was making sure the app had one reliable source of truth."
+        },
+        {
+          "style": "paragraph",
+          "text": "Home, Progress, Habits, Journal, and Profile all needed to agree on the same daily data. If a user completes a habit, every part of the app should know. If they log water, the water habit should update. If they write a journal entry, the journal habit should complete automatically. If they hit their daily goals, achievements and streaks should unlock from the same shared progress data."
+        },
+        {
+          "style": "paragraph",
+          "text": "That became a major part of the build: making the app feel connected rather than like separate screens stitched together."
+        },
+        {
+          "style": "subtitle",
+          "text": "The Hard Parts"
+        },
+        {
+          "style": "paragraph",
+          "text": "Like any real app, the project came with challenges.\n\nThe first major challenge was responsiveness. The app had to work across small Android phones, larger iPhones, portrait mode, landscape mode, and different screen sizes without overflow issues. A design can look beautiful in a concept image, but real devices quickly reveal where spacing, text sizing, scrolling, and layout need to be stronger."
+        },
+        {
+          "style": "paragraph",
+          "text": "Another challenge was authentication. The app needed Apple Sign In for iOS and Google Sign In for Android, with user data saved to the correct account so it could carry across devices. Getting OAuth, Supabase, platform configuration, SHA fingerprints, bundle IDs, and release builds working properly took careful setup and testing."
+        },
+        {
+          "style": "paragraph",
+          "text": "Health data was another important lesson. Garmin access is difficult because their developer API access is limited, so the app needed a practical approach: Apple Health on iOS, Health Connect on Android, and manual entry where automatic data is not available. Accuracy matters, so the app avoids guessing where possible."
+        },
+        {
+          "style": "paragraph",
+          "text": "Performance also became a focus. Long pages like Progress, Habits, Journal, and Profile needed to scroll smoothly, especially on older Android devices. A polished app cannot just look good in screenshots. It has to feel good under someone’s thumb."
+        },
+        {
+          "style": "paragraph",
+          "text": "The weight graph also became a key feature that needed careful thought. It had to start with the user’s current weight and target weight, then improve over time as they added check-ins. The graph needed to encourage weekly updates without making the app feel demanding."
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "Every challenge helped sharpen the product."
+        },
+        {
+          "style": "subtitle",
+          "text": "What We Learned"
+        },
+        {
+          "style": "paragraph",
+          "text": "The biggest lesson was that simplicity is not easy."
+        },
+        {
+          "style": "paragraph",
+          "text": "A simple app often takes more work than a complicated one because every feature has to be reduced to its clearest form. Every card, button, animation, and piece of copy needs to earn its place."
+        },
+        {
+          "style": "paragraph",
+          "text": "We learned that wellness apps need to be careful with language. The app should encourage users without shaming them. It should celebrate progress without making false promises. For fasting and health-related features especially, the wording needs to be accurate, trustworthy, and evidence-based."
+        },
+        {
+          "style": "paragraph",
+          "text": "We also learned that emotional design matters. A streak counter, progress circle, journal prompt, achievement card, or celebration animation is not just decoration. These moments help users feel proud. They make the app feel alive."
+        },
+        {
+          "style": "paragraph",
+          "text": "That led to the creation of a small helper character for the app: a simple, cute mascot that can celebrate wins, encourage users, and bring a little warmth into the experience. The character is designed to feel friendly and supportive, not childish or distracting."
+        },
+        {
+          "style": "subtitle",
+          "text": "What The App Does"
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "Not Another Monday helps users build daily consistency through small actions."
+        },
+        {
+          "style": "paragraph",
+          "text": "Users can:"
+        },
+        {
+          "style": "bullets",
+          "text": "Track daily habits\nBuild streaks\nLog weight and target weight\nView progress graphs\nTrack water intake\nTrack steps manually or through health integrations\nComplete stretching routines\nWrite short daily journal entries\nSave profile and app preferences\nTrack fasting when enabled\nUnlock challenges and rewards\nShare progress milestones\nSync data across devices through their account"
+        },
+        {
+          "style": "paragraph",
+          "text": "The app is designed to grow over time. Future versions may include marathon training, walking challenges, Camino planning, meal planning, budget tracking, AI coaching, community features, monthly challenges, rewards, wearable integrations, and deeper health insights."
+        },
+        {
+          "style": "paragraph",
+          "text": "But the foundation will stay the same:"
+        },
+        {
+          "style": "paragraph-lg",
+          "text": "Move forward, one day at a time."
+        }
+      ],
+      "card_banner_url": null,
+      "categories": [
+        "app"
+      ],
+      "client": "ChookyChasingLife",
+      "client_links": [
+        {
+          "label": "Website",
+          "platform": "website",
+          "url": "https://chookychasinglife.com"
+        },
+        {
+          "label": "Instagram",
+          "platform": "instagram",
+          "url": "https://instagram.com/chookychasinglife"
+        },
+        {
+          "label": "Twitter / X",
+          "platform": "twitter",
+          "url": "https://x.com/ChookyChasing"
+        },
+        {
+          "label": "Facebook",
+          "platform": "facebook",
+          "url": "https://www.facebook.com/chookychasinglife"
+        }
+      ],
+      "client_logo_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1787385978492-kooj7r8tpp.jpg",
+      "created_at": "2026-08-22T06:59:16.539779+00:00",
+      "featured": false,
+      "icon_url": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/1787381955859-ihh4vpj680q.jpg",
+      "platforms": [
+        "IOS + Android Wellness app"
+      ],
+      "published_at": "2026-08-22T06:59:07.47+00:00",
+      "slug": "not-another-monday-mt412fzn",
+      "status": "published",
+      "tagline": "Consistent Action. Better You",
+      "title": "Not Another Monday"
+    }
+  ],
+  "site_settings": [
+    {
+      "data": {
+        "build": {
+          "cta": "See the work",
+          "ctaUrl": "/work/",
+          "eyebrow": "Sec. 08 // How we build",
+          "images": [
+            "/assets/images/Devlog_Page_Banner.png",
+            "/assets/images/Generic_Banner.png",
+            "/assets/images/Home_Page_Banner.jpg"
+          ],
+          "intro": "Clean design, considered features, and sites that feel straightforward on the surface even when the build underneath is complex.",
+          "show": true,
+          "specs": [
+            {
+              "label": "Websites",
+              "value": "Custom design and build"
+            },
+            {
+              "label": "Apps",
+              "value": "On request, iOS and Android"
+            },
+            {
+              "label": "Games",
+              "value": "In-house projects"
+            },
+            {
+              "label": "Approach",
+              "value": "Small team, clear communication"
+            },
+            {
+              "label": "Based in",
+              "value": "Australia"
+            }
+          ],
+          "title": "Built to last"
+        },
+        "comingSoon": {
+          "eyebrow": "Seventh Boar Development",
+          "showEmail": true,
+          "text": "We're building it right now. Drop your email and you'll be first through the gate when it opens.",
+          "title": "Something's coming."
+        },
+        "cta": {
+          "ctaText": "Start your website",
+          "ctaUrl": "/request/",
+          "show": true,
+          "text": "Tell us about your business and what you need. We'll come back with a plan.",
+          "title": "Need a website?"
+        },
+        "devlogSection": {
+          "eyebrow": "Sec. 07 // From the devlog",
+          "title": "Latest entries"
+        },
+        "footer": {
+          "abn": "76 123 893 964",
+          "blurb": "An independent Australian studio building custom websites for businesses and brands, with apps built on request.",
+          "email": "Admin@seventhboar.com",
+          "location": "Brisbane, Queensland",
+          "tagline": "Built with purpose. Made with bite."
+        },
+        "hero": {
+          "bar": [
+            "Custom websites",
+            "Mobile-first",
+            "Apps on request",
+            "Made in Australia"
+          ],
+          "cta": "Start a website",
+          "cta2": "See the work",
+          "cta2Url": "/work/",
+          "ctaUrl": "",
+          "eyebrow": "Independent // Australia",
+          "image": "/assets/images/Home_Page_Banner.jpg",
+          "line1": "Built with purpose.",
+          "line2": "Made with bite.",
+          "subtitle": "Seventh Boar Development is an independent Australian studio building custom websites for businesses and brands. Small team, no fluff. Apps are built on request."
+        },
+        "ig": [],
+        "latestSection": {
+          "eyebrow": "Sec. 04 // Latest work",
+          "intro": "Websites, apps and games shaped with care, restraint and a clear sense of purpose.",
+          "title": "Fresh off the build"
+        },
+        "newsletter": {
+          "eyebrow": "Sec. 10 // Follow along",
+          "fine": "Unsubscribe any time. No spam, ever.",
+          "show": true,
+          "text": "Devlog updates and release news, straight to your inbox.",
+          "thanks": "You're on the list. Welcome aboard.",
+          "title": "Follow the build"
+        },
+        "pages": {
+          "custom": [
+            {
+              "blocks": [
+                {
+                  "style": "subtitle",
+                  "text": "How much does a website cost?"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "It depends on what you need. As a guide: a one-page Lite landing page starts from $500, a Starter website (up to five pages) is $1,500 to $2,000, and a Business website with more pages and a way to update it yourself is $3,000 to $4,500. Bigger or more custom builds are quoted individually. All prices are in Australian dollars. Send a request and we'll confirm what yours would involve."
+                },
+                {
+                  "style": "subtitle",
+                  "text": "How long does it take?"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "A one-page site is usually live within a week. A full website depends mostly on how quickly we get your text and photos and how many rounds of feedback it takes, so a typical small business site takes a few weeks. You'll get a clear timeline when we accept your request."
+                },
+                {
+                  "style": "subtitle",
+                  "text": "Who owns the website?"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "You do. Your website, your content and your domain name are yours, with no lock-in. We'll explain exactly how hosting and handover work in your quote, so there are no surprises."
+                },
+                {
+                  "style": "subtitle",
+                  "text": "Do you do hosting?"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "Yes. We can host your site and look after it after launch, or set it up on hosting you already have. Our care and hosting plans cover keeping it online, secure and up to date."
+                },
+                {
+                  "style": "subtitle",
+                  "text": "Can I update the website myself?"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "Yes. The Business website includes an admin panel so you can change text and photos yourself, no developer needed. On smaller sites, send us what you'd like changed and we'll take care of it."
+                },
+                {
+                  "style": "subtitle",
+                  "text": "Will my website work on phones?"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "Yes. Every site we build is designed mobile-first and checked on phones, tablets and desktops before it launches."
+                },
+                {
+                  "style": "subtitle",
+                  "text": "Will people be able to find my business on Google?"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "We build every site with clean structure, fast loading and the basics of on-page SEO, which gives you a solid start. Ranking well also depends on your competition, your Google Business Profile and your reviews, and we can talk you through the next steps. We can't promise a ranking position, and anyone who does is guessing."
+                },
+                {
+                  "style": "subtitle",
+                  "text": "What do you need from me to get started?"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "A short description of your business and what you want the site to do, any logo and photos you already have, and a few sites you like. Don't worry if you don't have it all: we'll help you work out the rest."
+                },
+                {
+                  "style": "subtitle",
+                  "text": "How do I see how my project is going?"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "Every request gets a private tracking link, with no account or password needed. It shows exactly where your project is up to, from accepted through design and build to launch, and you get an email at each step."
+                },
+                {
+                  "style": "subtitle",
+                  "text": "Do you build apps too?"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "Yes, on request. Websites are our main focus, but we build iOS and Android apps for the right projects. Tell us the idea and we'll tell you honestly whether it's a fit."
+                },
+                {
+                  "style": "subtitle",
+                  "text": "Where are you based?"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "We're based in Brisbane, Queensland, and work with clients across Australia. Most of the work happens online, so you don't need to be local."
+                },
+                {
+                  "style": "subtitle",
+                  "text": "How do I get started?"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "Send a project request. It takes about a minute, and we'll reply with a yes or no and what comes next."
+                }
+              ],
+              "faq": true,
+              "id": "faq",
+              "image": "",
+              "inNav": true,
+              "intro": "Straight answers to the questions we get asked most about getting a website built.",
+              "navLabel": "FAQ",
+              "status": "published",
+              "title": "Website FAQ",
+              "where": "both"
+            },
+            {
+              "blocks": [
+                {
+                  "style": "paragraph-lg",
+                  "text": "A website works best when someone is looking after it. A care plan means you have a person to ask, not a ticket number, when something needs changing."
+                },
+                {
+                  "style": "title",
+                  "text": "What a care plan can include"
+                },
+                {
+                  "style": "bullets",
+                  "text": "Hosting and your domain name managed for you\nSecurity and software updates\nContent changes: text, photos, opening hours, new pages\nA check that your forms, links and pages still work\nA person to ask when something goes wrong or you have an idea"
+                },
+                {
+                  "style": "title",
+                  "text": "Who it's for"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "Anyone who would rather run their business than learn how to run a website. If you're comfortable looking after your own site, you can skip a plan and we'll hand over what you need."
+                },
+                {
+                  "style": "title",
+                  "text": "How it works"
+                },
+                {
+                  "style": "bullets",
+                  "text": "Add a plan when we quote your website, or later, whenever you're ready\nSimple monthly pricing, agreed up front\nNo long contracts"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "Plan pricing depends on the size of your site, so we quote it alongside your website. Send a request and tell us you'd like care included."
+                }
+              ],
+              "id": "care-and-hosting-plans",
+              "image": "",
+              "inNav": true,
+              "intro": "Launching is the start, not the finish. Here is how we keep your website running, current and secure after it goes live.",
+              "navLabel": "Care plans",
+              "status": "published",
+              "title": "Care & hosting plans",
+              "where": "footer"
+            },
+            {
+              "blocks": [
+                {
+                  "style": "paragraph-lg",
+                  "text": "Quotes for the same website can range from a few hundred dollars to tens of thousands. Here's what actually drives the price, and what you can expect to pay for a small business website in Australia."
+                },
+                {
+                  "style": "title",
+                  "text": "What changes the price"
+                },
+                {
+                  "style": "bullets",
+                  "text": "How many pages you need\nCustom design versus a reused template\nFeatures such as booking, enquiry forms, online payments or a login area\nWhether you can update it yourself or we do it for you\nHow much content (text and photos) we need to write or source"
+                },
+                {
+                  "style": "title",
+                  "text": "Our starting prices (AUD)"
+                },
+                {
+                  "style": "bullets",
+                  "text": "Lite landing page: from $500. One well-designed page to get you online fast.\nStarter website: $1,500 to $2,000. Up to five pages, designed and built from scratch.\nBusiness website: $3,000 to $4,500. More pages, forms, and an admin panel so you can update it yourself.\nCustom builds and apps: quoted individually."
+                },
+                {
+                  "style": "title",
+                  "text": "What to look for in any quote"
+                },
+                {
+                  "style": "bullets",
+                  "text": "Is the design made for your business, or a reused template?\nWho owns the site, the content and the domain name?\nIs hosting included, and what does it cost after the first year?\nWhat happens when you want a change: how fast, and what does it cost?\nWill it work properly on phones?"
+                },
+                {
+                  "style": "title",
+                  "text": "Costs after launch"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "Beyond the build, there's a domain name (a modest yearly cost) and hosting, if it isn't included. A care plan is optional on top."
+                },
+                {
+                  "style": "title",
+                  "text": "Get a clear number"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "Send us a quick request and we'll tell you what yours would involve and what it would cost. No obligation."
+                }
+              ],
+              "id": "how-much-does-a-website-cost-in-australia",
+              "image": "",
+              "inNav": true,
+              "intro": "A plain-English guide to what drives the price of a website, with our own starting prices.",
+              "navLabel": "Website costs",
+              "status": "published",
+              "title": "How much does a small business website cost in Australia?",
+              "where": "footer"
+            },
+            {
+              "blocks": [
+                {
+                  "style": "paragraph-lg",
+                  "text": "When someone needs a plumber, electrician, builder or landscaper, they search on their phone, look at two or three sites, and call the first one that looks trustworthy. A good tradie website makes sure that's you."
+                },
+                {
+                  "style": "title",
+                  "text": "What a tradie website needs"
+                },
+                {
+                  "style": "bullets",
+                  "text": "Your services and the suburbs you cover, clearly listed\nA tap-to-call button and a quick quote request form\nPhotos of your real work\nYour licence number, insurance and reviews, front and centre\nFast loading on a phone with patchy signal"
+                },
+                {
+                  "style": "title",
+                  "text": "Where we'd start"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "Most tradies are well served by our Lite landing page or Starter website: a handful of pages, built to be found on Google in the suburbs you work in, and live fast. If you'd like to update photos and jobs yourself, the Business website adds an admin panel."
+                },
+                {
+                  "style": "title",
+                  "text": "Found locally"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "We set your site up for local search and show you how to get your Google Business Profile working alongside it, because that's where most tradie enquiries start."
+                }
+              ],
+              "group": "industry",
+              "id": "websites-for-tradies-brisbane",
+              "image": "",
+              "inNav": false,
+              "intro": "A simple, fast website that turns \"who's a good sparky near me?\" into phone calls and quote requests.",
+              "navLabel": "Tradies",
+              "status": "published",
+              "title": "Websites for tradies in Brisbane",
+              "where": "none"
+            },
+            {
+              "blocks": [
+                {
+                  "style": "paragraph-lg",
+                  "text": "Hungry people check three things: what's on the menu, whether you're open, and how to get a table. If they can't find those in a few seconds, they move on."
+                },
+                {
+                  "style": "title",
+                  "text": "What a hospitality website needs"
+                },
+                {
+                  "style": "bullets",
+                  "text": "A menu that's easy to read on a phone, not a PDF to pinch and zoom\nOpening hours and your address with a map link\nA booking or enquiry option for tables and events\nPhotos that make people hungry\nSpecials and news you can update quickly"
+                },
+                {
+                  "style": "title",
+                  "text": "Where we'd start"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "A Starter website covers most cafes: home, menu, about and contact. If you want to change menus, hours and specials yourself without calling anyone, the Business website includes an admin panel for exactly that."
+                }
+              ],
+              "group": "industry",
+              "id": "websites-for-cafes-and-restaurants-brisbane",
+              "image": "",
+              "inNav": false,
+              "intro": "Menus, hours and bookings that are easy to find, and a site that looks as good as the food.",
+              "navLabel": "Cafes & restaurants",
+              "status": "published",
+              "title": "Websites for cafes and restaurants in Brisbane",
+              "where": "none"
+            },
+            {
+              "blocks": [
+                {
+                  "style": "paragraph-lg",
+                  "text": "You don't need a huge site. You need one that explains what you do, shows you're the real thing, and makes the next step obvious."
+                },
+                {
+                  "style": "title",
+                  "text": "What a small business website needs"
+                },
+                {
+                  "style": "bullets",
+                  "text": "A clear one-line explanation of what you do and who it's for\nProof you're good: photos, reviews, past work\nAn easy way to get in touch: call, email or a short form\nSimple pages you can understand and keep current\nGood foundations for Google, so customers can find you"
+                },
+                {
+                  "style": "title",
+                  "text": "Where we'd start"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "If you're starting out or need something online quickly, our Lite landing page from $500 gets you a proper presence, usually within a week. As you grow, we can build it up into a full website."
+                },
+                {
+                  "style": "title",
+                  "text": "Not sure what you need?"
+                },
+                {
+                  "style": "paragraph",
+                  "text": "Send a request and tell us about your business. We'll recommend the simplest option that does the job, even if that's the cheaper one."
+                }
+              ],
+              "group": "industry",
+              "id": "websites-for-small-business-and-sole-traders-brisbane",
+              "image": "",
+              "inNav": false,
+              "intro": "Look established, get found, and make it easy for customers to get in touch, without an agency-sized budget.",
+              "navLabel": "Small business",
+              "status": "published",
+              "title": "Websites for small businesses and sole traders in Brisbane",
+              "where": "none"
+            }
+          ],
+          "hidden": [
+            "devlog"
+          ]
+        },
+        "pricing": {
+          "eyebrow": "Sec. 02 // Pricing",
+          "footnote": "Prices are in Australian dollars (AUD).",
+          "intro": "Every project is different, so treat these as starting points. Send a request and we'll confirm what yours would involve.",
+          "items": [
+            {
+              "bullets": [
+                "One page, built to scroll",
+                "Mobile-friendly",
+                "Your contact details or a simple enquiry form",
+                "Usually live within a week"
+              ],
+              "kind": "website",
+              "price": "From $500",
+              "tag": "Quick & simple",
+              "text": "A single, well-designed page to get you online fast: a simple presence, a personal brand, or a \"coming soon\" while something bigger is built.",
+              "title": "Lite landing page"
+            },
+            {
+              "bullets": [
+                "Up to 5 pages",
+                "Designed and built from scratch",
+                "Mobile-friendly, fast to load",
+                "Contact form",
+                "Basic on-page SEO"
+              ],
+              "kind": "website",
+              "price": "$1,500–$2,000",
+              "tag": "Most popular",
+              "text": "A custom-built website for a small business that needs a proper home online. Exact price depends on how many pages and features you need.",
+              "title": "Starter website"
+            },
+            {
+              "bullets": [
+                "More pages, structured around your business",
+                "Update text and photos yourself, no developer needed",
+                "Quote, booking or enquiry forms",
+                "Deeper on-page SEO"
+              ],
+              "kind": "website",
+              "price": "$3,000–$4,500",
+              "tag": "",
+              "text": "For a business that needs more room to grow: more pages, a way to update it yourself, and forms that do more than say hello.",
+              "title": "Business website"
+            },
+            {
+              "bullets": [
+                "Online store or payments",
+                "A custom admin area, like this site's own",
+                "Integrations with other tools you use",
+                "Scoped and quoted after a request"
+              ],
+              "kind": "website",
+              "price": "Custom quote",
+              "tag": "Bigger projects",
+              "text": "Online stores, your own admin dashboard, booking systems, or anything else that needs custom features built from scratch.",
+              "title": "Custom build"
+            },
+            {
+              "bullets": [
+                "iOS and Android",
+                "Built around real, daily use",
+                "Scoped with you before a quote"
+              ],
+              "kind": "app",
+              "price": "Custom quote",
+              "tag": "On request",
+              "text": "iOS and Android apps, scoped and quoted once we understand what you need.",
+              "title": "Apps"
+            }
+          ],
+          "title": "Pricing guide",
+          "trust": "You own your website. No lock-in: your site, your content and your domain name are yours."
+        },
+        "reach": {
+          "callLabel": "Book a 15-minute call",
+          "callUrl": "",
+          "promise": "We reply within one business day.",
+          "promiseShow": true
+        },
+        "rebrand": {
+          "banner": true,
+          "helloRedirect": true,
+          "helloSeconds": 6,
+          "helloUrl": "https://spxtrdevelopment.com/hello/",
+          "name": "SPXTR Development",
+          "splash": true,
+          "text": "Seventh Boar Development is now SPXTR Development. Same studio, same work, new name. Our new home is spxtrdevelopment.com.",
+          "title": "We've rebranded.",
+          "url": "https://spxtrdevelopment.com"
+        },
+        "release": {
+          "blurb": "The next thing on the bench. Follow the devlog to watch it come together.",
+          "ctaText": "Follow the devlog",
+          "ctaUrl": "/devlog/",
+          "date": "",
+          "image": "",
+          "kind": "release",
+          "name": "Where We Return",
+          "place": "",
+          "round": "In development",
+          "show": false
+        },
+        "reports": [
+          {
+            "meta": "Not Another Monday // Commissioned app",
+            "name": "Chooky Chasing Life",
+            "quote": "Working with the Seventh Boar Team on Not Another Monday has been bloody brilliant. I came to them with a head full of ideas, half-finished thoughts, and a very clear opinion on how I wanted the app to feel. Somehow, they took all of that and turned it into an actual product.",
+            "stars": 5,
+            "verified": true
+          },
+          {
+            "meta": "spxtr.com",
+            "name": "SPXTR Collective",
+            "quote": "We couldn’t be happier with the website Seventh Boar Development created for SPXTR. From the very beginning, they took the time to understand our vision, our branding and the direction we wanted to take the business, and they brought it all together better than we could have imagined. The website looks clean, professional and completely on-brand for SPXTR. ",
+            "stars": 5,
+            "verified": true
+          }
+        ],
+        "reportsSection": {
+          "eyebrow": "Sec. 09 // Client words",
+          "title": "Kind words"
+        },
+        "servicesSection": {
+          "eyebrow": "Sec. 01 // Services",
+          "intro": "Websites are what we build for clients right now. Apps are built on request.",
+          "items": [
+            {
+              "bullets": [
+                "Designed and built from scratch",
+                "Looks and works great on phones",
+                "Fast, clean and easy to find on search",
+                "Straightforward, honest communication"
+              ],
+              "ctaText": "Start a website",
+              "ctaUrl": "/request/",
+              "tag": "Main service",
+              "text": "Custom websites for businesses and brands, designed around what your customers need to see and do, and built to look sharp on every screen.",
+              "title": "Websites"
+            },
+            {
+              "bullets": [
+                "iOS and Android",
+                "Built around real, daily use",
+                "Scoped with you before we start"
+              ],
+              "ctaText": "Ask about an app",
+              "ctaUrl": "/request/?type=app",
+              "tag": "On request",
+              "text": "Have an app idea? We build apps for iOS and Android on request. Tell us what you have in mind and we'll work out if it's a fit.",
+              "title": "Apps"
+            }
+          ],
+          "show": true,
+          "title": "What we build for you"
+        },
+        "socials": [
+          {
+            "label": "Instagram",
+            "url": "https://instagram.com/seventhboardevelopment"
+          },
+          {
+            "label": "TikTok",
+            "url": "https://www.tiktok.com/@seventhboardevelopment"
+          },
+          {
+            "label": "X",
+            "url": "https://x.com/seventhboar"
+          }
+        ],
+        "status": "Independent Australian studio",
+        "team": [
+          {
+            "home": "",
+            "image": "https://jkougveywojjypwcjbmi.supabase.co/storage/v1/object/public/post-images/pages/1982058f-1d4c-43af-a0cd-f127ecc69f0e.webp",
+            "link": "",
+            "linkText": "",
+            "name": "Jenko",
+            "number": "",
+            "role": "Founder/Developer",
+            "stats": []
+          }
+        ],
+        "teamSection": {
+          "ctaText": "Work with us",
+          "ctaUrl": "/contact/",
+          "eyebrow": "Sec. 05 // The studio",
+          "intro": "A small team that cares how things feel to use.",
+          "title": "Meet the studio"
+        },
+        "theme": {
+          "accent": "#97292A"
+        },
+        "trust": {
+          "eyebrow": "Why clients choose us",
+          "items": [
+            {
+              "text": "Every request gets its own private link showing exactly where your project is up to, from accepted to launched. No chasing, no guessing.",
+              "title": "A private progress tracker"
+            },
+            {
+              "text": "No lock-in. Your website, your content and your domain name are yours.",
+              "title": "You own your website"
+            },
+            {
+              "text": "A small independent studio you deal with directly, working with clients right across the country.",
+              "title": "Brisbane-based, Australia-wide"
+            }
+          ],
+          "show": true,
+          "title": "What you get with every project"
+        },
+        "typesSection": {
+          "eyebrow": "Sec. 03 // Our work",
+          "link": "See all work",
+          "title": "Websites, apps & games"
+        }
+      },
+      "id": 1,
+      "updated_at": "2026-10-21T05:26:56.899008+00:00"
+    }
+  ]
+}

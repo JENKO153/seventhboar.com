@@ -98,6 +98,19 @@ supabase functions deploy request-update --no-verify-jwt
 ```
 and re-run `supabase/schema.sql` (it adds the requests table). Project emails (the notification to you, the customer's confirmation and progress updates) are sent from their own address: `supabase secrets set "ORDERS_EMAIL_FROM=Seventh Boar Orders <orders@seventhboar.com>"`, while the mailing list keeps using `EMAIL_FROM` (news@). To send the notification to a different inbox, `supabase secrets set ADMIN_EMAIL=someone@example.com`. `tools/email-preview.html` shows all the emails.
 
+## Care plans and backups
+
+- **Care plans** (`/care-plans/`, edited in admin → Homepage & settings → Care plans): Essentials $49, Growth $119 and
+  Partner $249 a month, plus a three-year cost comparison. They're optional and month to month. The page sits in the
+  footer and Services page (and can be switched off in admin → Pages), the request form offers them under "Add more detail"
+  (a chosen plan is added to the end of the brief, so it shows in Orders and in the email to you), and a "from $49/month" line
+  sits under the prices. The old "Care & hosting plans" page made in Pages now redirects to `/care-plans/`; you can delete it.
+- **Only promise what you run.** Set up uptime monitoring (UptimeRobot's free plan is enough) before you offer it, and the
+  monthly report needs analytics.
+- **Backups.** Admin → Security & activity → **Download a backup** saves everything (drafts, orders, subscribers, comments,
+  settings; not photos) as one file. Keep it private: it holds customers' details. Separately, `.github/workflows/backup-content.yml`
+  saves a weekly snapshot of the *published* content to `backups/public-content.json` (nothing private, so it's safe in a public repo).
+
 ## Getting clients: starter pages, trust signals, a short first step
 
 - **Starter pages** (admin → Pages → "Starter pages ready to add"): a FAQ (with Q&A search markup), Care & hosting plans,

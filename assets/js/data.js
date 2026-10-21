@@ -34,12 +34,16 @@ const SITE_PAGES = Object.freeze([
     note: 'The homepage services section stays; its "All services" link goes.' },
   { key: 'devlog', label: 'Devlog', path: '/devlog/', paths: ['/devlog/', '/post/'], home: ['devlog'],
     note: 'Also hides every entry, the RSS link and the homepage devlog section.' },
+  { key: 'care', label: 'Care plans', path: '/care-plans/', paths: ['/care-plans/'], home: [], menu: false,
+    note: 'Optional ongoing care. Also leaves the footer and the "interested in a care plan" choice on the request form.' },
   { key: 'about', label: 'About', path: '/about/', paths: ['/about/'], home: [], note: '' },
   { key: 'contact', label: 'Contact', path: '/contact/', paths: ['/contact/'], home: [],
     note: 'People can still reach you through the request form and your email.' },
 ]);
 // Pages made in Admin -> Pages live at /p/?id=<slug>.
 const customPageUrl = id => `/p/?id=${encodeURIComponent(id)}`;
+// A page of your own that the built-in Care plans page replaces (the old starter copy may still be saved in the database).
+const SUPERSEDED_PAGES = ['care-and-hosting-plans'];
 // Where a page of your own is linked: 'both' (menu and footer), 'footer' or 'none' (reachable by its address
 // and from other pages only). Older pages only have inNav.
 const pageWhere = p => p.where || (p.inNav === false ? 'none' : 'both');
@@ -152,50 +156,6 @@ const STARTER_PAGES = [
       {
         "style": "paragraph",
         "text": "Send a project request. It takes about a minute, and we'll reply with a yes or no and what comes next."
-      }
-    ],
-    "image": "",
-    "inNav": true,
-    "status": "published"
-  },
-  {
-    "id": "care-and-hosting-plans",
-    "title": "Care & hosting plans",
-    "navLabel": "Care plans",
-    "intro": "Launching is the start, not the finish. Here is how we keep your website running, current and secure after it goes live.",
-    "where": "footer",
-    "blocks": [
-      {
-        "style": "paragraph-lg",
-        "text": "A website works best when someone is looking after it. A care plan means you have a person to ask, not a ticket number, when something needs changing."
-      },
-      {
-        "style": "title",
-        "text": "What a care plan can include"
-      },
-      {
-        "style": "bullets",
-        "text": "Hosting and your domain name managed for you\nSecurity and software updates\nContent changes: text, photos, opening hours, new pages\nA check that your forms, links and pages still work\nA person to ask when something goes wrong or you have an idea"
-      },
-      {
-        "style": "title",
-        "text": "Who it's for"
-      },
-      {
-        "style": "paragraph",
-        "text": "Anyone who would rather run their business than learn how to run a website. If you're comfortable looking after your own site, you can skip a plan and we'll hand over what you need."
-      },
-      {
-        "style": "title",
-        "text": "How it works"
-      },
-      {
-        "style": "bullets",
-        "text": "Add a plan when we quote your website, or later, whenever you're ready\nSimple monthly pricing, agreed up front\nNo long contracts"
-      },
-      {
-        "style": "paragraph",
-        "text": "Plan pricing depends on the size of your site, so we quote it alongside your website. Send a request and tell us you'd like care included."
       }
     ],
     "image": "",
@@ -460,6 +420,79 @@ const DEFAULT_SETTINGS = {
   // Getting in touch (Admin -> Homepage & settings): the reply promise shown on the request and contact pages, and an
   // optional "book a call" link (a Google Calendar appointment page, Calendly...). The call button only shows once a link is set.
   reach: { promiseShow: true, promise: 'We reply within one business day.', callUrl: '', callLabel: 'Book a 15-minute call' },
+  // Optional ongoing care (Admin -> Homepage & settings -> Care plans): shown on /care-plans/ and offered on the request form.
+  care: {
+    "eyebrow": "Care plans",
+    "title": "Care & hosting plans",
+    "intro": "Launching is the start, not the finish. A care plan is completely optional: add it when we quote your website, or any time later. Month to month, with 30 days' notice to stop.",
+    "tiers": [
+      {
+        "name": "Essentials",
+        "price": "$49",
+        "per": "/month",
+        "tag": "Keep it running",
+        "text": "For sites that mostly sit there and do their job.",
+        "bullets": [
+          "Domain and hosting managed for you",
+          "Uptime monitoring",
+          "Security and software updates",
+          "1 small content change a month (about 30 minutes)",
+          "Email support, reply within 2 business days"
+        ]
+      },
+      {
+        "name": "Growth",
+        "price": "$119",
+        "per": "/month",
+        "tag": "Most popular",
+        "text": "For businesses that keep changing things.",
+        "bullets": [
+          "Everything in Essentials",
+          "2 hours of changes a month: text, photos, new pages, forms",
+          "Monthly report: visits and enquiries",
+          "Google Business Profile help",
+          "Reply within 1 business day"
+        ]
+      },
+      {
+        "name": "Partner",
+        "price": "$249",
+        "per": "/month",
+        "tag": "",
+        "text": "We act like your in-house web person.",
+        "bullets": [
+          "Everything in Growth",
+          "5 hours of changes a month",
+          "Quarterly review: what is working and what to change",
+          "Priority: same or next business day"
+        ]
+      }
+    ],
+    "note": "Extra work outside your plan is $100 an hour, with a 30-minute minimum. Pay for a year up front and get 2 months free. Plan hours don't roll over. Prices are in Australian dollars (AUD).",
+    "compare": {
+      "eyebrow": "The maths",
+      "title": "What a website costs over three years",
+      "intro": "Renting a platform looks cheap each month, but the rent never stops. Here is the honest comparison for a small business site.",
+      "items": [
+        {
+          "title": "Rent a platform yourself",
+          "total": "About $1,500–$2,000",
+          "text": "Shopify, Wix or Squarespace at roughly $42–$56 a month, plus apps and payment fees. You build it and look after it, and you rent it for as long as you use it."
+        },
+        {
+          "title": "Starter website, no care plan",
+          "total": "$1,500–$2,000 once",
+          "text": "Custom-built and yours to keep. After launch you only pay for your domain name, so from year four it costs next to nothing."
+        },
+        {
+          "title": "Starter website + Essentials",
+          "total": "About $3,300–$3,800",
+          "text": "The same custom site, plus someone who looks after it: hosting, updates, monitoring and changes, for $49 a month."
+        }
+      ],
+      "note": "Estimates only. Platform prices and fees change, so check them before you decide. Need a real online store with payments, stock and shipping? Shopify may be the right tool, and we'll tell you honestly if it is."
+    }
+  },
   // The "why clients choose us" strip under the homepage hero.
   trust: {
     show: true, eyebrow: 'Why clients choose us', title: 'What you get with every project',

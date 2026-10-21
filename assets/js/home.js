@@ -134,6 +134,7 @@
     txt('#pricing-foot', pr.footnote);
     $('#pricing-trust').hidden = !pr.trust;
     $('#pricing-trust').textContent = pr.trust || '';
+    $('#pricing-care').innerHTML = App.careTeaser(); $('#pricing-care').hidden = !$('#pricing-care').innerHTML;
     $('#pricing-grid').innerHTML = App.pricingHtml(tiers);
   }
 

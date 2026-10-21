@@ -63,6 +63,8 @@
             <label>Business or brand <span class="hint">Optional</span><input name="company" type="text" maxlength="120" autocomplete="organization"></label>
             <label class="field-full"><span id="siteLabel">Current website</span> <span class="hint">Optional</span><input name="current_site" type="text" maxlength="300" placeholder="https://"></label>
             <label class="field-full">When do you need it? <span class="hint">Optional</span><input name="timeline" type="text" maxlength="120" placeholder="e.g. live before December"></label>
+            <label class="field-full" id="careField">Interested in a care plan? <span class="hint">Optional: ongoing hosting, updates and changes. <a href="/care-plans/" style="color:var(--hot-text);text-decoration:underline">See the plans</a></span>
+              <select name="care" id="careSelect"><option value="">Not sure yet</option><option value="none">No thanks</option></select></label>
             <label class="field-full">Links or inspiration <span class="hint">Optional. Sites you like, one per line</span><textarea name="links" maxlength="1000" style="min-height:90px"></textarea></label>
           </div>
           <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">

@@ -98,6 +98,21 @@ supabase functions deploy request-update --no-verify-jwt
 ```
 and re-run `supabase/schema.sql` (it adds the requests table). Project emails (the notification to you, the customer's confirmation and progress updates) are sent from their own address: `supabase secrets set "ORDERS_EMAIL_FROM=Seventh Boar Orders <orders@seventhboar.com>"`, while the mailing list keeps using `EMAIL_FROM` (news@). To send the notification to a different inbox, `supabase secrets set ADMIN_EMAIL=someone@example.com`. `tools/email-preview.html` shows all the emails.
 
+## Getting clients: starter pages, trust signals, a short first step
+
+- **Starter pages** (admin → Pages → "Starter pages ready to add"): a FAQ (with Q&A search markup), Care & hosting plans,
+  a "how much does a website cost" guide, and three local pages (tradies, cafes and restaurants, small business, all
+  Brisbane). They're ordinary pages: edit the wording, prices and promises so they match your real terms. Industry pages are
+  listed on the Services page; every page ends with related pages and a "Start a project" box. Each page can be linked from
+  the menu and footer, the footer only, or nowhere.
+- **Homepage & settings → Getting in touch:** the reply promise (shown on the request and contact pages) and an optional
+  **book a call** link (a Google Calendar appointment page, Calendly…). The button only appears once a link is set.
+- **Homepage & settings → Trust strip / Footer / Pricing guide:** the three "why clients choose us" points under the hero,
+  your **location and ABN** in the footer (the ABN stays hidden until you type it in), and the **ownership line** shown under
+  the prices ("You own your website. No lock-in…").
+- **Phone bar:** on phones a "Start a project" bar sits at the bottom of every page except the request form.
+- **Request form:** the first step is just name, email and what you need; the rest is behind "Add more detail".
+
 ## Pages, motion and email routing (ported from the SPXTR Development site)
 
 **Pages** (admin → Pages). The five built-in pages each have a Showing / Hidden switch: a hidden page leaves the menu,

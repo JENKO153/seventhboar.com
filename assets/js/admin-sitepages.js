@@ -15,6 +15,9 @@
     await CMS.saveSettings(next);
     AD.DATA.settings = CMS.mergeSettings(next);
   }
+  // Starter pages (data.js) that aren't in the saved list yet: a saved list replaces the defaults, so offer them here.
+  const missingStarters = () => STARTER_PAGES.filter(sp => !(pages().custom || []).some(c => c.id === sp.id));
+  const WHERE_LABEL = { both: 'Menu and footer', footer: 'Footer', none: 'Nowhere' };
   const stateTag = p => (p.status === 'published' ? '<span class="tag tag--ok">Live</span>' : '<span class="tag">Draft</span>');
 
   /* =====================================================================
@@ -47,6 +50,10 @@
         </div>
       </div>
 
+      ${missingStarters().length ? `<div class="notice notice--demo" style="margin:14px 0 0;display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+        <span style="flex:1;min-width:240px"><b>Starter pages ready to add:</b> ${missingStarters().map(x => esc(x.navLabel || x.title)).join(', ')}. Written for you to edit; they go live as soon as they're added.</span>
+        <button type="button" class="btn btn--sm" id="addStarters">Add ${missingStarters().length === 1 ? 'it' : 'them'} to the site</button></div>` : ''}
+
       <div class="panel" style="margin-top:14px">
         <div class="toolbar">
           <h2 style="margin:0;font-size:inherit">Your pages</h2>
@@ -54,13 +61,13 @@
           <a class="btn" href="#page/new">+ New page</a>
         </div>
         <div class="table-wrap"><table>
-          <thead><tr><th>Page</th><th>Address</th><th>In menu</th><th class="num">Status</th></tr></thead>
+          <thead><tr><th>Page</th><th>Address</th><th>Linked from</th><th class="num">Status</th></tr></thead>
           <tbody id="customRows">
             ${custom.map(p => `
               <tr data-id="${esc(p.id)}">
                 <td><b>${esc(p.title)}</b>${p.intro ? `<br><small class="muted">${esc(p.intro)}</small>` : ''}</td>
                 <td><code>${esc(customPageUrl(p.id))}</code></td>
-                <td>${p.inNav !== false ? 'Yes' : 'No'}</td>
+                <td>${WHERE_LABEL[pageWhere(p)]}${p.group === 'industry' ? ' · Services page' : ''}</td>
                 <td class="num">${stateTag(p)}</td>
               </tr>`).join('') || '<tr><td colspan="4"><div class="empty">No pages of your own yet. Add one for an FAQ, hosting plans, or anything else.</div></td></tr>'}
           </tbody>
@@ -80,6 +87,15 @@
       list();
       AD.refreshLater();
     }));
+    $('#addStarters')?.addEventListener('click', async () => {
+      const add = missingStarters();
+      const ok = await AD.withWrite(`Enter your admin password to add ${add.length} starter page${add.length === 1 ? '' : 's'} to the site.`, () =>
+        savePages({ ...pages(), custom: [...(pages().custom || []), ...add.map(x => AD.clone(x))] }));
+      if (!ok) return;
+      AD.toast(`Added ${add.length} page${add.length === 1 ? '' : 's'}. They're live on the site`);
+      list();
+      AD.refreshLater();
+    });
     $('#customRows').addEventListener('click', e => { const tr = e.target.closest('tr[data-id]'); if (tr) AD.go(`#page/${tr.dataset.id}`); });
   }
 
@@ -97,7 +113,7 @@
     const existing = id !== 'new' && (pages().custom || []).find(p => p.id === id);
     if (id !== 'new' && !existing) { AD.toast('That page no longer exists', true); AD.go('#pages'); return; }
     const isNew = !existing;
-    const p = existing ? AD.clone(existing) : { id: null, title: '', navLabel: '', intro: '', image: '', blocks: [], inNav: true, status: 'draft' };
+    const p = existing ? AD.clone(existing) : { id: null, title: '', navLabel: '', intro: '', image: '', blocks: [], inNav: true, where: 'both', group: '', faq: false, status: 'draft' };
     const blocks = toBlocks(p.blocks);
     let slugTouched = !!existing;
     AD.setTitle(existing ? 'Edit page' : 'New page');
@@ -116,7 +132,11 @@
             <label>Intro <span class="hint">Optional. A line or two under the title.</span><textarea name="intro" rows="2" maxlength="300" style="min-height:70px">${esc(p.intro || '')}</textarea></label>
             <div class="field-row">
               <label>Menu label <span class="hint">Optional, a shorter name for the menu</span><input name="navLabel" maxlength="24" value="${esc(p.navLabel || '')}" placeholder="${esc(p.title || 'Hosting')}"></label>
-              <div style="align-self:end;padding-bottom:12px"><label class="toggle"><input type="checkbox" name="inNav" ${p.inNav !== false ? 'checked' : ''}>Show in the menu and footer</label></div>
+              <label>Where it's linked<select name="where"><option value="both">Menu and footer</option><option value="footer">Footer only</option><option value="none">Nowhere (link it yourself)</option></select></label>
+            </div>
+            <div class="field-row">
+              <label>Kind of page <span class="hint">Industry pages are listed on the Services page</span><select name="group"><option value="">General: guides, FAQ, plans…</option><option value="industry">Industry or local page</option></select></label>
+              <div style="align-self:end;padding-bottom:12px"><label class="toggle"><input type="checkbox" name="faq" ${p.faq ? 'checked' : ''}>This is a Q&amp;A page</label><span class="hint" style="display:block">A title or subtitle is a question and the text under it is the answer. Adds search-engine markup.</span></div>
             </div>
             <div><label style="margin-bottom:8px">Visibility</label>
               <div class="seg" id="status"><button type="button" data-v="draft" class="${!isLive() ? 'on' : ''}">Draft (hidden)</button><button type="button" data-v="published" class="${isLive() ? 'on' : ''}">Live on site</button></div>
@@ -151,6 +171,7 @@
       </div>`;
 
     const form = $('#pgform');
+    form.where.value = pageWhere(p); form.group.value = p.group || '';
     const header = AD.photoField($('#headerField'), { value: p.image || null, aspect: '16/6', onChange: () => changed() });
     const draft = () => ({ page: {
       ...p, image: header.get() ? AD.photoDraft(header.get()) : '',
@@ -170,7 +191,7 @@
       if (isNew && !slugTouched) form.slug.value = CMS.slugify(p.title).slice(0, 60);
       p.intro = form.intro.value.trim();
       p.navLabel = form.navLabel.value.trim();
-      p.inNav = form.inNav.checked;
+      p.where = form.where.value; p.group = form.group.value; p.faq = form.faq.checked; p.inNav = p.where !== 'none';
       $('#previewUrl').textContent = 'seventhboar.com' + customPageUrl((isNew ? form.slug.value.trim() : p.id) || 'new');
     };
     form.slug.addEventListener('input', () => { slugTouched = true; });
@@ -199,7 +220,7 @@
         const image = header.get() ? await AD.uploadOne(header.get(), 'pages') : '';
         const body = await AD.blocksForSave(blocks, 'pages');
         AD.progress('Saving…');
-        saved = { id: slug, title: p.title, navLabel: p.navLabel, intro: p.intro, image, blocks: body, inNav: p.inNav, status: p.status };
+        saved = { id: slug, title: p.title, navLabel: p.navLabel, intro: p.intro, image, blocks: body, inNav: p.inNav, where: p.where, group: p.group, faq: p.faq, status: p.status };
         const custom = existing ? (pages().custom || []).map(x => (x.id === existing.id ? saved : x)) : [...(pages().custom || []), saved];
         await savePages({ ...pages(), custom });
         await CMS.removeImages(AD.dropped(before, [saved.image, ...saved.blocks.map(b => b.image)].filter(Boolean)));

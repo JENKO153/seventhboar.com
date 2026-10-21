@@ -71,6 +71,7 @@
     bar.style.setProperty('--count', Math.max(1, promises.length));
     bar.hidden = !promises.length;
 
+    renderTrust();
     renderServices();
     renderPricing();
     renderTypes(projects);
@@ -111,6 +112,17 @@
   }
 
   // Sec. 02: what things cost. Hidden until at least one tier is added in the admin.
+  // The "why clients choose us" strip under the hero.
+  function renderTrust() {
+    const t = SETTINGS.trust || {};
+    const items = (t.items || []).filter(i => i && i.title);
+    $('#trust').hidden = !t.show || !items.length;
+    if ($('#trust').hidden) return;
+    txt('#trust-eyebrow', t.eyebrow);
+    txt('#trust-title', t.title);
+    $('#trust-grid').innerHTML = items.map((i, n) => `<div><span class="code">0${n + 1} //</span><strong>${esc(i.title)}</strong><p>${esc(i.text)}</p></div>`).join('');
+  }
+
   function renderPricing() {
     const pr = SETTINGS.pricing || {};
     const tiers = (pr.items || []).filter(t => t.title);
@@ -120,6 +132,8 @@
     txt('#pricing-title', pr.title);
     txt('#pricing-intro', pr.intro);
     txt('#pricing-foot', pr.footnote);
+    $('#pricing-trust').hidden = !pr.trust;
+    $('#pricing-trust').textContent = pr.trust || '';
     $('#pricing-grid').innerHTML = App.pricingHtml(tiers);
   }
 

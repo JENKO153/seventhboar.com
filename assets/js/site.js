@@ -52,7 +52,7 @@ const App = (() => {
   // [address, label, key] for the menu: Home, the visible built-in pages, your pages, then Contact last.
   function navItems() {
     const items = [['/', 'Home', 'home'], ...SITE_PAGES.filter(p => p.key !== 'contact' && visible(p.key)).map(p => [p.path, p.label, p.key])];
-    customPages().filter(p => p.inNav !== false).forEach(p => items.push([customPageUrl(p.id), p.navLabel || p.title, 'p:' + p.id]));
+    customPages().filter(p => pageWhere(p) === 'both').forEach(p => items.push([customPageUrl(p.id), p.navLabel || p.title, 'p:' + p.id]));
     if (visible('contact')) items.push(['/contact/', 'Contact', 'contact']);
     return items;
   }
@@ -62,9 +62,21 @@ const App = (() => {
     <img class="logo__mark" src="${SITE.brand.mark}" alt="" width="44" height="44">
     <span><span class="logo__text">${esc(SITE.short)}</span><span class="logo__sub">Development</span></span></a>`;
 
+  // The "book a call" link from Admin -> Homepage & settings -> Getting in touch, once it's a real https address.
+  function callLink() {
+    const r = SETTINGS.reach || {};
+    return /^https:\/\/[^\s]+$/i.test(r.callUrl || '') ? { url: r.callUrl, label: r.callLabel || 'Book a call' } : null;
+  }
+  // Page elements marked data-promise / data-call show the reply promise and the call button.
+  function fillReach() {
+    const r = SETTINGS.reach || {}, call = callLink();
+    $$('[data-promise]').forEach(el => { el.textContent = r.promise || ''; el.hidden = !(r.promiseShow && r.promise); });
+    $$('[data-call]').forEach(el => { el.hidden = !call; if (call) { el.href = call.url; el.textContent = call.label; } });
+  }
+
   function renderChrome(active = document.body.dataset.page || '') {
     const s = SETTINGS;
-    const sig = JSON.stringify([s.status, s.footer, s.socials, s.pages, active]);
+    const sig = JSON.stringify([s.status, s.footer, s.socials, s.pages, s.reach, active]);
     if (sig === chromeSig) return;
     chromeSig = sig;
     const socials = (s.socials || []).filter(x => x.label && safeLink(x.url));
@@ -91,6 +103,8 @@ const App = (() => {
       </div>`;
 
     const email = s.footer.email || SITE.email;
+    const place = [s.footer.location, s.footer.abn ? `ABN ${s.footer.abn}` : ''].filter(Boolean).join(' · ');
+    const call = callLink();
     $('#chrome-bottom').innerHTML = `
       <footer class="footer">
         <div class="wrap">
@@ -101,19 +115,21 @@ const App = (() => {
               <p style="max-width:380px;margin:0 0 18px">${esc(s.footer.blurb)}</p>
               <div class="socials">${socials.map(x => `<a href="${esc(safeLink(x.url))}" target="_blank" rel="noopener noreferrer" aria-label="${esc(x.label)}" title="${esc(x.label)}">${socialSvg(iconFor(x.label, x.url))}</a>`).join('')}</div>
             </div>
-            <div><h5>// Explore</h5><ul>${[['work', '/work/', 'Work'], ['devlog', '/devlog/', 'Devlog'], ['services', '/services/', 'Services']].filter(([k]) => visible(k)).map(([, h, l]) => footerLink(h, l)).join('')}${customPages().filter(p => p.inNav !== false).map(p => footerLink(customPageUrl(p.id), p.navLabel || p.title)).join('')}</ul></div>
+            <div><h5>// Explore</h5><ul>${[['work', '/work/', 'Work'], ['devlog', '/devlog/', 'Devlog'], ['services', '/services/', 'Services']].filter(([k]) => visible(k)).map(([, h, l]) => footerLink(h, l)).join('')}${customPages().filter(p => pageWhere(p) !== 'none').map(p => footerLink(customPageUrl(p.id), p.navLabel || p.title)).join('')}</ul></div>
             <div><h5>// Studio</h5><ul>${[['about', '/about/', 'About'], ['contact', '/contact/', 'Contact']].filter(([k]) => visible(k)).map(([, h, l]) => footerLink(h, l)).join('')}<li><a href="/privacy/">Privacy</a></li></ul></div>
             <div><h5>// Connect</h5><ul><li><a href="mailto:${esc(email)}">Email</a></li>${socials.map(x => `<li><a href="${esc(safeLink(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.label)}</a></li>`).join('')}${visible('devlog') ? '<li><a href="/devlog/feed.xml">RSS</a></li>' : ''}</ul></div>
           </div>
           <div class="footer__bottom">
             <span>© ${new Date().getFullYear()} ${esc(SITE.name)} · ${esc(s.footer.tagline)}</span>
+            ${place ? `<span>${esc(place)}</span>` : ''}
             <span>${esc(email)}</span>
           </div>
           <span class="footer__binary" aria-hidden="true">${BINARY_NAME}</span>
         </div>
         <div class="footer__giant" aria-hidden="true" style="-webkit-mask-image:url('${SITE.brand.giant}');mask-image:url('${SITE.brand.giant}')"><span class="giant__liquid"><span class="giant__wave"></span></span></div>
       </footer>
-      <div class="toast" role="status">${ICON.check}<span></span></div>`;
+      <div class="toast" role="status">${ICON.check}<span></span></div>
+      ${active === 'request' || PREVIEW ? '' : `<div class="cta-bar"><a class="btn" href="/request/">Start a project</a>${call ? `<a class="btn btn--ghost" href="${esc(call.url)}" target="_blank" rel="noopener">${esc(call.label)}</a>` : ''}</div>`}`;
 
     // Brand accent from Admin -> Customise
     window.sbAccent?.apply(s.theme?.accent);
@@ -255,6 +271,7 @@ const App = (() => {
     if (data.comingSoon) previewBar();
     if (!PREVIEW) cacheSettings(SETTINGS);
     renderChrome(active);
+    fillReach();
     // A page switched off in Admin -> Pages: say so instead of drawing it (the admin's own preview still shows it).
     const off = !PREVIEW && hiddenPageFor(location.pathname);
     if (off) { showUnavailable(); shown(); await new Promise(() => {}); }
@@ -369,5 +386,5 @@ const App = (() => {
       </article>`).join('');
   }
 
-  return { boot, renderChrome, toast, Cards, onPreview, previewBar, servicesHtml, pricingHtml, visible, customPages };
+  return { boot, renderChrome, toast, Cards, onPreview, previewBar, servicesHtml, pricingHtml, visible, customPages, fillReach };
 })();

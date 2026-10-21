@@ -22,6 +22,8 @@
     $('#wl-pricing-title').textContent = pr.title || 'Pricing guide';
     $('#wl-pricing-intro').textContent = pr.intro || '';
     $('#wl-pricing-foot').textContent = pr.footnote || '';
+    $('#wl-pricing-trust').hidden = !pr.trust;
+    $('#wl-pricing-trust').textContent = pr.trust || '';
     $('#wl-pricing-grid').innerHTML = App.pricingHtml(tiers);
   }
 

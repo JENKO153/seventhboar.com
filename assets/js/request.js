@@ -12,6 +12,16 @@
   setKind(new URLSearchParams(location.search).get('type') === 'app' ? 'app' : 'website');
   form.addEventListener('change', e => { if (e.target.name === 'kind') setKind(kindNow()); });
 
+  // The first step is just name, email and what you need. The rest opens when asked for.
+  const more = $('#moreFields'), toggle = $('#moreToggle');
+  toggle.addEventListener('click', () => {
+    const open = more.hidden;
+    more.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    $('#moreLabel').textContent = open ? 'Hide extra detail' : 'Add more detail';
+    if (open) $('input', more).focus();
+  });
+
   const show = (msg, kind) => {
     status.textContent = msg;
     status.classList.remove('success', 'error');

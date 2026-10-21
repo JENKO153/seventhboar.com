@@ -41,7 +41,7 @@
         <div class="crumbs"><a href="/">Home</a> // <span>Start a project</span></div>
         <h1 class="display">Tell us what you need.</h1>
         <p class="lead">Send a request for a website, or an app. We read every one, come back to you with a yes or no, and you can follow it every step of the way.</p>
-
+        <p class="promise" data-promise hidden style="margin-top:18px"></p>
       </div>
     </div>
     <section class="section">
@@ -55,16 +55,19 @@
           <div class="form-grid">
             <label>Your name<input name="name" type="text" required maxlength="100" autocomplete="name"></label>
             <label>Email<input name="email" type="email" required maxlength="200" autocomplete="email"></label>
+            <label class="field-full">What do you need?<textarea name="brief" required maxlength="4000" placeholder="What is it, who is it for, and what does it need to do? A few lines is plenty."></textarea></label>
+          </div>
+          <button type="button" class="more-toggle" id="moreToggle" aria-expanded="false" aria-controls="moreFields"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span id="moreLabel">Add more detail</span> <span class="hint">Optional</span></button>
+          <div class="form-grid" id="moreFields" hidden>
             <label>Phone <span class="hint">Optional</span><input name="phone" type="tel" maxlength="40" autocomplete="tel"></label>
             <label>Business or brand <span class="hint">Optional</span><input name="company" type="text" maxlength="120" autocomplete="organization"></label>
             <label class="field-full"><span id="siteLabel">Current website</span> <span class="hint">Optional</span><input name="current_site" type="text" maxlength="300" placeholder="https://"></label>
             <label class="field-full">When do you need it? <span class="hint">Optional</span><input name="timeline" type="text" maxlength="120" placeholder="e.g. live before December"></label>
-            <label class="field-full">Tell us about the project<textarea name="brief" required maxlength="4000" placeholder="What is it, who is it for, and what does it need to do?"></textarea></label>
             <label class="field-full">Links or inspiration <span class="hint">Optional. Sites you like, one per line</span><textarea name="links" maxlength="1000" style="min-height:90px"></textarea></label>
           </div>
           <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
           <label class="toggle-row"><input type="checkbox" name="consent" required><span>I'm happy for Seventh Boar Development to email me about this request. <a href="/privacy/">Privacy</a></span></label>
-          <button class="btn" type="submit" id="requestSubmit">Send request</button>
+          <div class="form-actions"><button class="btn" type="submit" id="requestSubmit">Send request</button><a class="btn btn--ghost" data-call hidden href="#" target="_blank" rel="noopener">Book a call</a></div>
           <div class="form-status" id="requestStatus" role="alert"></div>
         </form>
         <aside class="stack">

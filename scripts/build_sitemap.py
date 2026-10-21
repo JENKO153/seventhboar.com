@@ -42,6 +42,12 @@ def day(value):
     return (value or datetime.date.today().isoformat())[:10]
 
 
+def starter_pages():
+    """The STARTER_PAGES list in assets/js/data.js (plain JSON between two marker comments)."""
+    m = re.search(r"// STARTER_PAGES\nconst STARTER_PAGES = (\[.*?\]);\n// END STARTER_PAGES", (ROOT / "assets" / "js" / "data.js").read_text(), re.S)
+    return json.loads(m.group(1)) if m else []
+
+
 def settings_pages():
     """Admin -> Pages: which built-in pages are switched off, and the live pages made there."""
     req = urllib.request.Request(f"{SUPABASE_URL}/rest/v1/site_settings?select=data&id=eq.1",
@@ -49,7 +55,9 @@ def settings_pages():
     with urllib.request.urlopen(req, timeout=30) as res:
         rows = json.loads(res.read().decode("utf-8"))
     pages = ((rows[0].get("data") if rows else None) or {}).get("pages") or {}
-    custom = [p for p in pages.get("custom") or [] if p.get("id") and p.get("status") == "published"]
+    # Until Admin -> Pages has saved a list of its own, the site shows the starter pages from assets/js/data.js.
+    listed = pages["custom"] if "custom" in pages else starter_pages()
+    custom = [p for p in listed or [] if p.get("id") and p.get("status") == "published"]
     return set(pages.get("hidden") or []), custom
 
 

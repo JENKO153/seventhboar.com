@@ -175,6 +175,7 @@
     const foldService = ({ bulletsText, ...x }) => ({ ...x, bullets: lines(bulletsText || '', 6, 80) });
     const pricing = (s.pricing.items || []).map(x => ({ kind: '', ...x, bulletsText: (x.bullets || []).join('\n') }));
     const foldPricing = ({ bulletsText, ...x }) => ({ ...x, bullets: lines(bulletsText || '', 8, 90) });
+    const trust = (s.trust.items || []).map(x => ({ ...x }));
     const A = AD.ADMIN;
 
     view.innerHTML = `
@@ -206,6 +207,27 @@
           <div class="section">
             <h3>Header</h3>
             <label>Status chip <span class="hint">The small tag in the header. Leave empty to hide it.</span><input name="status" maxlength="40" value="${esc(s.status)}"></label>
+          </div>
+
+          <div class="section">
+            <h3>Getting in touch <small>The reply promise and an optional "book a call" button</small></h3>
+            <label class="toggle"><input type="checkbox" name="rcShow" ${s.reach.promiseShow ? 'checked' : ''}>Show a reply promise on the request and contact pages</label>
+            <label>Promise <span class="hint">Only promise what you'll keep</span><input name="rcText" maxlength="100" value="${esc(s.reach.promise)}"></label>
+            <div class="field-row">
+              <label>Book a call link <span class="hint">A Google Calendar appointment page, Calendly, etc. Leave empty for no call button.</span><input name="rcUrl" maxlength="300" placeholder="https://" value="${esc(s.reach.callUrl)}"></label>
+              <label>Button text<input name="rcLabel" maxlength="40" value="${esc(s.reach.callLabel)}"></label>
+            </div>
+            <p class="hint" style="margin:0">With a link set, the button shows on the request page, the contact page, the bottom of your pages, and beside "Start a project" in the phone bar.</p>
+          </div>
+
+          <div class="section">
+            <h3>Trust strip <small>Under the homepage hero: why clients choose you</small></h3>
+            <label class="toggle"><input type="checkbox" name="trShow" ${s.trust.show ? 'checked' : ''}>Show the strip</label>
+            <div class="field-row">
+              <label>Small text above<input name="trEyebrow" maxlength="60" value="${esc(s.trust.eyebrow)}"></label>
+              <label>Heading<input name="trTitle" maxlength="60" value="${esc(s.trust.title)}"></label>
+            </div>
+            <div class="items" id="trustList"></div>
           </div>
 
           <div class="section">
@@ -247,6 +269,7 @@
             </div>
             <label>Intro<textarea name="prIntro" rows="2" maxlength="300" style="min-height:70px">${esc(s.pricing.intro)}</textarea></label>
             <div class="items" id="pricingList"></div>
+            <label>Ownership line <span class="hint">Shown under the prices on the homepage, Services page and welcome page. Only say what's true of your terms.</span><input name="prTrust" maxlength="200" value="${esc(s.pricing.trust || '')}"></label>
             <label>Small print <span class="hint">Optional, e.g. what's included or excluded, GST, payment terms</span><textarea name="prFoot" rows="2" maxlength="400" style="min-height:70px">${esc(s.pricing.footnote)}</textarea></label>
           </div>
 
@@ -322,6 +345,10 @@
             <div class="field-row">
               <label>Motto<input name="ftTagline" maxlength="60" value="${esc(s.footer.tagline)}"></label>
               <label>Contact email<input name="ftEmail" type="email" maxlength="120" value="${esc(s.footer.email)}"></label>
+            </div>
+            <div class="field-row">
+              <label>Location <span class="hint">Shown in the footer</span><input name="ftLocation" maxlength="80" value="${esc(s.footer.location || '')}"></label>
+              <label>ABN <span class="hint">Shown in the footer once filled in</span><input name="ftAbn" maxlength="20" placeholder="12 345 678 901" value="${esc(s.footer.abn || '')}"></label>
             </div>
             <label>About text<textarea name="ftBlurb" rows="2" maxlength="400" style="min-height:70px">${esc(s.footer.blurb)}</textarea></label>
           </div>
@@ -414,14 +441,16 @@
       s.status = f.status.value.trim();
       s.hero.bar = lines(f.heroBar.value, 4, 60);
       Object.assign(s.servicesSection, { show: f.svShow.checked, eyebrow: f.svEyebrow.value, title: f.svTitle.value, intro: f.svIntro.value });
-      Object.assign(s.pricing, { eyebrow: f.prEyebrow.value, title: f.prTitle.value, intro: f.prIntro.value, footnote: f.prFoot.value });
+      Object.assign(s.pricing, { eyebrow: f.prEyebrow.value, title: f.prTitle.value, intro: f.prIntro.value, footnote: f.prFoot.value, trust: f.prTrust.value.trim() });
       Object.assign(s.typesSection, { eyebrow: f.tyEyebrow.value, title: f.tyTitle.value, link: f.tyLink.value });
       Object.assign(s.latestSection, { eyebrow: f.ltEyebrow.value, title: f.ltTitle.value, intro: f.ltIntro.value });
       Object.assign(s.devlogSection, { eyebrow: f.dvEyebrow.value, title: f.dvTitle.value });
       Object.assign(s.build, { show: f.bdShow.checked, eyebrow: f.bdEyebrow.value, title: f.bdTitle.value, intro: f.bdIntro.value, cta: f.bdCta.value, ctaUrl: f.bdUrl.value.trim() });
       Object.assign(s.cta, { show: f.ctShow.checked, title: f.ctTitle.value, text: f.ctText.value, ctaText: f.ctCta.value, ctaUrl: f.ctUrl.value.trim() });
       Object.assign(s.newsletter, { show: f.nlShow.checked, eyebrow: f.nlEyebrow.value, title: f.nlTitle.value, text: f.nlText.value, fine: f.nlFine.value, thanks: f.nlThanks.value });
-      Object.assign(s.footer, { tagline: f.ftTagline.value, email: f.ftEmail.value.trim(), blurb: f.ftBlurb.value });
+      Object.assign(s.footer, { tagline: f.ftTagline.value, email: f.ftEmail.value.trim(), blurb: f.ftBlurb.value, location: f.ftLocation.value.trim(), abn: f.ftAbn.value.trim() });
+      Object.assign(s.reach, { promiseShow: f.rcShow.checked, promise: f.rcText.value.trim(), callUrl: f.rcUrl.value.trim(), callLabel: f.rcLabel.value.trim() });
+      Object.assign(s.trust, { show: f.trShow.checked, eyebrow: f.trEyebrow.value.trim(), title: f.trTitle.value.trim() });
       Object.assign(s.hero, { line1: f.line1.value.trim(), line2: f.line2.value.trim(), eyebrow: f.eyebrow.value.trim(), subtitle: f.subtitle.value.trim(), cta: f.cta.value.trim(), ctaUrl: f.ctaUrl.value.trim(), cta2: f.cta2.value.trim(), cta2Url: f.cta2Url.value.trim() });
       Object.assign(s.comingSoon, { eyebrow: f.csEyebrow.value.trim(), title: f.csTitle.value.trim(), text: f.csText.value.trim(), showEmail: f.csEmail.checked });
       Object.assign(s.release, { show: f.evShow.checked, kind: f.evKind.value === 'event' ? 'event' : 'release', name: f.evName.value.trim(), round: f.evRound.value.trim(),
@@ -443,6 +472,11 @@
           <label>Button text<input name="ctaText" maxlength="30" value="${esc(x.ctaText || '')}" placeholder="Start a website"></label>
           <label>Button address<input name="ctaUrl" maxlength="300" value="${esc(x.ctaUrl || '')}" placeholder="/contact/"></label>
         </div>` });
+    AD.listSection({ host: $('#trustList'), list: trust, max: 4, photo: false, onChange: changed,
+      blank: { title: '', text: '' }, label: (x, i) => x.title || `Point ${i + 1}`,
+      row: x => `
+        <label>Title<input name="title" maxlength="50" value="${esc(x.title || '')}" placeholder="A private progress tracker"></label>
+        <label>Text<textarea name="text" rows="2" maxlength="240" style="min-height:70px">${esc(x.text || '')}</textarea></label>` });
     AD.listSection({ host: $('#pricingList'), list: pricing, max: 6, photo: false, onChange: changed,
       blank: { kind: 'website', tag: '', title: '', price: '', text: '', bulletsText: '' }, label: (x, i) => x.title || `Tier ${i + 1}`,
       row: x => `
@@ -466,6 +500,7 @@
       e.preventDefault();
       read();
       if (!s.hero.line1) return AD.toast('The headline needs at least line 1', true);
+      if (s.reach.callUrl && !/^https:\/\/[^\s]+$/i.test(s.reach.callUrl)) return AD.toast('The book a call link must start with https://', true);
       const before = [AD.DATA.settings.hero.image, AD.DATA.settings.release.image, ...AD.DATA.settings.build.images].filter(Boolean);
       const ok = await AD.withWrite('Enter your admin password to update the homepage.', async () => {
         const img = hero.get() ? await AD.uploadOne(hero.get(), 'pages') : '';
@@ -477,6 +512,7 @@
           release: { ...s.release, image: evSaved[0].image },
           servicesSection: { ...s.servicesSection, items: services.map(foldService).filter(x => x.title) },
           pricing: { ...s.pricing, items: pricing.map(foldPricing).filter(x => x.title && x.price) },
+          trust: { ...s.trust, items: trust.filter(x => x.title) },
           build: { ...s.build, images: buildSaved.map(x => x.image).filter(Boolean), specs: specs.map(r => ({ label: r.specLabel, value: r.specValue })).filter(r => r.label || r.value) },
         };
         await CMS.saveSettings(next);

@@ -40,6 +40,341 @@ const SITE_PAGES = Object.freeze([
 ]);
 // Pages made in Admin -> Pages live at /p/?id=<slug>.
 const customPageUrl = id => `/p/?id=${encodeURIComponent(id)}`;
+// Where a page of your own is linked: 'both' (menu and footer), 'footer' or 'none' (reachable by its address
+// and from other pages only). Older pages only have inNav.
+const pageWhere = p => p.where || (p.inNav === false ? 'none' : 'both');
+
+// The starter pages shown on a fresh site (FAQ, care plans, a cost guide, three local pages). They are ordinary
+// pages: edit or delete them in Admin -> Pages, and the first save keeps whatever you decide. Written as plain JSON
+// so scripts/build_sitemap.py can read the same list.
+// STARTER_PAGES
+const STARTER_PAGES = [
+  {
+    "id": "faq",
+    "title": "Website FAQ",
+    "navLabel": "FAQ",
+    "intro": "Straight answers to the questions we get asked most about getting a website built.",
+    "where": "both",
+    "faq": true,
+    "blocks": [
+      {
+        "style": "subtitle",
+        "text": "How much does a website cost?"
+      },
+      {
+        "style": "paragraph",
+        "text": "It depends on what you need. As a guide: a one-page Lite landing page starts from $500, a Starter website (up to five pages) is $1,500 to $2,000, and a Business website with more pages and a way to update it yourself is $3,000 to $4,500. Bigger or more custom builds are quoted individually. All prices are in Australian dollars. Send a request and we'll confirm what yours would involve."
+      },
+      {
+        "style": "subtitle",
+        "text": "How long does it take?"
+      },
+      {
+        "style": "paragraph",
+        "text": "A one-page site is usually live within a week. A full website depends mostly on how quickly we get your text and photos and how many rounds of feedback it takes, so a typical small business site takes a few weeks. You'll get a clear timeline when we accept your request."
+      },
+      {
+        "style": "subtitle",
+        "text": "Who owns the website?"
+      },
+      {
+        "style": "paragraph",
+        "text": "You do. Your website, your content and your domain name are yours, with no lock-in. We'll explain exactly how hosting and handover work in your quote, so there are no surprises."
+      },
+      {
+        "style": "subtitle",
+        "text": "Do you do hosting?"
+      },
+      {
+        "style": "paragraph",
+        "text": "Yes. We can host your site and look after it after launch, or set it up on hosting you already have. Our care and hosting plans cover keeping it online, secure and up to date."
+      },
+      {
+        "style": "subtitle",
+        "text": "Can I update the website myself?"
+      },
+      {
+        "style": "paragraph",
+        "text": "Yes. The Business website includes an admin panel so you can change text and photos yourself, no developer needed. On smaller sites, send us what you'd like changed and we'll take care of it."
+      },
+      {
+        "style": "subtitle",
+        "text": "Will my website work on phones?"
+      },
+      {
+        "style": "paragraph",
+        "text": "Yes. Every site we build is designed mobile-first and checked on phones, tablets and desktops before it launches."
+      },
+      {
+        "style": "subtitle",
+        "text": "Will people be able to find my business on Google?"
+      },
+      {
+        "style": "paragraph",
+        "text": "We build every site with clean structure, fast loading and the basics of on-page SEO, which gives you a solid start. Ranking well also depends on your competition, your Google Business Profile and your reviews, and we can talk you through the next steps. We can't promise a ranking position, and anyone who does is guessing."
+      },
+      {
+        "style": "subtitle",
+        "text": "What do you need from me to get started?"
+      },
+      {
+        "style": "paragraph",
+        "text": "A short description of your business and what you want the site to do, any logo and photos you already have, and a few sites you like. Don't worry if you don't have it all: we'll help you work out the rest."
+      },
+      {
+        "style": "subtitle",
+        "text": "How do I see how my project is going?"
+      },
+      {
+        "style": "paragraph",
+        "text": "Every request gets a private tracking link, with no account or password needed. It shows exactly where your project is up to, from accepted through design and build to launch, and you get an email at each step."
+      },
+      {
+        "style": "subtitle",
+        "text": "Do you build apps too?"
+      },
+      {
+        "style": "paragraph",
+        "text": "Yes, on request. Websites are our main focus, but we build iOS and Android apps for the right projects. Tell us the idea and we'll tell you honestly whether it's a fit."
+      },
+      {
+        "style": "subtitle",
+        "text": "Where are you based?"
+      },
+      {
+        "style": "paragraph",
+        "text": "We're based in Brisbane, Queensland, and work with clients across Australia. Most of the work happens online, so you don't need to be local."
+      },
+      {
+        "style": "subtitle",
+        "text": "How do I get started?"
+      },
+      {
+        "style": "paragraph",
+        "text": "Send a project request. It takes about a minute, and we'll reply with a yes or no and what comes next."
+      }
+    ],
+    "image": "",
+    "inNav": true,
+    "status": "published"
+  },
+  {
+    "id": "care-and-hosting-plans",
+    "title": "Care & hosting plans",
+    "navLabel": "Care plans",
+    "intro": "Launching is the start, not the finish. Here is how we keep your website running, current and secure after it goes live.",
+    "where": "footer",
+    "blocks": [
+      {
+        "style": "paragraph-lg",
+        "text": "A website works best when someone is looking after it. A care plan means you have a person to ask, not a ticket number, when something needs changing."
+      },
+      {
+        "style": "title",
+        "text": "What a care plan can include"
+      },
+      {
+        "style": "bullets",
+        "text": "Hosting and your domain name managed for you\nSecurity and software updates\nContent changes: text, photos, opening hours, new pages\nA check that your forms, links and pages still work\nA person to ask when something goes wrong or you have an idea"
+      },
+      {
+        "style": "title",
+        "text": "Who it's for"
+      },
+      {
+        "style": "paragraph",
+        "text": "Anyone who would rather run their business than learn how to run a website. If you're comfortable looking after your own site, you can skip a plan and we'll hand over what you need."
+      },
+      {
+        "style": "title",
+        "text": "How it works"
+      },
+      {
+        "style": "bullets",
+        "text": "Add a plan when we quote your website, or later, whenever you're ready\nSimple monthly pricing, agreed up front\nNo long contracts"
+      },
+      {
+        "style": "paragraph",
+        "text": "Plan pricing depends on the size of your site, so we quote it alongside your website. Send a request and tell us you'd like care included."
+      }
+    ],
+    "image": "",
+    "inNav": true,
+    "status": "published"
+  },
+  {
+    "id": "how-much-does-a-website-cost-in-australia",
+    "title": "How much does a small business website cost in Australia?",
+    "navLabel": "Website costs",
+    "intro": "A plain-English guide to what drives the price of a website, with our own starting prices.",
+    "where": "footer",
+    "blocks": [
+      {
+        "style": "paragraph-lg",
+        "text": "Quotes for the same website can range from a few hundred dollars to tens of thousands. Here's what actually drives the price, and what you can expect to pay for a small business website in Australia."
+      },
+      {
+        "style": "title",
+        "text": "What changes the price"
+      },
+      {
+        "style": "bullets",
+        "text": "How many pages you need\nCustom design versus a reused template\nFeatures such as booking, enquiry forms, online payments or a login area\nWhether you can update it yourself or we do it for you\nHow much content (text and photos) we need to write or source"
+      },
+      {
+        "style": "title",
+        "text": "Our starting prices (AUD)"
+      },
+      {
+        "style": "bullets",
+        "text": "Lite landing page: from $500. One well-designed page to get you online fast.\nStarter website: $1,500 to $2,000. Up to five pages, designed and built from scratch.\nBusiness website: $3,000 to $4,500. More pages, forms, and an admin panel so you can update it yourself.\nCustom builds and apps: quoted individually."
+      },
+      {
+        "style": "title",
+        "text": "What to look for in any quote"
+      },
+      {
+        "style": "bullets",
+        "text": "Is the design made for your business, or a reused template?\nWho owns the site, the content and the domain name?\nIs hosting included, and what does it cost after the first year?\nWhat happens when you want a change: how fast, and what does it cost?\nWill it work properly on phones?"
+      },
+      {
+        "style": "title",
+        "text": "Costs after launch"
+      },
+      {
+        "style": "paragraph",
+        "text": "Beyond the build, there's a domain name (a modest yearly cost) and hosting, if it isn't included. A care plan is optional on top."
+      },
+      {
+        "style": "title",
+        "text": "Get a clear number"
+      },
+      {
+        "style": "paragraph",
+        "text": "Send us a quick request and we'll tell you what yours would involve and what it would cost. No obligation."
+      }
+    ],
+    "image": "",
+    "inNav": true,
+    "status": "published"
+  },
+  {
+    "id": "websites-for-tradies-brisbane",
+    "title": "Websites for tradies in Brisbane",
+    "navLabel": "Tradies",
+    "intro": "A simple, fast website that turns \"who's a good sparky near me?\" into phone calls and quote requests.",
+    "where": "none",
+    "group": "industry",
+    "blocks": [
+      {
+        "style": "paragraph-lg",
+        "text": "When someone needs a plumber, electrician, builder or landscaper, they search on their phone, look at two or three sites, and call the first one that looks trustworthy. A good tradie website makes sure that's you."
+      },
+      {
+        "style": "title",
+        "text": "What a tradie website needs"
+      },
+      {
+        "style": "bullets",
+        "text": "Your services and the suburbs you cover, clearly listed\nA tap-to-call button and a quick quote request form\nPhotos of your real work\nYour licence number, insurance and reviews, front and centre\nFast loading on a phone with patchy signal"
+      },
+      {
+        "style": "title",
+        "text": "Where we'd start"
+      },
+      {
+        "style": "paragraph",
+        "text": "Most tradies are well served by our Lite landing page or Starter website: a handful of pages, built to be found on Google in the suburbs you work in, and live fast. If you'd like to update photos and jobs yourself, the Business website adds an admin panel."
+      },
+      {
+        "style": "title",
+        "text": "Found locally"
+      },
+      {
+        "style": "paragraph",
+        "text": "We set your site up for local search and show you how to get your Google Business Profile working alongside it, because that's where most tradie enquiries start."
+      }
+    ],
+    "image": "",
+    "inNav": false,
+    "status": "published"
+  },
+  {
+    "id": "websites-for-cafes-and-restaurants-brisbane",
+    "title": "Websites for cafes and restaurants in Brisbane",
+    "navLabel": "Cafes & restaurants",
+    "intro": "Menus, hours and bookings that are easy to find, and a site that looks as good as the food.",
+    "where": "none",
+    "group": "industry",
+    "blocks": [
+      {
+        "style": "paragraph-lg",
+        "text": "Hungry people check three things: what's on the menu, whether you're open, and how to get a table. If they can't find those in a few seconds, they move on."
+      },
+      {
+        "style": "title",
+        "text": "What a hospitality website needs"
+      },
+      {
+        "style": "bullets",
+        "text": "A menu that's easy to read on a phone, not a PDF to pinch and zoom\nOpening hours and your address with a map link\nA booking or enquiry option for tables and events\nPhotos that make people hungry\nSpecials and news you can update quickly"
+      },
+      {
+        "style": "title",
+        "text": "Where we'd start"
+      },
+      {
+        "style": "paragraph",
+        "text": "A Starter website covers most cafes: home, menu, about and contact. If you want to change menus, hours and specials yourself without calling anyone, the Business website includes an admin panel for exactly that."
+      }
+    ],
+    "image": "",
+    "inNav": false,
+    "status": "published"
+  },
+  {
+    "id": "websites-for-small-business-and-sole-traders-brisbane",
+    "title": "Websites for small businesses and sole traders in Brisbane",
+    "navLabel": "Small business",
+    "intro": "Look established, get found, and make it easy for customers to get in touch, without an agency-sized budget.",
+    "where": "none",
+    "group": "industry",
+    "blocks": [
+      {
+        "style": "paragraph-lg",
+        "text": "You don't need a huge site. You need one that explains what you do, shows you're the real thing, and makes the next step obvious."
+      },
+      {
+        "style": "title",
+        "text": "What a small business website needs"
+      },
+      {
+        "style": "bullets",
+        "text": "A clear one-line explanation of what you do and who it's for\nProof you're good: photos, reviews, past work\nAn easy way to get in touch: call, email or a short form\nSimple pages you can understand and keep current\nGood foundations for Google, so customers can find you"
+      },
+      {
+        "style": "title",
+        "text": "Where we'd start"
+      },
+      {
+        "style": "paragraph",
+        "text": "If you're starting out or need something online quickly, our Lite landing page from $500 gets you a proper presence, usually within a week. As you grow, we can build it up into a full website."
+      },
+      {
+        "style": "title",
+        "text": "Not sure what you need?"
+      },
+      {
+        "style": "paragraph",
+        "text": "Send a request and tell us about your business. We'll recommend the simplest option that does the job, even if that's the cheaper one."
+      }
+    ],
+    "image": "",
+    "inNav": false,
+    "status": "published"
+  }
+];
+// END STARTER_PAGES
 
 // What kind of project it is. The keys are what's stored in the database.
 const PROJECT_TYPES = Object.freeze([
@@ -112,8 +447,8 @@ const iconFor = (label, url) => {
 const DEFAULT_SETTINGS = {
   theme: { accent: '#97292A' },  // Admin -> Customise
   // Admin -> Pages: built-in pages switched off, and pages of your own
-  //   custom: [{ id, title, navLabel, intro, image, blocks: [{ style, text, image }], inNav, status }]
-  pages: { hidden: [], custom: [] },
+  //   custom: [{ id, title, navLabel, intro, image, blocks: [{ style, text, image }], where, group, faq, status }]
+  pages: { hidden: [], custom: STARTER_PAGES },
   status: 'Independent Australian studio',
   // The "coming soon" curtain (Admin -> Homepage & settings). The switch itself lives in the database.
   comingSoon: {
@@ -121,6 +456,18 @@ const DEFAULT_SETTINGS = {
     title: 'Something\'s coming.',
     text: "We're building it right now. Drop your email and you'll be first through the gate when it opens.",
     showEmail: true,
+  },
+  // Getting in touch (Admin -> Homepage & settings): the reply promise shown on the request and contact pages, and an
+  // optional "book a call" link (a Google Calendar appointment page, Calendly...). The call button only shows once a link is set.
+  reach: { promiseShow: true, promise: 'We reply within one business day.', callUrl: '', callLabel: 'Book a 15-minute call' },
+  // The "why clients choose us" strip under the homepage hero.
+  trust: {
+    show: true, eyebrow: 'Why clients choose us', title: 'What you get with every project',
+    items: [
+      { title: 'A private progress tracker', text: 'Every request gets its own private link showing exactly where your project is up to, from accepted to launched. No chasing, no guessing.' },
+      { title: 'You own your website', text: 'No lock-in. Your website, your content and your domain name are yours.' },
+      { title: 'Brisbane-based, Australia-wide', text: 'A small independent studio you deal with directly, working with clients right across the country.' },
+    ],
   },
   socials: [
     { label: 'Instagram', url: 'https://instagram.com/seventhboardevelopment' },
@@ -159,6 +506,7 @@ const DEFAULT_SETTINGS = {
     eyebrow: 'Sec. 02 // Pricing', title: 'Pricing guide',
     intro: 'Every project is different, so treat these as starting points. Send a request and we\'ll confirm what yours would involve.',
     footnote: 'Prices are in Australian dollars (AUD).',
+    trust: 'You own your website. No lock-in: your site, your content and your domain name are yours.',
     items: [
       { kind: 'website', tag: 'Quick & simple', title: 'Lite landing page', price: 'From $500',
         text: 'A single, well-designed page to get you online fast: a simple presence, a personal brand, or a "coming soon" while something bigger is built.',
@@ -215,6 +563,8 @@ const DEFAULT_SETTINGS = {
     tagline: 'Built with purpose. Made with bite.',
     blurb: 'An independent Australian studio building custom websites for businesses and brands, with apps built on request.',
     email: 'Admin@seventhboar.com',
+    abn: '',                              // shown in the footer when filled in (Admin -> Homepage & settings -> Footer)
+    location: 'Brisbane, Queensland',
   },
   // The countdown block: a game or app release, or an event. Hidden until it's switched on.
   release: {

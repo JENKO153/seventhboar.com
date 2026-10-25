@@ -953,6 +953,78 @@
           ],
           "title": "Built to last"
         },
+        "care": {
+          "compare": {
+            "eyebrow": "The maths",
+            "intro": "Renting a platform looks cheap each month, but the rent never stops. Here is the honest comparison for a small business site.",
+            "items": [
+              {
+                "text": "Shopify, Wix or Squarespace at roughly $42–$56 a month, plus apps and payment fees. You build it and look after it, and you rent it for as long as you use it.",
+                "title": "Rent a platform yourself",
+                "total": "About $1,500–$2,000"
+              },
+              {
+                "text": "Custom-built and yours to keep. After launch you only pay for your domain name, so from year four it costs next to nothing.",
+                "title": "Starter website, no care plan",
+                "total": "$1,500–$2,000 once"
+              },
+              {
+                "text": "The same custom site, plus someone who looks after it: hosting, updates, monitoring and changes, for $49 a month.",
+                "title": "Starter website + Essentials",
+                "total": "About $3,300–$3,800"
+              }
+            ],
+            "note": "Estimates only. Platform prices and fees change, so check them before you decide. Need a real online store with payments, stock and shipping? Shopify may be the right tool, and we'll tell you honestly if it is.",
+            "title": "What a website costs over three years"
+          },
+          "eyebrow": "Care plans",
+          "intro": "Launching is the start, not the finish. A care plan is completely optional: add it when we quote your website, or any time later. Month to month, with 30 days' notice to stop.",
+          "note": "Extra work outside your plan is $100 an hour, with a 30-minute minimum. Pay for a year up front and get 2 months free. Plan hours don't roll over. Prices are in Australian dollars (AUD).",
+          "tiers": [
+            {
+              "bullets": [
+                "Domain and hosting managed for you",
+                "Uptime monitoring",
+                "Security and software updates",
+                "1 small content change a month (about 30 minutes)",
+                "Email support, reply within 2 business days"
+              ],
+              "name": "Essentials",
+              "per": "/month",
+              "price": "$49",
+              "tag": "Keep it running",
+              "text": "For sites that mostly sit there and do their job."
+            },
+            {
+              "bullets": [
+                "Everything in Essentials",
+                "2 hours of changes a month: text, photos, new pages, forms",
+                "Monthly report: visits and enquiries",
+                "Google Business Profile help",
+                "Reply within 1 business day"
+              ],
+              "name": "Growth",
+              "per": "/month",
+              "price": "$119",
+              "tag": "Most popular",
+              "text": "For businesses that keep changing things."
+            },
+            {
+              "bullets": [
+                "Everything in Growth",
+                "5 hours of changes a month",
+                "Quarterly review: what is working and what to change",
+                "Priority: same or next business day"
+              ],
+              "name": "Partner",
+              "per": "/month",
+              "price": "$249",
+              "tag": "",
+              "text": "We act like your in-house web person."
+            }
+          ],
+          "title": "Care & hosting plans"
+        },
         "comingSoon": {
           "eyebrow": "Seventh Boar Development",
           "showEmail": true,
@@ -1558,7 +1630,7 @@
         }
       },
       "id": 1,
-      "updated_at": "2026-10-21T05:26:56.899008+00:00"
+      "updated_at": "2026-10-21T21:57:34.060373+00:00"
     }
   ]
 }

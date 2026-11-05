@@ -70,6 +70,7 @@ const App = (() => {
   // Page elements marked data-promise / data-call show the reply promise and the call button.
   function fillReach() {
     const r = SETTINGS.reach || {}, call = callLink();
+    $$('[data-abn]').forEach(el => { const abn = (SETTINGS.footer || {}).abn; el.textContent = abn ? `(ABN ${abn})` : ''; el.hidden = !abn; });
     $$('[data-promise]').forEach(el => { el.textContent = r.promise || ''; el.hidden = !(r.promiseShow && r.promise); });
     $$('[data-call]').forEach(el => { el.hidden = !call; if (call) { el.href = call.url; el.textContent = call.label; } });
   }
